@@ -1,20 +1,27 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
+import { WomenComponent } from './women';
+import { ProductService } from '../../../core/services/product.service';
 
-import { Women } from './women';
+describe('WomenComponent', () => {
+  let component: WomenComponent;
+  let fixture: ComponentFixture<WomenComponent>;
 
-describe('Women', () => {
-  let component: Women;
-  let fixture: ComponentFixture<Women>;
+  const productServiceMock = {
+    getWomenProducts: () => of([])
+  };
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [Women]
-    })
-    .compileComponents();
+    spyOn(productServiceMock, 'getWomenProducts').and.returnValue(of([]));
 
-    fixture = TestBed.createComponent(Women);
+    await TestBed.configureTestingModule({
+      imports: [WomenComponent],
+      providers: [{ provide: ProductService, useValue: productServiceMock }]
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(WomenComponent);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
   it('should create', () => {
