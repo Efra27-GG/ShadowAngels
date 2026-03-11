@@ -1,0 +1,12 @@
+.home-container {
+  min-height: 100vh;
+}
+
+.hero-section {
+  background: linear-gradient(135deg, #111 0%, #2b2b2b 100%);
+  color: white;
+}
+
+h1, h2 {
+  letter-spacing: 0.5px;
+}
