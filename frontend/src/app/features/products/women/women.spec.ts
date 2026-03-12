@@ -12,8 +12,6 @@ describe('WomenComponent', () => {
   };
 
   beforeEach(async () => {
-    spyOn(productServiceMock, 'getWomenProducts').and.returnValue(of([]));
-
     await TestBed.configureTestingModule({
       imports: [WomenComponent],
       providers: [{ provide: ProductService, useValue: productServiceMock }]

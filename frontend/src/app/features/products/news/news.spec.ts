@@ -12,8 +12,6 @@ describe('NewsComponent', () => {
   };
 
   beforeEach(async () => {
-    spyOn(productServiceMock, 'getNews').and.returnValue(of([]));
-
     await TestBed.configureTestingModule({
       imports: [NewsComponent],
       providers: [{ provide: ProductService, useValue: productServiceMock }]
