@@ -14,9 +14,6 @@ export class ProductCardComponent {
   @Input() product!: Product;
 
   get imageUrl(): string {
-    if (this.product?.images?.length) {
-      return this.product.images[0];
-    }
     return 'https://via.placeholder.com/300x400?text=ShadowAngels';
   }
 }

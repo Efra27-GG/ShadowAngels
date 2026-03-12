@@ -21,6 +21,7 @@ export class ProductDetailComponent implements OnInit {
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
+    console.log('ID PRODUCTO:', id);
 
     if (!id) {
       this.errorMessage = 'Producto no encontrado.';
@@ -29,11 +30,13 @@ export class ProductDetailComponent implements OnInit {
     }
 
     this.productService.getProductById(id).subscribe({
-      next: (resp) => {
+      next: (resp: Product) => {
+        console.log('DETALLE PRODUCTO:', resp);
         this.product = resp;
         this.loading = false;
       },
-      error: () => {
+      error: (err) => {
+        console.error('ERROR DETALLE:', err);
         this.errorMessage = 'No se pudo cargar el producto.';
         this.loading = false;
       }

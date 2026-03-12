@@ -67,7 +67,7 @@ export const routes: Routes = [
     canActivate: [adminGuard],
     loadComponent: () =>
       import('./features/admin/dashboard/dashboard').then(
-        (m) => m.Dashboard
+        (m) => m.DashboardComponent
       ),
   },
   {
@@ -75,7 +75,7 @@ export const routes: Routes = [
     canActivate: [adminGuard],
     loadComponent: () =>
       import('./features/admin/products-admin/products-admin').then(
-        (m) => m.ProductsAdmin
+        (m) => m.ProductsAdminComponent
       ),
   },
   {
@@ -83,7 +83,7 @@ export const routes: Routes = [
     canActivate: [adminGuard],
     loadComponent: () =>
       import('./features/admin/notifications-admin/notifications-admin').then(
-        (m) => m.NotificationsAdmin
+        (m) => m.NotificationsAdminComponent
       ),
   },
   {
@@ -91,7 +91,7 @@ export const routes: Routes = [
     canActivate: [adminGuard],
     loadComponent: () =>
       import('./features/admin/admins-admin/admins-admin').then(
-        (m) => m.AdminsAdmin
+        (m) => m.AdminsAdminComponent
       ),
   },
 

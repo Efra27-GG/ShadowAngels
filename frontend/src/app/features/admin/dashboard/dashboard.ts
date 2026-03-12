@@ -20,6 +20,10 @@ export class DashboardComponent implements OnInit {
   products: Product[] = [];
   loading = true;
 
+  totalProducts = 0;
+  discountedProducts = 0;
+  newProducts = 0;
+
   get user() {
     return this.authService.getUser();
   }
@@ -30,8 +34,11 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.productService.getProducts().subscribe({
-      next: (resp) => {
+      next: (resp: Product[]) => {
         this.products = resp;
+        this.totalProducts = resp.length;
+        this.discountedProducts = resp.filter((p: Product) => p.discount > 0).length;
+        this.newProducts = resp.filter((p: Product) => p.is_new).length;
         this.loading = false;
       },
       error: () => {

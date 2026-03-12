@@ -24,25 +24,21 @@
       <div class="col-12 col-md-4">
         <div class="card shadow-sm p-3">
           <h5>Total productos</h5>
-          <p class="display-6 mb-0">{{ products.length }}</p>
+          <p class="display-6 mb-0">{{ totalProducts }}</p>
         </div>
       </div>
 
       <div class="col-12 col-md-4">
         <div class="card shadow-sm p-3">
           <h5>Con descuento</h5>
-          <p class="display-6 mb-0">
-            {{ products.filter(p => p.discount > 0).length }}
-          </p>
+          <p class="display-6 mb-0">{{ discountedProducts }}</p>
         </div>
       </div>
 
       <div class="col-12 col-md-4">
         <div class="card shadow-sm p-3">
           <h5>Nuevos</h5>
-          <p class="display-6 mb-0">
-            {{ products.filter(p => p.is_new).length }}
-          </p>
+          <p class="display-6 mb-0">{{ newProducts }}</p>
         </div>
       </div>
     </div>
