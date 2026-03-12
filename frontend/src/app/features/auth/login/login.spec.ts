@@ -20,8 +20,8 @@ describe('LoginComponent', () => {
     await TestBed.configureTestingModule({
       imports: [LoginComponent],
       providers: [
-        { provide: AuthService, useValue: authServiceMock },
-        { provide: Router, useValue: routerMock }
+        { provide: AuthService, useValue: authServiceMock as any },
+        { provide: Router, useValue: routerMock as any }
       ]
     }).compileComponents();
 
@@ -32,5 +32,28 @@ describe('LoginComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should have login form with email and password controls', () => {
+    expect(component.loginForm.contains('email')).toBe(true);
+    expect(component.loginForm.contains('password')).toBe(true);
+  });
+
+  it('should be invalid when form is empty', () => {
+    component.loginForm.setValue({
+      email: '',
+      password: ''
+    });
+
+    expect(component.loginForm.invalid).toBe(true);
+  });
+
+  it('should be valid when form has correct values', () => {
+    component.loginForm.setValue({
+      email: 'efra@gmail.com',
+      password: '123456'
+    });
+
+    expect(component.loginForm.valid).toBe(true);
   });
 });
