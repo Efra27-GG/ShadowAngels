@@ -1,1 +1,13 @@
-<p>offers works!</p>
+<div class="container py-4">
+  <h2 class="mb-4">Ofertas</h2>
+
+  <div *ngIf="loading" class="text-center py-4">
+    <div class="spinner-border text-dark"></div>
+  </div>
+
+  <div class="row g-4" *ngIf="!loading">
+    <div class="col-12 col-sm-6 col-lg-4" *ngFor="let product of products">
+      <app-product-card [product]="product"></app-product-card>
+    </div>
+  </div>
+</div>

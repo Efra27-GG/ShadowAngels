@@ -1,1 +1,40 @@
-<p>product-detail works!</p>
+<div class="container py-5">
+  <div *ngIf="loading" class="text-center py-4">
+    <div class="spinner-border text-dark"></div>
+  </div>
+
+  <div *ngIf="!loading && errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="!loading && product" class="row g-4">
+    <div class="col-12 col-md-6">
+      <img
+        [src]="product.images.length ? product.images[0] : 'https://via.placeholder.com/500x600?text=ShadowAngels'"
+        [alt]="product.name"
+        class="img-fluid rounded shadow-sm w-100"
+      >
+    </div>
+
+    <div class="col-12 col-md-6">
+      <h2>{{ product.name }}</h2>
+      <p class="text-muted">{{ product.description }}</p>
+
+      <p>
+        <span *ngIf="product.discount > 0" class="text-decoration-line-through me-2">
+          ${{ product.price }}
+        </span>
+        <span class="fs-4 fw-bold">${{ product.final_price }}</span>
+      </p>
+
+      <div class="mb-3">
+        <span class="badge bg-secondary me-1" *ngFor="let size of product.sizes">
+          {{ size }}
+        </span>
+      </div>
+
+      <p><strong>Categoría:</strong> {{ product.category }}</p>
+      <p><strong>Nuevo:</strong> {{ product.is_new ? 'Sí' : 'No' }}</p>
+    </div>
+  </div>
+</div>

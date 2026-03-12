@@ -1,20 +1,27 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
+import { NewsComponent } from './news';
+import { ProductService } from '../../../core/services/product.service';
 
-import { News } from './news';
+describe('NewsComponent', () => {
+  let component: NewsComponent;
+  let fixture: ComponentFixture<NewsComponent>;
 
-describe('News', () => {
-  let component: News;
-  let fixture: ComponentFixture<News>;
+  const productServiceMock = {
+    getNews: () => of([])
+  };
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [News]
-    })
-    .compileComponents();
+    spyOn(productServiceMock, 'getNews').and.returnValue(of([]));
 
-    fixture = TestBed.createComponent(News);
+    await TestBed.configureTestingModule({
+      imports: [NewsComponent],
+      providers: [{ provide: ProductService, useValue: productServiceMock }]
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(NewsComponent);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
   it('should create', () => {
