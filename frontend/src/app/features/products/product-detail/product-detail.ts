@@ -21,7 +21,6 @@ export class ProductDetailComponent implements OnInit {
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
-    console.log('ID PRODUCTO:', id);
 
     if (!id) {
       this.errorMessage = 'Producto no encontrado.';
@@ -31,15 +30,32 @@ export class ProductDetailComponent implements OnInit {
 
     this.productService.getProductById(id).subscribe({
       next: (resp: Product) => {
-        console.log('DETALLE PRODUCTO:', resp);
         this.product = resp;
         this.loading = false;
       },
-      error: (err) => {
-        console.error('ERROR DETALLE:', err);
+      error: () => {
         this.errorMessage = 'No se pudo cargar el producto.';
         this.loading = false;
       }
     });
+  }
+
+  get imageUrl(): string {
+    const firstImage = this.product?.images?.[0];
+
+    if (!firstImage) {
+      return 'assets/img/no-image.png';
+    }
+
+    if (firstImage.startsWith('http') || firstImage.startsWith('assets/')) {
+      return firstImage;
+    }
+
+    return `assets/img/products/${firstImage}`;
+  }
+
+  onImageError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    img.src = 'assets/img/no-image.png';
   }
 }

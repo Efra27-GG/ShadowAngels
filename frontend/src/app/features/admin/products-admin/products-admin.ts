@@ -28,7 +28,7 @@ export class ProductsAdminComponent implements OnInit {
     price: [0, Validators.required],
     discount: [0, Validators.required],
     sizesText: ['S,M,L'],
-    imagesText: ['producto1.jpg,producto2.jpg'],
+    imagesText: ['no-image.png'],
     is_new: [false]
   });
 
@@ -38,7 +38,7 @@ export class ProductsAdminComponent implements OnInit {
 
   loadProducts(): void {
     this.productService.getProducts().subscribe({
-      next: (resp) => {
+      next: (resp: Product[]) => {
         this.products = resp;
         this.loading = false;
       },
@@ -60,8 +60,14 @@ export class ProductsAdminComponent implements OnInit {
       category: raw.category || 'dama',
       price: Number(raw.price || 0),
       discount: Number(raw.discount || 0),
-      sizes: (raw.sizesText || '').split(',').map(s => s.trim()).filter(Boolean),
-      images: (raw.imagesText || '').split(',').map(i => i.trim()).filter(Boolean),
+      sizes: (raw.sizesText || '')
+        .split(',')
+        .map((s: string) => s.trim())
+        .filter(Boolean),
+      images: (raw.imagesText || '')
+        .split(',')
+        .map((i: string) => i.trim())
+        .filter(Boolean),
       is_new: !!raw.is_new
     };
 
@@ -69,10 +75,14 @@ export class ProductsAdminComponent implements OnInit {
       this.productService.updateProduct(this.editingId, payload).subscribe({
         next: () => {
           this.successMessage = 'Producto actualizado.';
+          this.errorMessage = '';
           this.cancelEdit();
           this.loadProducts();
         },
-        error: () => this.errorMessage = 'No se pudo actualizar el producto.'
+        error: () => {
+          this.errorMessage = 'No se pudo actualizar el producto.';
+          this.successMessage = '';
+        }
       });
       return;
     }
@@ -80,17 +90,21 @@ export class ProductsAdminComponent implements OnInit {
     this.productService.createProduct(payload).subscribe({
       next: () => {
         this.successMessage = 'Producto creado.';
+        this.errorMessage = '';
         this.productForm.reset({
           category: 'dama',
           price: 0,
           discount: 0,
           sizesText: 'S,M,L',
-          imagesText: 'producto1.jpg,producto2.jpg',
+          imagesText: 'no-image.png',
           is_new: false
         });
         this.loadProducts();
       },
-      error: () => this.errorMessage = 'No se pudo crear el producto.'
+      error: () => {
+        this.errorMessage = 'No se pudo crear el producto.';
+        this.successMessage = '';
+      }
     });
   }
 
@@ -116,7 +130,7 @@ export class ProductsAdminComponent implements OnInit {
       price: 0,
       discount: 0,
       sizesText: 'S,M,L',
-      imagesText: 'producto1.jpg,producto2.jpg',
+      imagesText: 'no-image.png',
       is_new: false
     });
   }
@@ -128,9 +142,13 @@ export class ProductsAdminComponent implements OnInit {
     this.productService.deleteProduct(id).subscribe({
       next: () => {
         this.successMessage = 'Producto eliminado.';
+        this.errorMessage = '';
         this.loadProducts();
       },
-      error: () => this.errorMessage = 'No se pudo eliminar el producto.'
+      error: () => {
+        this.errorMessage = 'No se pudo eliminar el producto.';
+        this.successMessage = '';
+      }
     });
   }
 }
