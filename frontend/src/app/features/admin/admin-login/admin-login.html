@@ -1,33 +1,41 @@
-<div class="admin-login">
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-6 col-lg-5">
+      <div class="card shadow-sm p-4">
+        <h2 class="mb-4 text-center">Acceso administrador</h2>
 
-  <h2>Admin Login</h2>
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <div class="mb-3">
+            <label for="email" class="form-label">Correo</label>
+            <input
+              id="email"
+              type="email"
+              class="form-control"
+              formControlName="email"
+              placeholder="superadmin@shadowangels.com"
+            />
+          </div>
 
-  <form (ngSubmit)="login()">
+          <div class="mb-3">
+            <label for="password" class="form-label">Contraseña</label>
+            <input
+              id="password"
+              type="password"
+              class="form-control"
+              formControlName="password"
+              placeholder="Ingresa tu contraseña"
+            />
+          </div>
 
-    <input
-      type="email"
-      placeholder="Email"
-      [(ngModel)]="email"
-      name="email"
-      required
-    >
+          <button type="submit" class="btn btn-dark w-100" [disabled]="loading">
+            {{ loading ? 'Entrando...' : 'Entrar' }}
+          </button>
+        </form>
 
-    <input
-      type="password"
-      placeholder="Password"
-      [(ngModel)]="password"
-      name="password"
-      required
-    >
-
-    <button type="submit" [disabled]="loading">
-      {{ loading ? 'Entrando...' : 'Login' }}
-    </button>
-
-  </form>
-
-  <p class="error" *ngIf="error">
-    {{ error }}
-  </p>
-
+        <div *ngIf="errorMessage" class="alert alert-danger mt-3 mb-0">
+          {{ errorMessage }}
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

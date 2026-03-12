@@ -1,49 +1,49 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-admin-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './admin-login.html',
-  styleUrls: ['./admin-login.css']
+  styleUrl: './admin-login.css'
 })
-export class AdminLogin {
+export class AdminLoginComponent {
+  private fb = inject(FormBuilder);
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
-  email = '';
-  password = '';
-  error = '';
+  errorMessage = '';
   loading = false;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  loginForm = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required]]
+  });
 
-  login() {
+  onSubmit(): void {
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      return;
+    }
 
     this.loading = true;
-    this.error = '';
+    this.errorMessage = '';
 
-    this.http.post<any>('http://127.0.0.1:5000/api/admin/auth/login', {
-      email: this.email,
-      password: this.password
-    }).subscribe({
+    const { email, password } = this.loginForm.getRawValue();
 
-      next: (res) => {
-
-        localStorage.setItem('adminToken', res.token);
-
+    this.authService.adminLogin(email || '', password || '').subscribe({
+      next: () => {
+        this.loading = false;
         this.router.navigate(['/admin']);
       },
-
-      error: () => {
-        this.error = 'Credenciales incorrectas';
+      error: (err) => {
         this.loading = false;
+        this.errorMessage = err?.error?.error || 'Error al iniciar sesión como administrador';
       }
-
     });
-
   }
-
 }

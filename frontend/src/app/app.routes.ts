@@ -59,7 +59,7 @@ export const routes: Routes = [
     path: 'admin/login',
     loadComponent: () =>
       import('./features/admin/admin-login/admin-login').then(
-        (m) => m.AdminLogin
+        (m) => m.AdminLoginComponent
       ),
   },
   {

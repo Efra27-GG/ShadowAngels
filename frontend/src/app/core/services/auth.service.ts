@@ -25,7 +25,7 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/auth/register`, { name, email, password });
   }
 
-  adminLogin(email: string, password: string): Observable<AuthResponse> {
+  adminLogin(email: string, password: string) {
     return this.http.post<AuthResponse>(`${this.apiUrl}/admin/auth/login`, { email, password }).pipe(
       tap((response) => {
         if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {

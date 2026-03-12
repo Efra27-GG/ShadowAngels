@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
-import { AdminLogin } from './admin-login';
+import { AdminLoginComponent } from './admin-login';
 import { AuthService } from '../../../core/services/auth.service';
 
 describe('AdminLoginComponent', () => {
-  let component: AdminLogin;
-  let fixture: ComponentFixture<AdminLogin>;
+  let component: AdminLoginComponent;
+  let fixture: ComponentFixture<AdminLoginComponent>;
 
   const authServiceMock = {
     adminLogin: (_email: string, _password: string) => of({})
@@ -18,14 +18,14 @@ describe('AdminLoginComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AdminLogin],
+      imports: [AdminLoginComponent],
       providers: [
         { provide: AuthService, useValue: authServiceMock },
         { provide: Router, useValue: routerMock }
       ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AdminLogin);
+    fixture = TestBed.createComponent(AdminLoginComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
