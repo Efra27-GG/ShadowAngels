@@ -2,29 +2,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { adminGuard } from './core/guards/admin.guard';
 
-<<<<<<< HEAD
-import { Home } from './features/home/home/home';
-import { ProfilePage } from './features/profile/profile-page/profile-page';
-import { AdminLogin } from './features/admin/admin-login/admin-login';
 
-export const routes: Routes = [
-
-  {
-    path: '',
-    component: Home
-  },
-
-  {
-    path: 'profile',
-    component: ProfilePage
-  },
-
-  {
-    path: 'admin-login',
-    component: AdminLogin
-  }
-
-=======
 export const routes: Routes = [
   {
     path: '',
@@ -74,9 +52,7 @@ export const routes: Routes = [
     path: 'perfil',
     canActivate: [authGuard],
     loadComponent: () =>
-      import('./features/profile/profile-page/profile-page').then(
-        (m) => m.ProfilePageComponent
-      ),
+      import('./features/profile/profile-page/profile-page').then((m) => m.ProfilePage),
   },
 
   {
@@ -123,5 +99,4 @@ export const routes: Routes = [
     path: '**',
     redirectTo: '',
   },
->>>>>>> cacd9a8403251f6607426fbad780d891657f89c7
 ];
