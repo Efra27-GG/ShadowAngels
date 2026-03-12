@@ -1,0 +1,52 @@
+.admin-login {
+
+  max-width: 400px;
+  margin: 80px auto;
+  padding: 30px;
+
+  background: #111;
+  color: white;
+
+  border-radius: 10px;
+  text-align: center;
+
+}
+
+input {
+
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  
+  border: none;
+  border-radius: 5px;
+
+}
+
+button {
+
+  width: 100%;
+  padding: 10px;
+
+  background: #e60023;
+  color: white;
+
+  border: none;
+  border-radius: 5px;
+
+  cursor: pointer;
+
+}
+
+button:hover {
+
+  background: #c4001d;
+
+}
+
+.error {
+
+  color: red;
+  margin-top: 10px;
+
+}
