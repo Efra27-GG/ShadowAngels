@@ -1,3 +1,44 @@
+<<<<<<< HEAD
+<div class="profile-container">
+
+  <h2>Mi Perfil</h2>
+
+  <div *ngIf="message" class="message">
+    {{ message }}
+  </div>
+
+  <form (ngSubmit)="updateProfile()">
+
+    <label>Nombre</label>
+    <input
+      type="text"
+      [(ngModel)]="user.name"
+      name="name"
+      required
+    />
+
+    <label>Email</label>
+    <input
+      type="email"
+      [(ngModel)]="user.email"
+      name="email"
+      required
+    />
+
+    <label>Rol</label>
+    <input
+      type="text"
+      [value]="user.role"
+      disabled
+    />
+
+    <button type="submit">
+      Guardar cambios
+    </button>
+
+  </form>
+
+=======
 <div class="container py-5">
   <h2 class="mb-4">Mi perfil</h2>
 
@@ -15,4 +56,5 @@
     <p><strong>Rol:</strong> {{ user.role }}</p>
     <p><strong>Activo:</strong> {{ user.is_active ? 'Sí' : 'No' }}</p>
   </div>
+>>>>>>> cacd9a8403251f6607426fbad780d891657f89c7
 </div>

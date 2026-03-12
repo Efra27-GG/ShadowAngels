@@ -1,3 +1,54 @@
+<<<<<<< HEAD
+.profile-container {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 30px;
+  border-radius: 8px;
+  background: #1f1f1f;
+  color: white;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-top: 15px;
+}
+
+input {
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 5px;
+  border: none;
+}
+
+button {
+  margin-top: 20px;
+  padding: 12px;
+  background: #ff0055;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #ff3377;
+}
+
+.message {
+  margin-bottom: 15px;
+  text-align: center;
+  color: #00ff99;
+=======
 .card {
   max-width: 600px;
+>>>>>>> cacd9a8403251f6607426fbad780d891657f89c7
 }
