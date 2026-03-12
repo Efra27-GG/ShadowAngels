@@ -1,20 +1,28 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
+import { ProductsAdminComponent } from './products-admin';
+import { ProductService } from '../../../core/services/product.service';
 
-import { ProductsAdmin } from './products-admin';
+describe('ProductsAdminComponent', () => {
+  let component: ProductsAdminComponent;
+  let fixture: ComponentFixture<ProductsAdminComponent>;
 
-describe('ProductsAdmin', () => {
-  let component: ProductsAdmin;
-  let fixture: ComponentFixture<ProductsAdmin>;
+  const productServiceMock = {
+    getProducts: () => of([]),
+    createProduct: (_data: any) => of({}),
+    updateProduct: (_id: string, _data: any) => of({}),
+    deleteProduct: (_id: string) => of({})
+  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProductsAdmin]
-    })
-    .compileComponents();
+      imports: [ProductsAdminComponent],
+      providers: [{ provide: ProductService, useValue: productServiceMock }]
+    }).compileComponents();
 
-    fixture = TestBed.createComponent(ProductsAdmin);
+    fixture = TestBed.createComponent(ProductsAdminComponent);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
   it('should create', () => {

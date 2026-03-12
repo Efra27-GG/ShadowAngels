@@ -1,1 +1,60 @@
-<p>dashboard works!</p>
+<div class="admin-layout">
+  <aside class="sidebar">
+    <h4 class="mb-4">Panel Admin</h4>
+
+    <a routerLink="/admin" class="d-block mb-2">Inicio</a>
+    <a routerLink="/admin/productos" class="d-block mb-2">Productos</a>
+    <a routerLink="/admin/notificaciones" class="d-block mb-2">Notificaciones</a>
+    <a routerLink="/admin/resenas" class="d-block mb-2">Reseñas</a>
+    <a routerLink="/admin/perfil" class="d-block mb-2">Perfil</a>
+    <a *ngIf="isSuperAdmin" routerLink="/admin/admins" class="d-block mb-2">Admins</a>
+  </aside>
+
+  <main class="content">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+      <div>
+        <h2 class="mb-1">Inicio Admin</h2>
+        <p class="text-muted mb-0">
+          Bienvenido, {{ user?.name }} ({{ user?.role }})
+        </p>
+      </div>
+    </div>
+
+    <div class="row text-center mb-4 g-3">
+      <div class="col-12 col-md-4">
+        <div class="card shadow-sm p-3">
+          <h5>Total productos</h5>
+          <p class="display-6 mb-0">{{ products.length }}</p>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-4">
+        <div class="card shadow-sm p-3">
+          <h5>Con descuento</h5>
+          <p class="display-6 mb-0">
+            {{ products.filter(p => p.discount > 0).length }}
+          </p>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-4">
+        <div class="card shadow-sm p-3">
+          <h5>Nuevos</h5>
+          <p class="display-6 mb-0">
+            {{ products.filter(p => p.is_new).length }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="loading" class="text-center py-4">
+      <div class="spinner-border text-dark"></div>
+    </div>
+
+    <div *ngIf="!loading" class="row g-4">
+      <div class="col-12 col-sm-6 col-lg-4" *ngFor="let product of products">
+        <app-product-card [product]="product"></app-product-card>
+      </div>
+    </div>
+  </main>
+</div>

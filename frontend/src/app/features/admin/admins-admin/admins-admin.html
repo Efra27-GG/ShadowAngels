@@ -1,1 +1,77 @@
-<p>admins-admin works!</p>
+<div class="container py-4">
+  <h2 class="mb-4">Gestión de administradores</h2>
+
+  <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+  <div class="card shadow-sm p-4 mb-4">
+    <h4 class="mb-3">{{ editingId ? 'Editar administrador' : 'Crear administrador' }}</h4>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label">Nombre</label>
+        <input class="form-control" formControlName="name">
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Correo</label>
+        <input class="form-control" formControlName="email">
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">
+          {{ editingId ? 'Nueva contraseña (opcional)' : 'Contraseña' }}
+        </label>
+        <input type="password" class="form-control" formControlName="password">
+      </div>
+
+      <div class="col-12 d-flex gap-2">
+        <button class="btn btn-dark" type="submit">
+          {{ editingId ? 'Actualizar' : 'Crear' }}
+        </button>
+        <button *ngIf="editingId" class="btn btn-secondary" type="button" (click)="cancelEdit()">
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h4 class="mb-3">Lista de administradores</h4>
+
+      <div *ngIf="loading" class="text-center py-4">
+        <div class="spinner-border text-dark"></div>
+      </div>
+
+      <div class="table-responsive" *ngIf="!loading">
+        <table class="table table-striped align-middle">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Correo</th>
+              <th>Rol</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let admin of admins">
+              <td>{{ admin.name }}</td>
+              <td>{{ admin.email }}</td>
+              <td>{{ admin.role }}</td>
+              <td class="d-flex gap-2">
+                <button class="btn btn-sm btn-outline-primary" (click)="editAdmin(admin)">Editar</button>
+                <button
+                  class="btn btn-sm btn-outline-danger"
+                  [disabled]="!canDelete(admin)"
+                  (click)="deleteAdmin(admin)">
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

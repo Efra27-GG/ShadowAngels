@@ -1,20 +1,25 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
+import { NotificationsAdminComponent } from './notifications-admin';
+import { AdminService } from '../../../core/services/admin.service';
 
-import { NotificationsAdmin } from './notifications-admin';
+describe('NotificationsAdminComponent', () => {
+  let component: NotificationsAdminComponent;
+  let fixture: ComponentFixture<NotificationsAdminComponent>;
 
-describe('NotificationsAdmin', () => {
-  let component: NotificationsAdmin;
-  let fixture: ComponentFixture<NotificationsAdmin>;
+  const adminServiceMock = {
+    createNotification: (_data: any) => of({})
+  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NotificationsAdmin]
-    })
-    .compileComponents();
+      imports: [NotificationsAdminComponent],
+      providers: [{ provide: AdminService, useValue: adminServiceMock }]
+    }).compileComponents();
 
-    fixture = TestBed.createComponent(NotificationsAdmin);
+    fixture = TestBed.createComponent(NotificationsAdminComponent);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
   it('should create', () => {
