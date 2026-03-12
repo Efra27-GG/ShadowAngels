@@ -1,27 +1,30 @@
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
-import { LoginComponent } from './login';
+import { ReactiveFormsModule } from '@angular/forms';
+import { LoginComponent } from './login'; 
 import { AuthService } from '../../../core/services/auth.service';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
 
+  // Definimos mocks usando vi.fn() de Vitest
   const authServiceMock = {
-    login: (_email: string, _password: string) => of({})
+    login: vi.fn()
   };
 
   const routerMock = {
-    navigate: (_commands: string[]) => {}
+    navigate: vi.fn()
   };
 
   beforeEach(async () => {
-    spyOn(authServiceMock, 'login').and.returnValue(of({}));
-    spyOn(routerMock, 'navigate');
+    vi.clearAllMocks(); // Limpia llamadas previas
 
     await TestBed.configureTestingModule({
-      imports: [LoginComponent],
+      // Importamos ReactiveFormsModule para que no falle el loginForm
+      imports: [LoginComponent, ReactiveFormsModule], 
       providers: [
         { provide: AuthService, useValue: authServiceMock },
         { provide: Router, useValue: routerMock }
@@ -38,6 +41,8 @@ describe('LoginComponent', () => {
   });
 
   it('should login and navigate to perfil', () => {
+    authServiceMock.login.mockReturnValue(of({}));
+
     component.loginForm.setValue({
       email: 'efra@gmail.com',
       password: '123456'
@@ -50,7 +55,8 @@ describe('LoginComponent', () => {
   });
 
   it('should set errorMessage on login error', () => {
-    (authServiceMock.login as any).and.returnValue(
+    // Simulación de error con Vitest
+    authServiceMock.login.mockReturnValue(
       throwError(() => ({ error: { error: 'Credenciales incorrectas' } }))
     );
 

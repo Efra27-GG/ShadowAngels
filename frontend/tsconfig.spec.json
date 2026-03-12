@@ -5,11 +5,15 @@
   "compilerOptions": {
     "outDir": "./out-tsc/spec",
     "types": [
-      "vitest/globals"
-    ]
+      "vitest/globals",
+      "node"
+    ],
+    "baseUrl": "./", // <--- Esto le dice que busque paquetes desde la carpeta frontend
+    "moduleResolution": "node"
   },
   "include": [
     "src/**/*.d.ts",
-    "src/**/*.spec.ts"
+    "src/**/*.spec.ts",
+    "src/**/*.ts"
   ]
 }
