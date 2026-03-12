@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <div class="profile-container">
 
   <h2>Mi Perfil</h2>
@@ -37,4 +38,23 @@
 
   </form>
 
+=======
+<div class="container py-5">
+  <h2 class="mb-4">Mi perfil</h2>
+
+  <div *ngIf="loading" class="text-center py-4">
+    <div class="spinner-border text-dark"></div>
+  </div>
+
+  <div *ngIf="!loading && errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="!loading && user" class="card shadow-sm p-4">
+    <p><strong>Nombre:</strong> {{ user.name }}</p>
+    <p><strong>Correo:</strong> {{ user.email }}</p>
+    <p><strong>Rol:</strong> {{ user.role }}</p>
+    <p><strong>Activo:</strong> {{ user.is_active ? 'Sí' : 'No' }}</p>
+  </div>
+>>>>>>> cacd9a8403251f6607426fbad780d891657f89c7
 </div>
