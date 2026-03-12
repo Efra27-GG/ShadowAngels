@@ -28,6 +28,7 @@ export class HomeComponent implements OnInit {
 
     this.productService.getProducts().subscribe({
       next: (resp: Product[]) => {
+        console.log('PRODUCTOS RECIBIDOS:', resp);
         this.products = resp;
         this.loading = false;
       },
