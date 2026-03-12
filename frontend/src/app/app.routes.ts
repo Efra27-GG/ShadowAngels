@@ -6,45 +6,45 @@ export const routes: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('./features/products/home/home').then((m) => m.Home),
+      import('./features/products/home/home').then((m) => m.HomeComponent),
   },
   {
     path: 'mujeres',
     loadComponent: () =>
-      import('./features/products/women/women').then((m) => m.Women),
+      import('./features/products/women/women').then((m) => m.WomenComponent),
   },
   {
     path: 'hombres',
     loadComponent: () =>
-      import('./features/products/men/men').then((m) => m.Men),
+      import('./features/products/men/men').then((m) => m.MenComponent),
   },
   {
     path: 'ofertas',
     loadComponent: () =>
-      import('./features/products/offers/offers').then((m) => m.Offers),
+      import('./features/products/offers/offers').then((m) => m.OffersComponent),
   },
   {
     path: 'novedades',
     loadComponent: () =>
-      import('./features/products/news/news').then((m) => m.News),
+      import('./features/products/news/news').then((m) => m.NewsComponent),
   },
   {
     path: 'producto/:id',
     loadComponent: () =>
       import('./features/products/product-detail/product-detail').then(
-        (m) => m.ProductDetail
+        (m) => m.ProductDetailComponent
       ),
   },
 
   {
     path: 'login',
     loadComponent: () =>
-      import('./features/auth/login/login').then((m) => m.Login),
+      import('./features/auth/login/login').then((m) => m.LoginComponent),
   },
   {
     path: 'registro',
     loadComponent: () =>
-      import('./features/auth/register/register').then((m) => m.Register),
+      import('./features/auth/register/register').then((m) => m.RegisterComponent),
   },
 
   {
