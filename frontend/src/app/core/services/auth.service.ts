@@ -1,7 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
-import { environment } from '../../../environments/environment';
 import { AuthResponse } from '../../shared/interfaces/auth-response.interface';
 
 @Injectable({
@@ -9,13 +8,15 @@ import { AuthResponse } from '../../shared/interfaces/auth-response.interface';
 })
 export class AuthService {
   private http = inject(HttpClient);
-  private apiUrl = environment.apiUrl;
+  private apiUrl = 'http://127.0.0.1:5000/api';
 
   login(email: string, password: string): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/auth/login`, { email, password }).pipe(
-      tap(response => {
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('user', JSON.stringify(response.user));
+      tap((response) => {
+        if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+          localStorage.setItem('token', response.token);
+          localStorage.setItem('user', JSON.stringify(response.user));
+        }
       })
     );
   }
@@ -26,18 +27,27 @@ export class AuthService {
 
   adminLogin(email: string, password: string): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/admin/auth/login`, { email, password }).pipe(
-      tap(response => {
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('user', JSON.stringify(response.user));
+      tap((response) => {
+        if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+          localStorage.setItem('token', response.token);
+          localStorage.setItem('user', JSON.stringify(response.user));
+        }
       })
     );
   }
 
   getToken(): string | null {
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+      return null;
+    }
     return localStorage.getItem('token');
   }
 
-  getUser() {
+  getUser(): any | null {
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+      return null;
+    }
+
     const user = localStorage.getItem('user');
     return user ? JSON.parse(user) : null;
   }
@@ -47,7 +57,9 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+    }
   }
 }

@@ -52,7 +52,7 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadComponent: () =>
       import('./features/profile/profile-page/profile-page').then(
-        (m) => m.ProfilePage
+        (m) => m.ProfilePageComponent
       ),
   },
 
