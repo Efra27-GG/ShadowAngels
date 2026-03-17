@@ -1,4 +1,4 @@
-<div class="container py-5">
+<div class="container py-5 product-detail-page">
   <div *ngIf="loading" class="text-center py-4">
     <div class="spinner-border text-dark"></div>
   </div>
@@ -9,33 +9,78 @@
 
   <div *ngIf="!loading && product" class="row g-4">
     <div class="col-12 col-md-6">
-      <img
-        [src]="imageUrl"
-        (error)="onImageError($event)"
-        [alt]="product.name"
-        class="img-fluid rounded shadow-sm w-100"
-      >
+      <div class="product-gallery-frame">
+        <img
+          [src]="imageUrl"
+          (error)="onImageError($event)"
+          [alt]="product.name"
+          class="product-main-image w-100"
+        >
+      </div>
+
+      <div class="product-thumb-grid mt-3">
+        <button
+          type="button"
+          class="product-thumb-button"
+          *ngFor="let image of galleryImages"
+          [class.active]="image === imageUrl"
+          (click)="selectImage(image)"
+        >
+          <img
+            [src]="image"
+            [alt]="product.name"
+            class="product-thumb-image"
+            (error)="onImageError($event)"
+          >
+        </button>
+      </div>
     </div>
 
     <div class="col-12 col-md-6">
-      <h2>{{ product.name }}</h2>
-      <p class="text-muted">{{ product.description }}</p>
+      <div class="product-info-card">
+        <h2>{{ product.name }}</h2>
+        <p class="text-muted">{{ product.description }}</p>
 
-      <p>
-        <span *ngIf="product.discount > 0" class="text-decoration-line-through me-2">
-          ${{ product.price }}
-        </span>
-        <span class="fs-4 fw-bold">${{ product.final_price }}</span>
-      </p>
+        <p class="product-price-block">
+          <span *ngIf="product.discount > 0" class="text-decoration-line-through me-2 text-muted">
+            ${{ product.price }}
+          </span>
+          <span class="fs-4 fw-bold">${{ product.final_price }}</span>
+        </p>
 
-      <div class="mb-3">
-        <span class="badge bg-secondary me-1" *ngFor="let size of product.sizes">
-          {{ size }}
-        </span>
+        <div class="mb-3">
+          <span class="badge bg-secondary me-1" *ngFor="let size of product.sizes">
+            {{ size }}
+          </span>
+        </div>
+
+        <p><strong>Categoria:</strong> {{ product.category }}</p>
+        <p><strong>Nuevo:</strong> {{ product.is_new ? 'Si' : 'No' }}</p>
       </div>
-
-      <p><strong>Categoría:</strong> {{ product.category }}</p>
-      <p><strong>Nuevo:</strong> {{ product.is_new ? 'Sí' : 'No' }}</p>
     </div>
   </div>
+
+  <section *ngIf="!loading && product" class="reviews-section mt-5">
+    <div class="reviews-card">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <h3 class="mb-0">Reseñas</h3>
+        <span class="text-muted">{{ product.reviews?.length || 0 }} resenas</span>
+      </div>
+
+      <div *ngIf="!product.reviews?.length" class="reviews-empty"></div>
+
+      <div *ngIf="product.reviews?.length" class="reviews-list">
+        <article class="review-item" *ngFor="let review of product.reviews">
+          <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+            <div>
+              <h4 class="review-author mb-1">{{ review.user_name }}</h4>
+              <p class="review-date mb-0">{{ formatReviewDate(review.created_at) }}</p>
+            </div>
+            <span class="review-rating">{{ review.rating }}/5</span>
+          </div>
+          <p class="review-comment mb-0">{{ review.comment }}</p>
+        </article>
+      </div>
+    </div>
+  </section>
 </div>

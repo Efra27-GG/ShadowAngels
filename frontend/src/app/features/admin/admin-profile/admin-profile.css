@@ -3,6 +3,6 @@
   padding: 1.5rem;
 }
 
-textarea {
-  resize: none;
+.admin-profile-wrapper {
+  max-width: 860px;
 }

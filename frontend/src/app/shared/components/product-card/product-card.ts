@@ -17,18 +17,18 @@ export class ProductCardComponent {
     const firstImage = this.product?.images?.[0];
 
     if (!firstImage) {
-      return 'assets/img/no-image.png';
+      return '/img/no-image.png';
     }
 
-    if (firstImage.startsWith('http') || firstImage.startsWith('assets/')) {
+    if (firstImage.startsWith('http://') || firstImage.startsWith('https://') || firstImage.startsWith('/')) {
       return firstImage;
     }
 
-    return `assets/img/products/${firstImage}`;
+    return `http://127.0.0.1:5000/uploads/products/${firstImage}`;
   }
 
   onImageError(event: Event): void {
     const img = event.target as HTMLImageElement;
-    img.src = 'assets/img/no-image.png';
+    img.src = '/img/no-image.png';
   }
 }

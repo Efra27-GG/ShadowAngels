@@ -1,9 +1,9 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark app-navbar">
   <div class="container">
     <a class="navbar-brand" routerLink="/">ShadowAngels</a>
 
     <button
-      class="navbar-toggler"
+      class="navbar-toggler app-navbar__toggler"
       type="button"
       data-bs-toggle="collapse"
       data-bs-target="#navbarShadow"
@@ -14,59 +14,50 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarShadow">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0 app-navbar__nav">
         <li class="nav-item">
-          <a class="nav-link" routerLink="/">Inicio</a>
+          <a class="nav-link app-navbar__link" routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">Inicio</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/mujeres">Mujeres</a>
+          <a class="nav-link app-navbar__link" routerLink="/mujeres" routerLinkActive="active-link">Mujeres</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/hombres">Hombres</a>
+          <a class="nav-link app-navbar__link" routerLink="/hombres" routerLinkActive="active-link">Hombres</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/ofertas">Ofertas</a>
+          <a class="nav-link app-navbar__link" routerLink="/ofertas" routerLinkActive="active-link">Ofertas</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/novedades">Novedades</a>
+          <a class="nav-link app-navbar__link" routerLink="/novedades" routerLinkActive="active-link">Novedades</a>
         </li>
 
         <ng-container *ngIf="isAdmin">
           <li class="nav-item">
-            <a class="nav-link" routerLink="/admin">Panel</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/admin/productos">Productos</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/admin/notificaciones">Notificaciones</a>
-          </li>
-          <li class="nav-item" *ngIf="user?.role === 'superadmin'">
-            <a class="nav-link" routerLink="/admin/admins">Admins</a>
+            <a class="nav-link app-navbar__link" routerLink="/admin" routerLinkActive="active-link">Panel</a>
           </li>
         </ng-container>
       </ul>
 
-      <ul class="navbar-nav ms-auto">
+      <ul class="navbar-nav ms-auto app-navbar__nav app-navbar__nav--right">
         <ng-container *ngIf="!isLoggedIn">
           <li class="nav-item">
-            <a class="nav-link" routerLink="/login">Login</a>
+            <a class="nav-link app-navbar__link" routerLink="/login" routerLinkActive="active-link">Login</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" routerLink="/registro">Registro</a>
+            <a class="nav-link app-navbar__link" routerLink="/registro" routerLinkActive="active-link">Registro</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" routerLink="/admin/login">Admin</a>
+            <a class="nav-link app-navbar__link" routerLink="/admin/login" routerLinkActive="active-link">Admin</a>
           </li>
         </ng-container>
 
         <ng-container *ngIf="isLoggedIn">
           <li class="nav-item" *ngIf="!isAdmin">
-            <a class="nav-link" routerLink="/perfil">Perfil</a>
+            <a class="nav-link app-navbar__link" routerLink="/perfil" routerLinkActive="active-link">Perfil</a>
           </li>
           <li class="nav-item">
-            <button class="btn btn-outline-light btn-sm ms-2" (click)="logout()">
-              Cerrar sesión
+            <button class="btn app-navbar__logout btn-sm ms-lg-2 mt-2 mt-lg-0" (click)="logout()">
+              Cerrar sesion
             </button>
           </li>
         </ng-container>

@@ -1,24 +1,26 @@
-<div class="container py-4">
-  <h2 class="mb-4">Gestión de notificaciones</h2>
+<app-admin-shell>
+  <div class="container py-4 px-0">
+    <h2 class="mb-4">Gestion de notificaciones</h2>
 
-  <div class="card shadow-sm p-4">
-    <h4 class="mb-3">Nueva notificación</h4>
+    <div class="card shadow-sm p-4">
+      <h4 class="mb-3">Nueva notificacion</h4>
 
-    <form [formGroup]="form" (ngSubmit)="submit()">
-      <div class="mb-3">
-        <label class="form-label">Título</label>
-        <input class="form-control" formControlName="title">
-      </div>
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="mb-3">
+          <label class="form-label">Titulo</label>
+          <input class="form-control" formControlName="title">
+        </div>
 
-      <div class="mb-3">
-        <label class="form-label">Mensaje</label>
-        <textarea class="form-control" rows="5" formControlName="message"></textarea>
-      </div>
+        <div class="mb-3">
+          <label class="form-label">Mensaje</label>
+          <textarea class="form-control" rows="5" formControlName="message"></textarea>
+        </div>
 
-      <button class="btn btn-dark" type="submit">Publicar</button>
-    </form>
+        <button class="btn btn-dark" type="submit">Publicar</button>
+      </form>
 
-    <div *ngIf="successMessage" class="alert alert-success mt-3 mb-0">{{ successMessage }}</div>
-    <div *ngIf="errorMessage" class="alert alert-danger mt-3 mb-0">{{ errorMessage }}</div>
+      <div *ngIf="successMessage" class="alert alert-success mt-3 mb-0">{{ successMessage }}</div>
+      <div *ngIf="errorMessage" class="alert alert-danger mt-3 mb-0">{{ errorMessage }}</div>
+    </div>
   </div>
-</div>
+</app-admin-shell>

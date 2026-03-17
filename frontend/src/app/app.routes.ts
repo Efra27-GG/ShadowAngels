@@ -87,6 +87,22 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'admin/resenas',
+    canActivate: [adminGuard],
+    loadComponent: () =>
+      import('./features/admin/reviews-admin/reviews-admin').then(
+        (m) => m.ReviewsAdminComponent
+      ),
+  },
+  {
+    path: 'admin/perfil',
+    canActivate: [adminGuard],
+    loadComponent: () =>
+      import('./features/admin/admin-profile/admin-profile').then(
+        (m) => m.AdminProfileComponent
+      ),
+  },
+  {
     path: 'admin/admins',
     canActivate: [adminGuard],
     loadComponent: () =>

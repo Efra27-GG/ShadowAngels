@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import { Product } from '../../shared/interfaces/product.interface';
 
 @Injectable({
@@ -8,7 +9,7 @@ import { Product } from '../../shared/interfaces/product.interface';
 })
 export class ProductService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://127.0.0.1:5000/api';
+  private apiUrl = environment.apiUrl;
 
   getProducts(): Observable<Product[]> {
     return this.http.get<Product[]>(`${this.apiUrl}/products`);
@@ -34,15 +35,26 @@ export class ProductService {
     return this.http.get<Product>(`${this.apiUrl}/products/${id}`);
   }
 
-  createProduct(product: any): Observable<any> {
+  createProduct(product: unknown): Observable<unknown> {
     return this.http.post(`${this.apiUrl}/products`, product);
   }
 
-  updateProduct(id: string, product: any): Observable<any> {
+  updateProduct(id: string, product: unknown): Observable<unknown> {
     return this.http.put(`${this.apiUrl}/products/${id}`, product);
   }
 
-  deleteProduct(id: string): Observable<any> {
+  deleteProduct(id: string): Observable<unknown> {
     return this.http.delete(`${this.apiUrl}/products/${id}`);
+  }
+
+  uploadImages(files: File[]): Observable<{ message: string; images: string[] }> {
+    const formData = new FormData();
+
+    files.forEach((file) => formData.append('images', file));
+
+    return this.http.post<{ message: string; images: string[] }>(
+      `${this.apiUrl}/uploads/products`,
+      formData
+    );
   }
 }

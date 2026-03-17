@@ -1,6 +1,9 @@
+import os
+import uuid
 from datetime import datetime
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
+from werkzeug.utils import secure_filename
 
 from config import Config
 from models.user_model import UserModel
@@ -14,11 +17,43 @@ from utils.helpers import serialize_doc, serialize_list
 app = Flask(__name__)
 app.config.from_object(Config)
 CORS(app)
+os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
+
+ALLOWED_IMAGE_EXTENSIONS = {"png", "jpg", "jpeg", "webp", "gif"}
+
+
+def allowed_image(filename):
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_IMAGE_EXTENSIONS
+
+
+def save_uploaded_images(files):
+    saved_files = []
+
+    for file in files:
+        if not file or not file.filename:
+            continue
+
+        if not allowed_image(file.filename):
+            raise ValueError(f"Formato no permitido para {file.filename}")
+
+        safe_name = secure_filename(file.filename)
+        extension = safe_name.rsplit(".", 1)[1].lower()
+        unique_name = f"{uuid.uuid4().hex}.{extension}"
+        destination = os.path.join(app.config["UPLOAD_FOLDER"], unique_name)
+        file.save(destination)
+        saved_files.append(unique_name)
+
+    return saved_files
 
 
 @app.route("/")
 def home():
     return jsonify({"message": "ShadowAngels API funcionando"})
+
+
+@app.route("/uploads/products/<path:filename>")
+def uploaded_product_file(filename):
+    return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
 
 
 # =========================
@@ -178,6 +213,28 @@ def get_product(product_id):
     return jsonify(product_data)
 
 
+@app.route("/api/uploads/products", methods=["POST"])
+@token_required(allowed_roles=["admin", "superadmin"])
+def upload_product_images(current_user):
+    files = request.files.getlist("images")
+
+    if not files:
+        return jsonify({"error": "No se enviaron imagenes"}), 400
+
+    try:
+        saved_files = save_uploaded_images(files)
+    except ValueError as exc:
+        return jsonify({"error": str(exc)}), 400
+
+    if not saved_files:
+        return jsonify({"error": "No se pudieron procesar las imagenes"}), 400
+
+    return jsonify({
+        "message": "Imagenes subidas correctamente",
+        "images": saved_files
+    }), 201
+
+
 @app.route("/api/products", methods=["POST"])
 @token_required(allowed_roles=["admin", "superadmin"])
 def create_product(current_user):
@@ -197,16 +254,41 @@ def create_product(current_user):
 @app.route("/api/products/<product_id>", methods=["PUT"])
 @token_required(allowed_roles=["admin", "superadmin"])
 def update_product(current_user, product_id):
-    result = ProductModel.update_product(product_id, request.json)
+    current_product = ProductModel.get_by_id(product_id)
+    if not current_product:
+        return jsonify({"error": "Producto no encontrado"}), 404
+
+    payload = request.json or {}
+    previous_images = current_product.get("images", [])
+    next_images = payload.get("images", previous_images)
+
+    result = ProductModel.update_product(product_id, payload)
     if result is None:
         return jsonify({"error": "No se pudo actualizar el producto"}), 400
+
+    removed_images = [image for image in previous_images if image not in next_images]
+    ProductModel.cleanup_unused_images(
+        removed_images,
+        app.config["UPLOAD_FOLDER"],
+        exclude_product_id=product_id
+    )
+
     return jsonify({"message": "Producto actualizado"})
 
 
 @app.route("/api/products/<product_id>", methods=["DELETE"])
 @token_required(allowed_roles=["admin", "superadmin"])
 def delete_product(current_user, product_id):
+    current_product = ProductModel.get_by_id(product_id)
+    if not current_product:
+        return jsonify({"error": "Producto no encontrado"}), 404
+
     ProductModel.delete_product(product_id)
+    ProductModel.cleanup_unused_images(
+        current_product.get("images", []),
+        app.config["UPLOAD_FOLDER"],
+        exclude_product_id=product_id
+    )
     return jsonify({"message": "Producto eliminado"})
 
 

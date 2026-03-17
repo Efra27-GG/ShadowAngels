@@ -1,3 +1,4 @@
+import os
 from bson import ObjectId
 from datetime import datetime
 from models.db import db
@@ -72,5 +73,27 @@ class ProductModel:
     def delete_product(product_id):
         return products_collection.update_one(
             {"_id": ObjectId(product_id)},
-            {"$set": {"is_active": False}}
+            {"$set": {"is_active": False, "images": []}}
         )
+
+    @staticmethod
+    def get_by_image_name(image_name, exclude_product_id=None):
+        query = {"images": image_name}
+
+        if exclude_product_id:
+            query["_id"] = {"$ne": ObjectId(exclude_product_id)}
+
+        return products_collection.find_one(query)
+
+    @staticmethod
+    def cleanup_unused_images(images, upload_folder, exclude_product_id=None):
+        for image_name in images:
+            if not image_name:
+                continue
+
+            if ProductModel.get_by_image_name(image_name, exclude_product_id):
+                continue
+
+            image_path = os.path.join(upload_folder, image_name)
+            if os.path.exists(image_path):
+                os.remove(image_path)

@@ -2,11 +2,12 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AdminService } from '../../../core/services/admin.service';
+import { AdminShellComponent } from '../../../shared/components/admin-shell/admin-shell';
 
 @Component({
   selector: 'app-notifications-admin',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, AdminShellComponent],
   templateUrl: './notifications-admin.html',
   styleUrl: './notifications-admin.css'
 })

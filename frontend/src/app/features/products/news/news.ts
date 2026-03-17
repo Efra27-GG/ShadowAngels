@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProductService } from '../../../core/services/product.service';
 import { Product } from '../../../shared/interfaces/product.interface';
@@ -13,6 +13,7 @@ import { ProductCardComponent } from '../../../shared/components/product-card/pr
 })
 export class NewsComponent implements OnInit {
   private productService = inject(ProductService);
+  private cdr = inject(ChangeDetectorRef);
 
   products: Product[] = [];
   loading = true;
@@ -22,9 +23,11 @@ export class NewsComponent implements OnInit {
       next: (resp) => {
         this.products = resp;
         this.loading = false;
+        this.cdr.detectChanges();
       },
       error: () => {
         this.loading = false;
+        this.cdr.detectChanges();
       }
     });
   }

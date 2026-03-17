@@ -1,0 +1,37 @@
+<div class="admin-shell">
+  <aside class="admin-shell__sidebar">
+    <div class="admin-shell__sidebar-card">
+      <div class="admin-shell__header">
+        <h4 class="mb-0">Panel Admin</h4>
+        <button type="button" class="admin-shell__toggle" (click)="toggleMobileMenu()">
+          {{ mobileMenuOpen ? 'Cerrar' : 'Menu' }}
+        </button>
+      </div>
+
+      <div class="admin-shell__links" [class.admin-shell__links--open]="mobileMenuOpen">
+      <a routerLink="/admin" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }" class="admin-link" (click)="closeMobileMenu()">
+        Inicio
+      </a>
+      <a routerLink="/admin/productos" routerLinkActive="active-link" class="admin-link" (click)="closeMobileMenu()">
+        Productos
+      </a>
+      <a routerLink="/admin/notificaciones" routerLinkActive="active-link" class="admin-link" (click)="closeMobileMenu()">
+        Notificaciones
+      </a>
+      <a routerLink="/admin/resenas" routerLinkActive="active-link" class="admin-link" (click)="closeMobileMenu()">
+        Resenas
+      </a>
+      <a routerLink="/admin/perfil" routerLinkActive="active-link" class="admin-link" (click)="closeMobileMenu()">
+        Perfil
+      </a>
+      <a *ngIf="isSuperAdmin" routerLink="/admin/admins" routerLinkActive="active-link" class="admin-link" (click)="closeMobileMenu()">
+        Admins
+      </a>
+      </div>
+    </div>
+  </aside>
+
+  <main class="admin-shell__content">
+    <ng-content></ng-content>
+  </main>
+</div>

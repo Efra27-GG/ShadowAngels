@@ -1,13 +1,14 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AdminService } from '../../../core/services/admin.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { AdminShellComponent } from '../../../shared/components/admin-shell/admin-shell';
 
 @Component({
   selector: 'app-admins-admin',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, AdminShellComponent],
   templateUrl: './admins-admin.html',
   styleUrl: './admins-admin.css'
 })
@@ -15,6 +16,7 @@ export class AdminsAdminComponent implements OnInit {
   private fb = inject(FormBuilder);
   private adminService = inject(AdminService);
   private authService = inject(AuthService);
+  private cdr = inject(ChangeDetectorRef);
 
   admins: any[] = [];
   editingId: string | null = null;
@@ -41,10 +43,12 @@ export class AdminsAdminComponent implements OnInit {
       next: (resp: any) => {
         this.admins = resp;
         this.loading = false;
+        this.cdr.detectChanges();
       },
       error: () => {
         this.errorMessage = 'No se pudieron cargar los administradores.';
         this.loading = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -59,9 +63,13 @@ export class AdminsAdminComponent implements OnInit {
         next: () => {
           this.successMessage = 'Administrador actualizado.';
           this.cancelEdit();
+          this.cdr.detectChanges();
           this.loadAdmins();
         },
-        error: () => this.errorMessage = 'No se pudo actualizar el administrador.'
+        error: () => {
+          this.errorMessage = 'No se pudo actualizar el administrador.';
+          this.cdr.detectChanges();
+        }
       });
       return;
     }
@@ -70,9 +78,13 @@ export class AdminsAdminComponent implements OnInit {
       next: () => {
         this.successMessage = 'Administrador creado.';
         this.form.reset();
+        this.cdr.detectChanges();
         this.loadAdmins();
       },
-      error: () => this.errorMessage = 'No se pudo crear el administrador.'
+      error: () => {
+        this.errorMessage = 'No se pudo crear el administrador.';
+        this.cdr.detectChanges();
+      }
     });
   }
 
@@ -106,9 +118,13 @@ export class AdminsAdminComponent implements OnInit {
     this.adminService.deleteAdmin(admin._id).subscribe({
       next: () => {
         this.successMessage = 'Administrador eliminado.';
+        this.cdr.detectChanges();
         this.loadAdmins();
       },
-      error: () => this.errorMessage = 'No se pudo eliminar el administrador.'
+      error: () => {
+        this.errorMessage = 'No se pudo eliminar el administrador.';
+        this.cdr.detectChanges();
+      }
     });
   }
 }
