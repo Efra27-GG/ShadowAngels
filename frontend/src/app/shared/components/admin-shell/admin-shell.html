@@ -15,8 +15,8 @@
       <a routerLink="/admin/productos" routerLinkActive="active-link" class="admin-link" (click)="closeMobileMenu()">
         Productos
       </a>
-      <a routerLink="/admin/notificaciones" routerLinkActive="active-link" class="admin-link" (click)="closeMobileMenu()">
-        Notificaciones
+      <a routerLink="/admin/solicitudes" routerLinkActive="active-link" class="admin-link" (click)="closeMobileMenu()">
+        Solicitudes
       </a>
       <a routerLink="/admin/resenas" routerLinkActive="active-link" class="admin-link" (click)="closeMobileMenu()">
         Resenas
@@ -26,6 +26,9 @@
       </a>
       <a *ngIf="isSuperAdmin" routerLink="/admin/admins" routerLinkActive="active-link" class="admin-link" (click)="closeMobileMenu()">
         Admins
+      </a>
+      <a *ngIf="isSuperAdmin" routerLink="/admin/contacto" routerLinkActive="active-link" class="admin-link" (click)="closeMobileMenu()">
+        Contacto
       </a>
       </div>
     </div>

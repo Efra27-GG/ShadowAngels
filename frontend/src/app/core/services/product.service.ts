@@ -47,6 +47,14 @@ export class ProductService {
     return this.http.delete(`${this.apiUrl}/products/${id}`);
   }
 
+  createReview(productId: string, payload: { rating: number; comment: string }) {
+    return this.http.post(`${this.apiUrl}/products/${productId}/reviews`, payload);
+  }
+
+  updateReview(reviewId: string, payload: { rating: number; comment: string }) {
+    return this.http.put(`${this.apiUrl}/reviews/${reviewId}`, payload);
+  }
+
   uploadImages(files: File[]): Observable<{ message: string; images: string[] }> {
     const formData = new FormData();
 

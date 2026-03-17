@@ -1,0 +1,128 @@
+<div class="container py-5 cart-page">
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+    <div>
+      <h2 class="mb-1">Tu carrito</h2>
+      <p class="text-muted mb-0">Aqui puedes ajustar cantidades, quitar productos y enviar una sola solicitud.</p>
+    </div>
+    <a class="btn btn-outline-dark" routerLink="/">Seguir viendo productos</a>
+  </div>
+
+  <div *ngIf="message" class="alert alert-success">{{ message }}</div>
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-dark"></div>
+  </div>
+
+  <div *ngIf="!loading && !cart.items.length" class="cart-empty">
+    <h3 class="mb-2">Tu carrito esta vacio</h3>
+    <p class="text-muted mb-0">Agrega productos desde el detalle para empezar tu solicitud.</p>
+  </div>
+
+  <div *ngIf="!loading && cart.items.length" class="row g-4">
+    <div class="col-12 col-lg-8">
+      <div class="cart-list">
+        <article class="cart-item" *ngFor="let item of cart.items">
+          <img [src]="getImagePath(item.product_image)" [alt]="item.product_name" class="cart-item__image">
+
+          <div class="cart-item__body">
+            <div class="d-flex justify-content-between gap-3 flex-wrap">
+              <div>
+                <h4 class="mb-1">{{ item.product_name }}</h4>
+                <p class="text-muted mb-0">Precio unitario: ${{ item.final_price }}</p>
+              </div>
+              <button class="btn btn-sm btn-outline-danger" type="button" (click)="removeItem(item)">
+                Eliminar
+              </button>
+            </div>
+
+            <div class="cart-item__controls">
+              <div class="quantity-control">
+                <button type="button" (click)="changeQuantity(item, -1)">-</button>
+                <span>{{ item.quantity }}</span>
+                <button type="button" (click)="changeQuantity(item, 1)">+</button>
+              </div>
+              <strong>${{ item.final_price * item.quantity }}</strong>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-4">
+      <aside class="cart-summary">
+        <h3 class="mb-3">Resumen</h3>
+        <div class="cart-summary__row">
+          <span>Productos</span>
+          <strong>{{ totalItems }}</strong>
+        </div>
+        <div class="cart-summary__row">
+          <span>Total estimado</span>
+          <strong>${{ totalAmount }}</strong>
+        </div>
+
+        <p class="text-muted small mb-3">
+          La venta sigue siendo externa. Al enviar la solicitud, el admin la vera en Solicitudes y luego podra confirmarla.
+        </p>
+
+        <div class="cart-summary__actions">
+          <button class="btn btn-dark" type="button" (click)="checkout('whatsapp')">
+            Solicitar por WhatsApp
+          </button>
+          <button class="btn btn-outline-dark" type="button" (click)="checkout('instagram')">
+            Solicitar por Instagram
+          </button>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <section class="cart-history mt-5" *ngIf="history.length">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+      <h3 class="mb-0">Historial de compras</h3>
+      <span class="text-muted">Se muestran solo solicitudes pendientes y compras confirmadas.</span>
+    </div>
+
+    <div class="request-filters mb-3">
+      <button type="button" class="request-filter" [class.request-filter--active]="historyFilter === 'all'" (click)="setHistoryFilter('all')">
+        Todas
+      </button>
+      <button type="button" class="request-filter" [class.request-filter--active]="historyFilter === 'pending'" (click)="setHistoryFilter('pending')">
+        Pendientes
+      </button>
+      <button type="button" class="request-filter" [class.request-filter--active]="historyFilter === 'confirmed'" (click)="setHistoryFilter('confirmed')">
+        Confirmadas
+      </button>
+    </div>
+
+    <div class="cart-history__list">
+      <article class="cart-history__card" *ngFor="let historyRequest of filteredHistory">
+        <div class="cart-history__header">
+          <div>
+            <h4 class="mb-1">{{ getHistoryTitle(historyRequest) }}</h4>
+            <p class="text-muted mb-0">
+              {{ historyRequest.created_at ? (historyRequest.created_at | date:'mediumDate') : 'Sin fecha' }}
+            </p>
+          </div>
+          <span class="cart-history__status"
+            [class.cart-history__status--pending]="historyRequest.status === 'pending'"
+            [class.cart-history__status--confirmed]="historyRequest.status === 'confirmed'">
+            {{ historyRequest.status }}
+          </span>
+        </div>
+
+        <div class="cart-history__items">
+          <div class="cart-history__item" *ngFor="let item of getHistoryItems(historyRequest)">
+            <span>{{ item.product_name }} x{{ item.quantity }}</span>
+            <strong *ngIf="item.final_price !== undefined">${{ item.final_price * item.quantity }}</strong>
+          </div>
+        </div>
+
+        <div class="cart-history__footer">
+          <p class="mb-0 text-muted">{{ getHistoryStatusMessage(historyRequest) }}</p>
+          <strong *ngIf="historyRequest.request_type === 'cart'">Total: ${{ getHistoryTotal(historyRequest) }}</strong>
+        </div>
+      </article>
+    </div>
+  </section>
+</div>

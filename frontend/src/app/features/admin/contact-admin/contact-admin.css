@@ -1,0 +1,9 @@
+:host {
+  display: block;
+  padding: 1.5rem;
+}
+
+.contact-admin-form small {
+  display: block;
+  margin-top: 0.35rem;
+}

@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { adminGuard } from './core/guards/admin.guard';
+import { superAdminGuard } from './core/guards/superadmin.guard';
 
 
 export const routes: Routes = [
@@ -54,6 +55,12 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/profile/profile-page/profile-page').then((m) => m.ProfilePage),
   },
+  {
+    path: 'carrito',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/cart/cart-page/cart-page').then((m) => m.CartPageComponent),
+  },
 
   {
     path: 'admin/login',
@@ -79,11 +86,11 @@ export const routes: Routes = [
       ),
   },
   {
-    path: 'admin/notificaciones',
+    path: 'admin/solicitudes',
     canActivate: [adminGuard],
     loadComponent: () =>
-      import('./features/admin/notifications-admin/notifications-admin').then(
-        (m) => m.NotificationsAdminComponent
+      import('./features/admin/solicitudes-admin/solicitudes-admin').then(
+        (m) => m.SolicitudesAdminComponent
       ),
   },
   {
@@ -108,6 +115,14 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/admin/admins-admin/admins-admin').then(
         (m) => m.AdminsAdminComponent
+      ),
+  },
+  {
+    path: 'admin/contacto',
+    canActivate: [superAdminGuard],
+    loadComponent: () =>
+      import('./features/admin/contact-admin/contact-admin').then(
+        (m) => m.ContactAdminComponent
       ),
   },
 

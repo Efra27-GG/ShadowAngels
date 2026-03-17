@@ -1,5 +1,5 @@
 from bson import ObjectId
-from datetime import datetime
+from datetime import datetime, timedelta
 from models.db import db
 
 reviews_collection = db["reviews"]
@@ -30,6 +30,37 @@ class ReviewModel:
         return list(reviews_collection.find(
             {"product_id": ObjectId(product_id)}
         ).sort("created_at", -1))
+
+    @staticmethod
+    def get_by_id(review_id):
+        try:
+            return reviews_collection.find_one({"_id": ObjectId(review_id)})
+        except:
+            return None
+
+    @staticmethod
+    def can_edit(review):
+        if not review:
+            return False
+
+        created_at = review.get("created_at")
+        if not created_at:
+            return False
+
+        return datetime.utcnow() <= created_at + timedelta(minutes=10)
+
+    @staticmethod
+    def update_review(review_id, data):
+        return reviews_collection.update_one(
+            {"_id": ObjectId(review_id)},
+            {
+                "$set": {
+                    "rating": int(data["rating"]),
+                    "comment": data["comment"].strip(),
+                    "updated_at": datetime.utcnow()
+                }
+            }
+        )
 
     @staticmethod
     def delete_review(review_id):

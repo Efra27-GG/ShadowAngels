@@ -9,9 +9,11 @@ class ContactModel:
         contact = contact_collection.find_one({})
         if not contact:
             default_contact = {
-                "whatsapp": "",
+                "whatsapp_number": "",
+                "whatsapp_label": "",
                 "facebook": "",
                 "instagram": "",
+                "tiktok": "",
                 "email": "",
                 "location": ""
             }
@@ -21,12 +23,15 @@ class ContactModel:
 
     @staticmethod
     def update_contact(data):
+        current = ContactModel.get_contact()
         return contact_collection.update_one(
-            {},
+            {"_id": current["_id"]},
             {"$set": {
-                "whatsapp": data.get("whatsapp", ""),
+                "whatsapp_number": data.get("whatsapp_number", "").strip(),
+                "whatsapp_label": data.get("whatsapp_label", "").strip(),
                 "facebook": data.get("facebook", ""),
                 "instagram": data.get("instagram", ""),
+                "tiktok": data.get("tiktok", ""),
                 "email": data.get("email", ""),
                 "location": data.get("location", "")
             }},

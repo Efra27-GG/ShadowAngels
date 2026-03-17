@@ -56,9 +56,95 @@
 
         <p><strong>Categoria:</strong> {{ product.category }}</p>
         <p><strong>Nuevo:</strong> {{ product.is_new ? 'Si' : 'No' }}</p>
+
+        <div class="contact-actions" *ngIf="isUser">
+          <button class="btn btn-secondary" type="button" (click)="addToCart()">
+            Agregar al carrito
+          </button>
+          <button class="btn btn-dark" type="button" (click)="createPurchaseRequest('whatsapp')">
+            Contactar por WhatsApp
+          </button>
+          <button class="btn btn-outline-dark" type="button" (click)="createPurchaseRequest('instagram')">
+            Contactar por Instagram
+          </button>
+        </div>
+
+        <div class="alert alert-secondary mt-3 mb-0" *ngIf="!isLoggedIn">
+          Inicia sesion para solicitar este producto y habilitar reseñas despues de la compra confirmada.
+        </div>
+
+        <div class="alert alert-info mt-3 mb-0" *ngIf="requestMessage">
+          {{ requestMessage }}
+        </div>
+
+        <div class="purchase-status mt-3" *ngIf="isUser && !hasPurchased">
+          <strong>Compra previa:</strong> Aun no tienes una compra confirmada de este producto.
+        </div>
       </div>
     </div>
   </div>
+
+  <section *ngIf="!loading && product && isUser" class="reviews-section mt-4">
+    <div class="reviews-card">
+      <h3 class="mb-3">Tu reseña</h3>
+
+      <div class="alert alert-secondary mb-3" *ngIf="!ownReview && !canReview">
+        La reseña se habilita cuando el admin confirme que la compra del producto fue realizada.
+      </div>
+
+      <div class="alert alert-secondary mb-3" *ngIf="ownReview && !canEditOwnReview">
+        Ya dejaste tu reseña para este producto. Solo podía editarse durante los primeros 10 minutos.
+      </div>
+
+      <div class="own-review-locked" *ngIf="ownReview && !canEditOwnReview">
+        <div class="own-review-locked__header">
+          <div>
+            <h4 class="mb-1">Tu resena registrada</h4>
+            <p class="mb-0 text-muted">{{ formatReviewDate(ownReview.created_at) }}</p>
+          </div>
+          <span class="own-review-locked__badge">Edicion cerrada</span>
+        </div>
+
+        <div class="own-review-locked__rating">{{ ownReview.rating }}/5</div>
+        <p class="own-review-locked__comment mb-0">{{ ownReview.comment }}</p>
+      </div>
+
+      <form *ngIf="(canReview && !ownReview) || (ownReview && canEditOwnReview)" class="review-form" (ngSubmit)="submitReview()">
+        <div class="mb-3">
+          <label class="form-label">Calificacion</label>
+          <select class="form-select" name="rating" [(ngModel)]="reviewForm.rating">
+            <option [ngValue]="5">5</option>
+            <option [ngValue]="4">4</option>
+            <option [ngValue]="3">3</option>
+            <option [ngValue]="2">2</option>
+            <option [ngValue]="1">1</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Comentario</label>
+          <textarea
+            class="form-control"
+            rows="4"
+            name="comment"
+            [(ngModel)]="reviewForm.comment"
+            required></textarea>
+        </div>
+
+        <button class="btn btn-dark" type="submit">
+          {{ ownReview ? 'Guardar cambios' : 'Publicar reseña' }}
+        </button>
+      </form>
+
+      <div class="alert alert-success mt-3 mb-0" *ngIf="reviewMessage">
+        {{ reviewMessage }}
+      </div>
+
+      <div class="alert alert-danger mt-3 mb-0" *ngIf="reviewErrorMessage">
+        {{ reviewErrorMessage }}
+      </div>
+    </div>
+  </section>
 
   <section *ngIf="!loading && product" class="reviews-section mt-5">
     <div class="reviews-card">

@@ -70,6 +70,56 @@
   margin: 1.5rem 0;
 }
 
+.contact-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+
+.purchase-status {
+  color: #374151;
+}
+
+.review-form textarea {
+  resize: none;
+}
+
+.own-review-locked {
+  border: 1px solid rgba(31, 31, 31, 0.08);
+  border-radius: 18px;
+  padding: 18px;
+  background: #f8fafc;
+}
+
+.own-review-locked__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.own-review-locked__badge {
+  border-radius: 999px;
+  padding: 6px 12px;
+  background: #e5e7eb;
+  color: #374151;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.own-review-locked__rating {
+  font-weight: 700;
+  color: #7c2d12;
+  margin-bottom: 10px;
+}
+
+.own-review-locked__comment {
+  line-height: 1.7;
+}
+
 .reviews-card {
   padding: 28px;
 }

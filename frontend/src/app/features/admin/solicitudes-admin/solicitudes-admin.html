@@ -1,0 +1,129 @@
+<app-admin-shell>
+  <div class="container py-4 px-0">
+    <h2 class="mb-4">Gestion de solicitudes</h2>
+
+    <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+    <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+          <h4 class="mb-0">Solicitudes de compra</h4>
+          <button class="btn btn-outline-dark btn-sm" type="button" (click)="loadRequests()">
+            Recargar
+          </button>
+        </div>
+
+        <div class="request-filters mb-3">
+          <button
+            type="button"
+            class="request-filter"
+            [class.request-filter--active]="selectedFilter === 'all'"
+            (click)="setFilter('all')">
+            Todas
+          </button>
+          <button
+            type="button"
+            class="request-filter"
+            [class.request-filter--active]="selectedFilter === 'pending'"
+            (click)="setFilter('pending')">
+            Pendientes
+          </button>
+          <button
+            type="button"
+            class="request-filter"
+            [class.request-filter--active]="selectedFilter === 'confirmed'"
+            (click)="setFilter('confirmed')">
+            Confirmadas
+          </button>
+          <button
+            type="button"
+            class="request-filter"
+            [class.request-filter--active]="selectedFilter === 'rejected'"
+            (click)="setFilter('rejected')">
+            No realizadas
+          </button>
+          <button
+            type="button"
+            class="request-filter"
+            [class.request-filter--active]="selectedFilter === 'recent'"
+            (click)="setFilter('recent')">
+            Recientes
+          </button>
+        </div>
+
+        <div *ngIf="loading" class="text-center py-4">
+          <div class="spinner-border text-dark"></div>
+        </div>
+
+        <div *ngIf="!loading && !filteredRequests.length" class="alert alert-secondary mb-0">
+          No hay solicitudes para el filtro seleccionado.
+        </div>
+
+        <div class="request-list" *ngIf="!loading && filteredRequests.length">
+          <article class="request-card" *ngFor="let request of filteredRequests">
+            <div class="request-card__top">
+              <div class="request-card__main">
+                <h5 class="mb-1">{{ request.user_name }}</h5>
+                <p class="mb-1 text-muted">{{ request.user_email }}</p>
+                <p class="mb-1 request-card__summary">{{ getProductsSummary(request) }}</p>
+                <p class="mb-0 text-muted">Fecha: {{ formatDate(request.created_at) }} · Canal: {{ request.channel }}</p>
+              </div>
+
+              <span class="request-status" [class.request-status--confirmed]="request.status === 'confirmed'"
+                [class.request-status--rejected]="request.status === 'rejected'">
+                {{ request.status }}
+              </span>
+            </div>
+
+            <div class="request-card__actions mt-3">
+              <button class="btn btn-success btn-sm" type="button" (click)="updateStatus(request, 'confirmed')">
+                Compra realizada
+              </button>
+              <button class="btn btn-outline-danger btn-sm" type="button" (click)="updateStatus(request, 'rejected')">
+                No realizada
+              </button>
+              <button class="btn btn-outline-secondary btn-sm" type="button" (click)="updateStatus(request, 'pending')">
+                Pendiente
+              </button>
+              <button class="btn btn-outline-dark btn-sm" type="button" (click)="toggleDetails(request._id)">
+                {{ isExpanded(request._id) ? 'Ocultar detalle' : 'Ver detalle' }}
+              </button>
+              <button class="btn btn-outline-danger btn-sm" type="button" (click)="deleteRequest(request)">
+                Eliminar
+              </button>
+            </div>
+
+            <div class="request-card__detail mt-3" *ngIf="isExpanded(request._id)">
+              <div class="request-card__detail-grid">
+                <div>
+                  <p class="mb-1"><strong>Tipo:</strong> {{ request.request_type === 'cart' ? 'Carrito' : 'Unitaria' }}</p>
+                  <p class="mb-1"><strong>Fecha:</strong> {{ formatDate(request.created_at) }}</p>
+                  <p class="mb-0"><strong>Canal:</strong> {{ request.channel }}</p>
+                </div>
+                <div>
+                  <p class="mb-2"><strong>Productos</strong></p>
+                  <div class="small text-muted" *ngIf="request.request_type === 'cart' && request.items?.length">
+                    <div *ngFor="let item of request.items">{{ item.product_name }} x{{ item.quantity }}</div>
+                  </div>
+                  <div class="small text-muted" *ngIf="request.request_type !== 'cart'">
+                    {{ request.product_name }} x1
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-3">
+                <label class="form-label">Nota administrativa</label>
+                <textarea
+                  class="form-control"
+                  rows="3"
+                  [(ngModel)]="adminNotes[request._id]"
+                  placeholder="Comentario opcional sobre la solicitud"></textarea>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-admin-shell>
