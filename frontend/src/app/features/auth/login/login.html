@@ -17,10 +17,10 @@
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Contrasena</label>
+            <label class="form-label">Contraseña</label>
             <input type="password" class="form-control" formControlName="password">
             <div class="text-danger small mt-1" *ngIf="loginForm.controls.password.touched && loginForm.controls.password.hasError('required')">
-              La contrasena es obligatoria.
+              La contraseña es obligatoria.
             </div>
           </div>
 
@@ -32,7 +32,7 @@
         </div>
 
         <p class="text-center mt-3 mb-0">
-          No tienes cuenta?
+          ¿No tienes cuenta?
           <a routerLink="/registro">Registrate</a>
         </p>
       </div>

@@ -70,12 +70,12 @@
 
         <div class="product-meta-grid">
           <div class="product-meta-item">
-            <span class="product-meta-item__label">Categoria</span>
+            <span class="product-meta-item__label">Categoría</span>
             <span class="product-meta-item__value">{{ product.category }}</span>
           </div>
           <div class="product-meta-item">
             <span class="product-meta-item__label">Estado</span>
-            <span class="product-meta-item__value">{{ product.is_new ? 'Nuevo lanzamiento' : 'Catalogo general' }}</span>
+            <span class="product-meta-item__value">{{ product.is_new ? 'Nuevo lanzamiento' : 'Catálogo general' }}</span>
           </div>
         </div>
 
@@ -93,9 +93,9 @@
 
         <div *ngIf="canGuestRequest" class="guest-request-card">
           <div class="guest-request-card__copy">
-            <h3 class="guest-request-card__title">Solicitud rapida para invitado</h3>
+            <h3 class="guest-request-card__title">Solicitud rápida para invitado</h3>
             <p class="guest-request-card__text">
-              Puedes solicitar este producto sin cuenta. El carrito y las resenas solo estan disponibles para usuarios registrados.
+              Puedes solicitar este producto sin cuenta. El carrito y las reseñas solo estan disponibles para usuarios registrados.
             </p>
           </div>
 
@@ -126,7 +126,7 @@
         </div>
 
         <div class="purchase-status mt-3" *ngIf="isUser && !hasPurchased">
-          <strong>Compra previa:</strong> Aun no tienes una compra confirmada de este producto.
+          <strong>Compra previa:</strong> Aún no tienes una compra confirmada de este producto.
         </div>
       </div>
     </div>
@@ -137,20 +137,20 @@
       <h3 class="mb-3">Tu resena</h3>
 
       <div class="alert alert-secondary mb-3" *ngIf="!ownReview && !canReview">
-        La resena se habilita cuando el admin confirme que la compra del producto fue realizada.
+        La reseña se habilita cuando el administrador confirme que la compra del producto fue realizada.
       </div>
 
       <div class="alert alert-secondary mb-3" *ngIf="ownReview && !canEditOwnReview">
-        Ya dejaste tu resena para este producto. Solo podia editarse durante los primeros 10 minutos.
+        Ya dejaste tu reseña para este producto. Solo puede editarse durante los primeros 10 minutos.
       </div>
 
       <div class="own-review-locked" *ngIf="ownReview && !canEditOwnReview">
         <div class="own-review-locked__header">
           <div>
-            <h4 class="mb-1">Tu resena registrada</h4>
+            <h4 class="mb-1">Tu reseña registrada</h4>
             <p class="mb-0 text-muted">{{ formatReviewDate(ownReview.created_at) }}</p>
           </div>
-          <span class="own-review-locked__badge">Edicion cerrada</span>
+          <span class="own-review-locked__badge">Edición cerrada</span>
         </div>
 
         <div class="own-review-locked__rating">{{ ownReview.rating }}/5</div>
@@ -159,7 +159,7 @@
 
       <form *ngIf="(canReview && !ownReview) || (ownReview && canEditOwnReview)" class="review-form" (ngSubmit)="submitReview()">
         <div class="mb-3">
-          <label class="form-label">Calificacion</label>
+          <label class="form-label">Calificación</label>
           <select class="form-select" name="rating" [(ngModel)]="reviewForm.rating">
             <option [ngValue]="5">5</option>
             <option [ngValue]="4">4</option>
@@ -181,7 +181,7 @@
         </div>
 
         <button class="btn btn-dark" type="submit">
-          {{ ownReview ? 'Guardar cambios' : 'Publicar resena' }}
+          {{ ownReview ? 'Guardar cambios' : 'Publicar reseña' }}
         </button>
       </form>
 
@@ -198,8 +198,8 @@
   <section *ngIf="!loading && product" class="reviews-section mt-5">
     <div class="reviews-card">
       <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-        <h3 class="mb-0">Resenas</h3>
-        <span class="text-muted">{{ product.reviews?.length || 0 }} resenas</span>
+        <h3 class="mb-0">Reseñas</h3>
+        <span class="text-muted">{{ product.reviews?.length || 0 }} reseñas</span>
       </div>
 
       <div *ngIf="!product.reviews?.length" class="reviews-empty"></div>
