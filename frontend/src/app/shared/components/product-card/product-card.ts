@@ -8,12 +8,12 @@ import { Product } from '../../interfaces/product.interface';
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './product-card.html',
-  styleUrl: './product-card.css'
+  styleUrls: ['./product-card.css']
 })
 export class ProductCardComponent {
-  @Input() product!: Product;
+  @Input() public product!: Product;
 
-  get imageUrl(): string {
+  public get imageUrl(): string {
     const firstImage = this.product?.images?.[0];
 
     if (!firstImage) {
@@ -27,7 +27,7 @@ export class ProductCardComponent {
     return `http://127.0.0.1:5000/uploads/products/${firstImage}`;
   }
 
-  onImageError(event: Event): void {
+  public onImageError(event: Event): void {
     const img = event.target as HTMLImageElement;
     img.src = '/img/no-image.png';
   }

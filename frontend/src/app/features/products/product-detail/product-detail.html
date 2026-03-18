@@ -8,69 +8,117 @@
   </div>
 
   <div *ngIf="!loading && product" class="row g-4">
-    <div class="col-12 col-md-6">
-      <div class="product-gallery-frame">
-        <img
-          [src]="imageUrl"
-          (error)="onImageError($event)"
-          [alt]="product.name"
-          class="product-main-image w-100"
-        >
-      </div>
-
-      <div class="product-thumb-grid mt-3">
-        <button
-          type="button"
-          class="product-thumb-button"
-          *ngFor="let image of galleryImages"
-          [class.active]="image === imageUrl"
-          (click)="selectImage(image)"
-        >
+    <div class="col-12 col-lg-6 product-detail-column">
+      <div class="product-gallery-panel">
+        <div class="product-gallery-frame">
           <img
-            [src]="image"
-            [alt]="product.name"
-            class="product-thumb-image"
+            [src]="imageUrl"
             (error)="onImageError($event)"
+            [alt]="product.name"
+            class="product-main-image w-100"
           >
-        </button>
+        </div>
+
+        <div class="product-thumb-grid">
+          <button
+            type="button"
+            class="product-thumb-button"
+            *ngFor="let image of galleryImages"
+            [class.active]="image === imageUrl"
+            (click)="selectImage(image)"
+          >
+            <img
+              [src]="image"
+              [alt]="product.name"
+              class="product-thumb-image"
+              (error)="onImageError($event)"
+            >
+          </button>
+        </div>
       </div>
     </div>
 
-    <div class="col-12 col-md-6">
+    <div class="col-12 col-lg-6 product-detail-column">
       <div class="product-info-card">
-        <h2>{{ product.name }}</h2>
-        <p class="text-muted">{{ product.description }}</p>
+        <div class="product-info-top">
+          <div class="product-kickers">
+            <span class="product-flag product-flag--new" *ngIf="product.is_new">Nuevo</span>
+            <span class="product-flag product-flag--discount" *ngIf="product.discount > 0">
+              -{{ product.discount }}%
+            </span>
+          </div>
 
-        <p class="product-price-block">
-          <span *ngIf="product.discount > 0" class="text-decoration-line-through me-2 text-muted">
-            ${{ product.price }}
-          </span>
-          <span class="fs-4 fw-bold">${{ product.final_price }}</span>
-        </p>
-
-        <div class="mb-3">
-          <span class="badge bg-secondary me-1" *ngFor="let size of product.sizes">
-            {{ size }}
-          </span>
+          <h2 class="product-title">{{ product.name }}</h2>
+          <p class="product-description">{{ product.description }}</p>
         </div>
 
-        <p><strong>Categoria:</strong> {{ product.category }}</p>
-        <p><strong>Nuevo:</strong> {{ product.is_new ? 'Si' : 'No' }}</p>
+        <p class="product-price-block">
+          <span *ngIf="product.discount > 0" class="product-price-original">
+            ${{ product.price }}
+          </span>
+          <span class="product-price-final">${{ product.final_price }}</span>
+        </p>
+
+        <div class="product-meta-block">
+          <p class="product-meta-label">Tallas disponibles</p>
+          <div class="product-size-list">
+            <span class="product-size-chip" *ngFor="let size of product.sizes">
+              {{ size }}
+            </span>
+          </div>
+        </div>
+
+        <div class="product-meta-grid">
+          <div class="product-meta-item">
+            <span class="product-meta-item__label">Categoria</span>
+            <span class="product-meta-item__value">{{ product.category }}</span>
+          </div>
+          <div class="product-meta-item">
+            <span class="product-meta-item__label">Estado</span>
+            <span class="product-meta-item__value">{{ product.is_new ? 'Nuevo lanzamiento' : 'Catalogo general' }}</span>
+          </div>
+        </div>
 
         <div class="contact-actions" *ngIf="isUser">
-          <button class="btn btn-secondary" type="button" (click)="addToCart()">
+          <button class="product-action-btn product-action-btn--cart" type="button" (click)="addToCart()">
             Agregar al carrito
           </button>
-          <button class="btn btn-dark" type="button" (click)="createPurchaseRequest('whatsapp')">
+          <button class="product-action-btn product-action-btn--whatsapp" type="button" (click)="createPurchaseRequest('whatsapp')">
             Contactar por WhatsApp
           </button>
-          <button class="btn btn-outline-dark" type="button" (click)="createPurchaseRequest('instagram')">
+          <button class="product-action-btn product-action-btn--instagram" type="button" (click)="createPurchaseRequest('instagram')">
             Contactar por Instagram
           </button>
         </div>
 
-        <div class="alert alert-secondary mt-3 mb-0" *ngIf="!isLoggedIn">
-          Inicia sesion para solicitar este producto y habilitar reseñas despues de la compra confirmada.
+        <div *ngIf="canGuestRequest" class="guest-request-card">
+          <div class="guest-request-card__copy">
+            <h3 class="guest-request-card__title">Solicitud rapida para invitado</h3>
+            <p class="guest-request-card__text">
+              Puedes solicitar este producto sin cuenta. El carrito y las resenas solo estan disponibles para usuarios registrados.
+            </p>
+          </div>
+
+          <div class="guest-request-card__field">
+            <label class="form-label">Tu nombre</label>
+            <input
+              type="text"
+              class="form-control"
+              name="guest_name"
+              [(ngModel)]="guestRequestForm.guest_name"
+              placeholder="Escribe tu nombre">
+          </div>
+
+          <div class="text-danger small mt-2" *ngIf="guestRequestError">{{ guestRequestError }}</div>
+
+          <div class="contact-actions mt-3">
+            <button class="product-action-btn product-action-btn--whatsapp" type="button" (click)="createGuestPurchaseRequest('whatsapp')">
+              Contactar por WhatsApp
+            </button>
+            <button class="product-action-btn product-action-btn--instagram" type="button" (click)="createGuestPurchaseRequest('instagram')">
+              Contactar por Instagram
+            </button>
+          </div>
         </div>
 
         <div class="alert alert-info mt-3 mb-0" *ngIf="requestMessage">
@@ -86,14 +134,14 @@
 
   <section *ngIf="!loading && product && isUser" class="reviews-section mt-4">
     <div class="reviews-card">
-      <h3 class="mb-3">Tu reseña</h3>
+      <h3 class="mb-3">Tu resena</h3>
 
       <div class="alert alert-secondary mb-3" *ngIf="!ownReview && !canReview">
-        La reseña se habilita cuando el admin confirme que la compra del producto fue realizada.
+        La resena se habilita cuando el admin confirme que la compra del producto fue realizada.
       </div>
 
       <div class="alert alert-secondary mb-3" *ngIf="ownReview && !canEditOwnReview">
-        Ya dejaste tu reseña para este producto. Solo podía editarse durante los primeros 10 minutos.
+        Ya dejaste tu resena para este producto. Solo podia editarse durante los primeros 10 minutos.
       </div>
 
       <div class="own-review-locked" *ngIf="ownReview && !canEditOwnReview">
@@ -133,7 +181,7 @@
         </div>
 
         <button class="btn btn-dark" type="submit">
-          {{ ownReview ? 'Guardar cambios' : 'Publicar reseña' }}
+          {{ ownReview ? 'Guardar cambios' : 'Publicar resena' }}
         </button>
       </form>
 
@@ -150,7 +198,7 @@
   <section *ngIf="!loading && product" class="reviews-section mt-5">
     <div class="reviews-card">
       <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-        <h3 class="mb-0">Reseñas</h3>
+        <h3 class="mb-0">Resenas</h3>
         <span class="text-muted">{{ product.reviews?.length || 0 }} resenas</span>
       </div>
 

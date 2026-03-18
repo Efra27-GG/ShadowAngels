@@ -8,3 +8,4 @@ class Config:
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads", "products")
     NOTIFICATION_UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads", "notifications")
+    HERO_UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads", "hero")

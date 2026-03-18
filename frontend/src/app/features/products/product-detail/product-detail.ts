@@ -51,7 +51,11 @@ export class ProductDetailComponent implements OnInit {
     rating: 5,
     comment: ''
   };
+  guestRequestForm = {
+    guest_name: ''
+  };
   reviewSubmitted = false;
+  guestRequestSubmitted = false;
 
   ngOnInit(): void {
     this.contactService.contact$.subscribe((contact) => {
@@ -134,6 +138,10 @@ export class ProductDetailComponent implements OnInit {
     return this.currentUser?.role === 'user';
   }
 
+  get canGuestRequest(): boolean {
+    return !this.isLoggedIn;
+  }
+
   get ownReview(): Review | undefined {
     return this.product?.reviews?.find((review) => review.user_id === this.currentUser?._id);
   }
@@ -167,8 +175,34 @@ export class ProductDetailComponent implements OnInit {
         this.requestMessage = response.message;
         this.reviewErrorMessage = '';
         this.reviewMessage = '';
-        this.canReview = this.purchaseRequest?.status === 'confirmed';
-        this.hasPurchased = this.canReview;
+        this.loadPurchaseStatus(this.product!._id);
+        this.openExternalChannel(channel);
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        this.requestMessage = error?.error?.error || 'No se pudo registrar la solicitud.';
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  createGuestPurchaseRequest(channel: 'whatsapp' | 'instagram'): void {
+    this.guestRequestSubmitted = true;
+
+    if (!this.product || !this.canGuestRequest || this.guestRequestError) {
+      this.requestMessage = this.guestRequestError || 'Completa tus datos para solicitar este producto.';
+      this.cdr.detectChanges();
+      return;
+    }
+
+    this.purchaseRequestService.createGuestRequest(
+      this.product._id,
+      channel,
+      this.guestRequestForm.guest_name,
+      `${channel}:${this.guestRequestForm.guest_name.trim().toLowerCase()}`
+    ).subscribe({
+      next: (response) => {
+        this.requestMessage = response.message;
         this.openExternalChannel(channel);
         this.cdr.detectChanges();
       },
@@ -326,6 +360,24 @@ export class ProductDetailComponent implements OnInit {
 
     if (comment.length > 500) {
       return 'El comentario no debe superar los 500 caracteres.';
+    }
+
+    return '';
+  }
+
+  get guestRequestError(): string {
+    if (!this.guestRequestSubmitted) {
+      return '';
+    }
+
+    const guestName = this.guestRequestForm.guest_name.trim();
+
+    if (!guestName) {
+      return 'Tu nombre es obligatorio para registrar la solicitud.';
+    }
+
+    if (guestName.length < 2) {
+      return 'Tu nombre debe tener al menos 2 caracteres.';
     }
 
     return '';

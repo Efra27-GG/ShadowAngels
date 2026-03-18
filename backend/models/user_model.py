@@ -23,6 +23,13 @@ class UserModel:
         return users_collection.find_one({"email": email.strip().lower()})
 
     @staticmethod
+    def find_by_email_except(email, user_id):
+        return users_collection.find_one({
+            "email": email.strip().lower(),
+            "_id": {"$ne": ObjectId(user_id)}
+        })
+
+    @staticmethod
     def find_by_id(user_id):
         try:
             return users_collection.find_one({"_id": ObjectId(user_id)})

@@ -1,27 +1,38 @@
 import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProductService } from '../../../core/services/product.service';
-import { Product } from '../../../shared/interfaces/product.interface';
 import { ProductCardComponent } from '../../../shared/components/product-card/product-card';
+import { CatalogFiltersComponent } from '../../../shared/components/catalog-filters/catalog-filters';
+import { FilterableProductPage } from '../../../shared/utils/filterable-product-page';
 
 @Component({
   selector: 'app-women',
   standalone: true,
-  imports: [CommonModule, ProductCardComponent],
+  imports: [CommonModule, ProductCardComponent, CatalogFiltersComponent],
   templateUrl: './women.html',
   styleUrl: './women.css'
 })
-export class WomenComponent implements OnInit {
+export class WomenComponent extends FilterableProductPage implements OnInit {
   private productService = inject(ProductService);
   private cdr = inject(ChangeDetectorRef);
-
-  products: Product[] = [];
   loading = true;
+
+  constructor() {
+    super();
+    this.sortOption = 'featured';
+    this.sortOptions = [
+      { value: 'featured', label: 'Destacados' },
+      { value: 'price-asc', label: 'Precio: menor a mayor' },
+      { value: 'price-desc', label: 'Precio: mayor a menor' },
+      { value: 'name-asc', label: 'Nombre: A-Z' },
+      { value: 'name-desc', label: 'Nombre: Z-A' }
+    ];
+  }
 
   ngOnInit(): void {
     this.productService.getWomenProducts().subscribe({
       next: (resp) => {
-        this.products = resp;
+        this.setProducts(resp);
         this.loading = false;
         this.cdr.detectChanges();
       },

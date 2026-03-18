@@ -14,6 +14,10 @@ export class NotificationService {
 
   readonly unreadCount$ = this.unreadSubject.asObservable();
 
+  clearUnreadCount(): void {
+    this.unreadSubject.next(0);
+  }
+
   getAdminNotifications(): Observable<NotificationItem[]> {
     return this.http.get<NotificationItem[]>(`${this.apiUrl}/admin/notifications`);
   }

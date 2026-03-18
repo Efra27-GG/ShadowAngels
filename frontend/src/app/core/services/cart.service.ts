@@ -15,6 +15,10 @@ export class CartService {
 
   readonly cart$ = this.cartSubject.asObservable();
 
+  clearCartState(): void {
+    this.cartSubject.next({ items: [] });
+  }
+
   loadCart(): Observable<Cart> {
     return this.http.get<Cart>(`${this.apiUrl}/cart`).pipe(
       tap((cart) => this.cartSubject.next(cart))

@@ -9,12 +9,12 @@ import { ContactInfo } from '../../interfaces/contact.interface';
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './footer.html',
-  styleUrl: './footer.css'
+  styleUrls: ['./footer.css']
 })
 export class FooterComponent implements OnInit {
-  private contactService = inject(ContactService);
+  private readonly contactService = inject(ContactService);
 
-  contact: ContactInfo = {
+  public contact: ContactInfo = {
     whatsapp_number: '',
     whatsapp_label: '',
     facebook: '',
@@ -24,7 +24,7 @@ export class FooterComponent implements OnInit {
     location: ''
   };
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.contact = this.contactService.getCurrentContact();
 
     this.contactService.contact$.subscribe((contact) => {
@@ -34,7 +34,7 @@ export class FooterComponent implements OnInit {
     this.contactService.loadContact().subscribe();
   }
 
-  get whatsappText(): string {
+  public get whatsappText(): string {
     return this.contact.whatsapp_label || this.contact.whatsapp_number || 'Sin definir';
   }
 }

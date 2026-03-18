@@ -139,6 +139,19 @@ export const routes: Routes = [
         (m) => m.ContactAdminComponent
       ),
   },
+  {
+    path: 'admin/personalizacion',
+    canActivate: [superAdminGuard],
+    loadComponent: () =>
+      import('./features/admin/hero-admin/hero-admin').then(
+        (m) => m.HeroAdminComponent
+      ),
+  },
+  {
+    path: 'admin/hero',
+    redirectTo: 'admin/personalizacion',
+    pathMatch: 'full',
+  },
 
   {
     path: '**',

@@ -1,24 +1,42 @@
 <div class="home-container">
-  <section class="hero-section text-center">
-    <div class="container py-5">
-      <h1 class="display-5 fw-bold">Bienvenido a ShadowAngels</h1>
-      <p class="lead mt-3">
-        Descubre nuestros productos, novedades y ofertas especiales.
-      </p>
+  <section
+    class="hero-section text-center"
+    [class.hero-section--plain]="!hasHeroImage"
+    [style.background-image]="heroBackgroundImage">
+    <div class="container hero-section__inner">
+      <div class="hero-section__content">
+        <h1 class="display-5 fw-bold">{{ hero.title }}</h1>
+        <p class="lead mt-3 mb-0">
+          {{ hero.subtitle }}
+        </p>
+      </div>
+
+      <button class="hero-section__scroll" type="button" (click)="scrollToProducts()" aria-label="Ir a productos">
+        <span></span>
+      </button>
     </div>
   </section>
 
-  <section class="container py-4">
+  <section class="container py-4" id="home-products">
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
       <div>
         <h2 class="mb-1">Productos destacados</h2>
-        <p class="text-muted mb-0">Catálogo disponible</p>
+        <p class="text-muted mb-0">Catalogo disponible</p>
       </div>
 
       <button class="btn btn-outline-dark" (click)="loadProducts()">
         Recargar
       </button>
     </div>
+
+    <app-catalog-filters
+      [searchTerm]="searchTerm"
+      [sortOption]="sortOption"
+      [sortOptions]="sortOptions"
+      [resultCount]="products.length"
+      (searchTermChange)="searchTerm = $event; applyFilters()"
+      (sortOptionChange)="sortOption = $event; applyFilters()">
+    </app-catalog-filters>
 
     <div *ngIf="loading" class="text-center py-5">
       <div class="spinner-border text-dark" role="status">

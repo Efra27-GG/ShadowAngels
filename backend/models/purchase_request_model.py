@@ -9,19 +9,27 @@ class PurchaseRequestModel:
 
     @staticmethod
     def create_or_get_pending(data):
+        query = {"status": "pending"}
+        if data.get("user_id"):
+            query["user_id"] = ObjectId(data["user_id"])
+            query["product_id"] = ObjectId(data["product_id"])
+        else:
+            query["guest_contact"] = data["guest_contact"].strip()
+            query["product_id"] = ObjectId(data["product_id"])
+
         existing = purchase_requests_collection.find_one({
-            "user_id": ObjectId(data["user_id"]),
-            "product_id": ObjectId(data["product_id"]),
-            "status": "pending"
+            **query
         })
 
         if existing:
             return existing, False
 
         purchase_request = {
-            "user_id": ObjectId(data["user_id"]),
+            "user_id": ObjectId(data["user_id"]) if data.get("user_id") else None,
             "user_name": data["user_name"],
-            "user_email": data["user_email"],
+            "user_email": data.get("user_email", ""),
+            "is_guest": not bool(data.get("user_id")),
+            "guest_contact": data.get("guest_contact", "").strip(),
             "request_type": "single",
             "product_id": ObjectId(data["product_id"]),
             "product_name": data["product_name"],
@@ -99,7 +107,10 @@ class PurchaseRequestModel:
 
     @staticmethod
     def delete(request_id):
-        return purchase_requests_collection.delete_one({"_id": ObjectId(request_id)})
+        try:
+            return purchase_requests_collection.delete_one({"_id": ObjectId(request_id)})
+        except:
+            return None
 
     @staticmethod
     def update_status(request_id, status, admin_id, admin_note=""):
@@ -123,15 +134,39 @@ class PurchaseRequestModel:
     @staticmethod
     def get_user_product_status(user_id, product_id):
         try:
-            return purchase_requests_collection.find_one(
-                {"user_id": ObjectId(user_id), "$or": [
-                    {"product_id": ObjectId(product_id)},
-                    {"items.product_id": ObjectId(product_id)}
-                ]},
+            confirmed = purchase_requests_collection.find_one(
+                {
+                    "user_id": ObjectId(user_id),
+                    "status": "confirmed",
+                    "$or": [
+                        {"product_id": ObjectId(product_id)},
+                        {"items.product_id": ObjectId(product_id)}
+                    ]
+                },
+                sort=[("confirmed_at", -1), ("created_at", -1)]
+            )
+
+            pending = purchase_requests_collection.find_one(
+                {
+                    "user_id": ObjectId(user_id),
+                    "status": "pending",
+                    "$or": [
+                        {"product_id": ObjectId(product_id)},
+                        {"items.product_id": ObjectId(product_id)}
+                    ]
+                },
                 sort=[("created_at", -1)]
             )
+
+            return {
+                "confirmed_request": confirmed,
+                "latest_request": pending or confirmed
+            }
         except:
-            return None
+            return {
+                "confirmed_request": None,
+                "latest_request": None
+            }
 
     @staticmethod
     def can_review(user_id, product_id):

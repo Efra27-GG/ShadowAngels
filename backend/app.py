@@ -11,6 +11,7 @@ from models.product_model import ProductModel
 from models.review_model import ReviewModel
 from models.notification_model import NotificationModel
 from models.contact_model import ContactModel
+from models.hero_model import HeroModel
 from models.purchase_request_model import PurchaseRequestModel
 from models.cart_model import CartModel
 from utils.auth import generate_token, token_required
@@ -21,6 +22,7 @@ app.config.from_object(Config)
 CORS(app)
 os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 os.makedirs(app.config["NOTIFICATION_UPLOAD_FOLDER"], exist_ok=True)
+os.makedirs(app.config["HERO_UPLOAD_FOLDER"], exist_ok=True)
 
 ALLOWED_IMAGE_EXTENSIONS = {"png", "jpg", "jpeg", "webp", "gif"}
 
@@ -71,6 +73,11 @@ def uploaded_product_file(filename):
 @app.route("/uploads/notifications/<path:filename>")
 def uploaded_notification_file(filename):
     return send_from_directory(app.config["NOTIFICATION_UPLOAD_FOLDER"], filename)
+
+
+@app.route("/uploads/hero/<path:filename>")
+def uploaded_hero_file(filename):
+    return send_from_directory(app.config["HERO_UPLOAD_FOLDER"], filename)
 
 
 # =========================
@@ -176,8 +183,19 @@ def get_profile(current_user):
 @app.route("/api/profile", methods=["PUT"])
 @token_required(allowed_roles=["user", "admin", "superadmin"])
 def update_profile(current_user):
-    data = request.json
-    UserModel.update_user(str(current_user["_id"]), data)
+    data = request.json or {}
+    allowed_fields = {
+        "name": data.get("name", ""),
+        "email": data.get("email", "")
+    }
+
+    email = allowed_fields["email"].strip().lower()
+    if email:
+        existing = UserModel.find_by_email_except(email, str(current_user["_id"]))
+        if existing:
+            return jsonify({"error": "El correo ya esta registrado por otra cuenta"}), 409
+
+    UserModel.update_user(str(current_user["_id"]), allowed_fields)
     updated = UserModel.find_by_id(str(current_user["_id"]))
 
     safe_user = {
@@ -274,6 +292,28 @@ def upload_notification_image(current_user):
     }), 201
 
 
+@app.route("/api/uploads/hero", methods=["POST"])
+@token_required(allowed_roles=["superadmin"])
+def upload_hero_image(current_user):
+    files = request.files.getlist("images")
+
+    if not files:
+        return jsonify({"error": "No se envio ninguna imagen"}), 400
+
+    try:
+        saved_files = save_uploaded_images(files[:1], app.config["HERO_UPLOAD_FOLDER"])
+    except ValueError as exc:
+        return jsonify({"error": str(exc)}), 400
+
+    if not saved_files:
+        return jsonify({"error": "No se pudo procesar la imagen"}), 400
+
+    return jsonify({
+        "message": "Imagen del hero subida correctamente",
+        "images": saved_files
+    }), 201
+
+
 @app.route("/api/products", methods=["POST"])
 @token_required(allowed_roles=["admin", "superadmin"])
 def create_product(current_user):
@@ -282,6 +322,18 @@ def create_product(current_user):
     for field in required:
         if not data.get(field):
             return jsonify({"error": f"Falta el campo {field}"}), 400
+
+    try:
+        price = float(data.get("price", 0))
+        discount = float(data.get("discount", 0))
+    except (TypeError, ValueError):
+        return jsonify({"error": "Precio o descuento no validos"}), 400
+
+    if price <= 0:
+        return jsonify({"error": "El precio debe ser mayor a cero"}), 400
+
+    if discount < 0 or discount > 100:
+        return jsonify({"error": "El descuento debe estar entre 0 y 100"}), 400
 
     result = ProductModel.create_product(data)
     return jsonify({
@@ -298,6 +350,19 @@ def update_product(current_user, product_id):
         return jsonify({"error": "Producto no encontrado"}), 404
 
     payload = request.json or {}
+    if "price" in payload or "discount" in payload:
+        try:
+            price = float(payload.get("price", current_product.get("price", 0)))
+            discount = float(payload.get("discount", current_product.get("discount", 0)))
+        except (TypeError, ValueError):
+            return jsonify({"error": "Precio o descuento no validos"}), 400
+
+        if price <= 0:
+            return jsonify({"error": "El precio debe ser mayor a cero"}), 400
+
+        if discount < 0 or discount > 100:
+            return jsonify({"error": "El descuento debe estar entre 0 y 100"}), 400
+
     previous_images = current_product.get("images", [])
     next_images = payload.get("images", previous_images)
 
@@ -350,12 +415,24 @@ def create_review(current_user, product_id):
         if not data.get(field):
             return jsonify({"error": f"Falta el campo {field}"}), 400
 
+    try:
+        rating = int(data["rating"])
+    except (TypeError, ValueError):
+        return jsonify({"error": "La calificacion no es valida"}), 400
+
+    comment = data["comment"].strip()
+    if rating < 1 or rating > 5:
+        return jsonify({"error": "La calificacion debe estar entre 1 y 5"}), 400
+
+    if len(comment) < 5 or len(comment) > 500:
+        return jsonify({"error": "El comentario debe tener entre 5 y 500 caracteres"}), 400
+
     review_data = {
         "product_id": product_id,
         "user_id": str(current_user["_id"]),
         "user_name": current_user["name"],
-        "rating": data["rating"],
-        "comment": data["comment"]
+        "rating": rating,
+        "comment": comment
     }
 
     result = ReviewModel.create_review(review_data)
@@ -399,7 +476,19 @@ def update_review(current_user, review_id):
         if not data.get(field):
             return jsonify({"error": f"Falta el campo {field}"}), 400
 
-    ReviewModel.update_review(review_id, data)
+    try:
+        rating = int(data["rating"])
+    except (TypeError, ValueError):
+        return jsonify({"error": "La calificacion no es valida"}), 400
+
+    comment = data["comment"].strip()
+    if rating < 1 or rating > 5:
+        return jsonify({"error": "La calificacion debe estar entre 1 y 5"}), 400
+
+    if len(comment) < 5 or len(comment) > 500:
+        return jsonify({"error": "El comentario debe tener entre 5 y 500 caracteres"}), 400
+
+    ReviewModel.update_review(review_id, {"rating": rating, "comment": comment})
     return jsonify({"message": "Resena actualizada"})
 
 
@@ -558,10 +647,42 @@ def create_purchase_request(current_user):
     }), 201 if created else 200
 
 
+@app.route("/api/guest-purchase-requests", methods=["POST"])
+def create_guest_purchase_request():
+    data = request.json or {}
+    product_id = data.get("product_id")
+    channel = data.get("channel")
+    guest_name = data.get("guest_name", "").strip()
+    guest_contact = data.get("guest_contact", "").strip()
+
+    if not product_id or not channel or not guest_name or not guest_contact:
+        return jsonify({"error": "Faltan datos para registrar la solicitud"}), 400
+
+    if channel not in ["whatsapp", "instagram"]:
+        return jsonify({"error": "Canal no valido"}), 400
+
+    product = ProductModel.get_by_id(product_id)
+    if not product:
+        return jsonify({"error": "Producto no encontrado"}), 404
+
+    purchase_request, created = PurchaseRequestModel.create_or_get_pending({
+        "user_name": guest_name,
+        "guest_contact": guest_contact,
+        "product_id": product_id,
+        "product_name": product["name"],
+        "channel": channel
+    })
+
+    return jsonify({
+        "message": "Solicitud registrada" if created else "Ya existe una solicitud pendiente para este producto con ese contacto",
+        "request": serialize_doc(purchase_request)
+    }), 201 if created else 200
+
+
 @app.route("/api/purchase-requests/status/<product_id>", methods=["GET"])
 @token_required(allowed_roles=["user"])
 def get_purchase_request_status(current_user, product_id):
-    purchase_request = PurchaseRequestModel.get_user_product_status(
+    status_data = PurchaseRequestModel.get_user_product_status(
         str(current_user["_id"]),
         product_id
     )
@@ -569,7 +690,8 @@ def get_purchase_request_status(current_user, product_id):
     has_purchased = PurchaseRequestModel.has_purchased(str(current_user["_id"]), product_id)
 
     return jsonify({
-        "request": serialize_doc(purchase_request),
+        "request": serialize_doc(status_data.get("latest_request")),
+        "confirmed_request": serialize_doc(status_data.get("confirmed_request")),
         "can_review": can_review,
         "has_purchased": has_purchased
     })
@@ -602,6 +724,36 @@ def update_admin_purchase_request(current_user, request_id):
     if updated_request and updated_request.get("request_type") == "cart":
         CartModel.sync_request_status(updated_request.get("cart_id"), status)
 
+    if (
+        updated_request and
+        status == "confirmed" and
+        updated_request.get("user_id")
+    ):
+        title = "Compra confirmada"
+        if updated_request.get("request_type") == "cart":
+            summary = "Tu solicitud de compra fue confirmada. Ya puedes dejar resenas en los productos incluidos."
+            content = (
+                "El administrador confirmo tu solicitud de carrito. "
+                "Ya puedes volver a los productos de esa compra y dejar tus resenas."
+            )
+        else:
+            product_name = updated_request.get("product_name", "tu producto")
+            summary = f"Tu compra de {product_name} fue confirmada. Ya puedes dejar tu resena."
+            content = (
+                f"El administrador confirmo la compra de {product_name}. "
+                "Ya puedes entrar al detalle del producto y publicar tu resena."
+            )
+
+        NotificationModel.create_system_notification_for_users(
+            {
+                "title": title,
+                "summary": summary,
+                "content": content,
+                "created_by": str(current_user["_id"])
+            },
+            [str(updated_request["user_id"])]
+        )
+
     return jsonify({
         "message": "Solicitud actualizada",
         "request": serialize_doc(updated_request)
@@ -615,7 +767,13 @@ def delete_admin_purchase_request(current_user, request_id):
     if not purchase_request:
         return jsonify({"error": "Solicitud no encontrada"}), 404
 
-    PurchaseRequestModel.delete(request_id)
+    if purchase_request.get("status") == "confirmed":
+        return jsonify({"error": "No se pueden eliminar solicitudes confirmadas"}), 400
+
+    delete_result = PurchaseRequestModel.delete(request_id)
+    if not delete_result or delete_result.deleted_count == 0:
+        return jsonify({"error": "No se pudo eliminar la solicitud"}), 400
+
     return jsonify({"message": "Solicitud eliminada"})
 
 
@@ -641,6 +799,18 @@ def create_notification(current_user):
 
     if data.get("status") not in ["draft", "scheduled", "published"]:
         return jsonify({"error": "Estado de notificacion no valido"}), 400
+
+    if data.get("status") == "scheduled":
+        scheduled_for = data.get("scheduled_for")
+        if not scheduled_for:
+            return jsonify({"error": "Falta la fecha programada"}), 400
+        try:
+            scheduled_at = datetime.fromisoformat(scheduled_for)
+        except ValueError:
+            return jsonify({"error": "La fecha programada no es valida"}), 400
+
+        if scheduled_at <= datetime.utcnow():
+            return jsonify({"error": "La fecha programada debe estar en el futuro"}), 400
 
     notification = NotificationModel.create_notification({
         "title": data["title"],
@@ -675,6 +845,23 @@ def update_admin_notification(current_user, notification_id):
     data = request.json or {}
     if data.get("status") and data.get("status") not in ["draft", "scheduled", "published"]:
         return jsonify({"error": "Estado de notificacion no valido"}), 400
+
+    current_status = notification.get("status")
+    requested_status = data.get("status")
+    if current_status == "published" and requested_status in ["draft", "scheduled"]:
+        data["status"] = "published"
+
+    if data.get("status") == "scheduled":
+        scheduled_for = data.get("scheduled_for")
+        if not scheduled_for:
+            return jsonify({"error": "Falta la fecha programada"}), 400
+        try:
+            scheduled_at = datetime.fromisoformat(scheduled_for)
+        except ValueError:
+            return jsonify({"error": "La fecha programada no es valida"}), 400
+
+        if scheduled_at <= datetime.utcnow():
+            return jsonify({"error": "La fecha programada debe estar en el futuro"}), 400
 
     updated = NotificationModel.update_notification(notification_id, data)
 
@@ -732,6 +919,31 @@ def update_contact(current_user):
 
 
 # =========================
+# HERO PRINCIPAL
+# =========================
+@app.route("/api/hero", methods=["GET"])
+def get_hero():
+    hero = HeroModel.get_hero()
+    return jsonify(serialize_doc(hero))
+
+
+@app.route("/api/hero", methods=["PUT"])
+@token_required(allowed_roles=["superadmin"])
+def update_hero(current_user):
+    current_hero = HeroModel.get_hero()
+    payload = request.json or {}
+    previous_image = current_hero.get("image", "")
+    next_image = payload.get("image", previous_image) or ""
+
+    HeroModel.update_hero(payload)
+
+    if previous_image and previous_image != next_image:
+      delete_uploaded_file(app.config["HERO_UPLOAD_FOLDER"], previous_image)
+
+    return jsonify({"message": "Hero principal actualizado"})
+
+
+# =========================
 # ADMINS - SOLO SUPERADMIN
 # =========================
 @app.route("/api/admins", methods=["GET"])
@@ -775,7 +987,14 @@ def update_admin(current_user, admin_id):
     if str(target["_id"]) == str(current_user["_id"]) and "role" in request.json:
         return jsonify({"error": "No puedes modificar tu propio rol"}), 403
 
-    UserModel.update_user(admin_id, request.json)
+    data = request.json or {}
+    email = data.get("email", "").strip().lower()
+    if email:
+        existing = UserModel.find_by_email_except(email, admin_id)
+        if existing:
+            return jsonify({"error": "El correo ya esta registrado por otra cuenta"}), 409
+
+    UserModel.update_user(admin_id, data)
     return jsonify({"message": "Administrador actualizado"})
 
 

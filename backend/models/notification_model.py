@@ -36,7 +36,9 @@ class NotificationModel:
     @staticmethod
     def get_all():
         NotificationModel.publish_due_notifications()
-        return list(notifications_collection.find({}).sort("created_at", -1))
+        return list(notifications_collection.find({
+            "is_system": {"$ne": True}
+        }).sort("created_at", -1))
 
     @staticmethod
     def get_by_id(notification_id):
@@ -52,6 +54,9 @@ class NotificationModel:
             return None
 
         next_status = data.get("status", current.get("status", "draft"))
+        if current.get("status") == "published" and next_status != "published":
+            next_status = "published"
+
         update_fields = {
             "title": data.get("title", current.get("title", "")).strip(),
             "summary": data.get("summary", current.get("summary", "")).strip(),
@@ -123,6 +128,52 @@ class NotificationModel:
 
         if bulk_docs:
             user_notifications_collection.insert_many(bulk_docs)
+
+    @staticmethod
+    def assign_to_specific_users(notification, user_ids):
+        if not notification or not user_ids:
+            return
+
+        bulk_docs = []
+
+        for user_id in user_ids:
+            object_id = ObjectId(user_id)
+            exists = user_notifications_collection.find_one({
+                "notification_id": notification["_id"],
+                "user_id": object_id
+            })
+            if exists:
+                continue
+
+            bulk_docs.append({
+                "notification_id": notification["_id"],
+                "user_id": object_id,
+                "is_deleted": False,
+                "is_read": False,
+                "assigned_at": datetime.utcnow()
+            })
+
+        if bulk_docs:
+            user_notifications_collection.insert_many(bulk_docs)
+
+    @staticmethod
+    def create_system_notification_for_users(data, user_ids):
+        notification = {
+            "title": data.get("title", "").strip(),
+            "summary": data.get("summary", "").strip(),
+            "content": data.get("content", "").strip(),
+            "image": data.get("image", "").strip(),
+            "status": "published",
+            "created_by": ObjectId(data["created_by"]),
+            "created_at": datetime.utcnow(),
+            "scheduled_for": None,
+            "published_at": datetime.utcnow(),
+            "is_system": True
+        }
+        result = notifications_collection.insert_one(notification)
+        created = notifications_collection.find_one({"_id": result.inserted_id})
+        NotificationModel.assign_to_specific_users(created, user_ids)
+        return created
 
     @staticmethod
     def get_user_notifications(user_id):

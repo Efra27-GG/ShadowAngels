@@ -15,8 +15,9 @@
       <a routerLink="/admin/productos" routerLinkActive="active-link" class="admin-link" (click)="closeMobileMenu()">
         Productos
       </a>
-      <a routerLink="/admin/solicitudes" routerLinkActive="active-link" class="admin-link" (click)="closeMobileMenu()">
-        Solicitudes
+      <a routerLink="/admin/solicitudes" routerLinkActive="active-link" class="admin-link admin-link--with-badge" (click)="closeMobileMenu()">
+        <span>Solicitudes</span>
+        <span class="admin-link__badge" *ngIf="recentRequestsCount">{{ recentRequestsCount }}</span>
       </a>
       <a routerLink="/admin/notificaciones" routerLinkActive="active-link" class="admin-link" (click)="closeMobileMenu()">
         Notificaciones
@@ -33,6 +34,9 @@
       </a>
       <a *ngIf="isSuperAdmin" routerLink="/admin/contacto" routerLinkActive="active-link" class="admin-link" (click)="closeMobileMenu()">
         Contacto
+      </a>
+      <a *ngIf="isSuperAdmin" routerLink="/admin/personalizacion" routerLinkActive="active-link" class="admin-link" (click)="closeMobileMenu()">
+        Personalizacion
       </a>
       </div>
     </div>

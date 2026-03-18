@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminShellComponent } from '../../../shared/components/admin-shell/admin-shell';
@@ -65,7 +66,7 @@ export class SolicitudesAdminComponent implements OnInit {
   }
 
   deleteRequest(request: PurchaseRequest): void {
-    const confirmed = window.confirm('¿Deseas eliminar esta solicitud? Esta accion no se puede deshacer.');
+    const confirmed = window.confirm('Deseas eliminar esta solicitud? Esta accion no se puede deshacer.');
     if (!confirmed) {
       return;
     }
@@ -74,13 +75,14 @@ export class SolicitudesAdminComponent implements OnInit {
       next: () => {
         this.successMessage = 'Solicitud eliminada correctamente.';
         this.errorMessage = '';
+        this.requests = this.requests.filter((currentRequest) => currentRequest._id !== request._id);
         if (this.expandedRequestId === request._id) {
           this.expandedRequestId = null;
         }
-        this.loadRequests();
+        this.cdr.detectChanges();
       },
-      error: () => {
-        this.errorMessage = 'No se pudo eliminar la solicitud.';
+      error: (error: HttpErrorResponse) => {
+        this.errorMessage = error.error?.error || 'No se pudo eliminar la solicitud.';
         this.successMessage = '';
         this.cdr.detectChanges();
       }

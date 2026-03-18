@@ -1,8 +1,10 @@
 export interface PurchaseRequest {
   _id: string;
-  user_id: string;
+  user_id?: string | null;
   user_name: string;
-  user_email: string;
+  user_email?: string;
+  is_guest?: boolean;
+  guest_contact?: string;
   request_type?: 'single' | 'cart';
   product_id?: string;
   product_name?: string;

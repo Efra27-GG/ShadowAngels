@@ -1,81 +1,83 @@
 <section class="profile-page">
-  <h2 class="profile-page__title">{{ sectionTitle }}</h2>
+  <div class="container py-4 px-0">
+    <h2 class="profile-page__title">{{ sectionTitle }}</h2>
 
-  <div class="profile-card">
-    <div class="profile-card__hero">
-      <div>
-        <p class="profile-card__eyebrow">Cuenta</p>
-        <h2 class="mb-2">Mi perfil</h2>
-        <p class="profile-card__lead mb-0">
-          Revisa tu informacion personal y actualiza los datos editables de tu cuenta.
-        </p>
+    <div class="profile-card">
+      <div class="profile-card__hero">
+        <div class="profile-card__intro">
+          <p class="profile-card__eyebrow">Cuenta</p>
+          <h2 class="mb-2">Mi perfil</h2>
+          <p class="profile-card__lead mb-0">
+            Revisa tu informacion personal y actualiza los datos editables de tu cuenta.
+          </p>
+        </div>
+
+        <div class="profile-card__badges">
+          <span class="profile-card__badge">{{ roleLabel }}</span>
+          <span class="profile-card__badge profile-card__badge--muted">{{ statusLabel }}</span>
+        </div>
       </div>
 
-      <div class="profile-card__badges">
-        <span class="profile-card__badge">{{ roleLabel }}</span>
-        <span class="profile-card__badge profile-card__badge--muted">{{ statusLabel }}</span>
+      <div *ngIf="successMessage" class="alert alert-success mb-4">{{ successMessage }}</div>
+      <div *ngIf="errorMessage" class="alert alert-danger mb-4">{{ errorMessage }}</div>
+
+      <div *ngIf="loading" class="text-center py-5">
+        <div class="spinner-border text-dark"></div>
       </div>
+
+      <form *ngIf="!loading" class="profile-form" (ngSubmit)="updateProfile()">
+        <div class="profile-form__grid">
+          <div class="profile-field profile-field--wide">
+            <label class="form-label">Nombre completo</label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="user.name"
+              name="name"
+              (blur)="markFieldTouched('name')"
+              required>
+            <div class="text-danger small mt-1" *ngIf="nameError">{{ nameError }}</div>
+            <small class="text-muted">{{ nameHelpText }}</small>
+          </div>
+
+          <div class="profile-field profile-field--wide">
+            <label class="form-label">Correo electronico</label>
+            <input
+              type="email"
+              class="form-control"
+              [(ngModel)]="user.email"
+              name="email"
+              (blur)="markFieldTouched('email')"
+              required>
+            <div class="text-danger small mt-1" *ngIf="emailError">{{ emailError }}</div>
+            <small class="text-muted">{{ emailHelpText }}</small>
+          </div>
+
+          <div class="profile-field">
+            <label class="form-label">Rol</label>
+            <div class="profile-field__readonly">{{ roleLabel }}</div>
+          </div>
+
+          <div class="profile-field">
+            <label class="form-label">Estado de cuenta</label>
+            <div class="profile-field__readonly">{{ statusLabel }}</div>
+          </div>
+
+          <div class="profile-field profile-field--wide">
+            <label class="form-label">ID de usuario</label>
+            <div class="profile-field__readonly profile-field__readonly--code">{{ user._id || 'Sin asignar' }}</div>
+          </div>
+        </div>
+
+        <div class="profile-form__footer">
+          <button class="btn btn-outline-dark" type="button" (click)="loadProfile()" [disabled]="saving">
+            Recargar datos
+          </button>
+          <button class="btn btn-dark" type="submit" [disabled]="saving">
+            {{ saving ? 'Guardando...' : 'Guardar cambios' }}
+          </button>
+        </div>
+      </form>
     </div>
-
-    <div *ngIf="successMessage" class="alert alert-success mb-4">{{ successMessage }}</div>
-    <div *ngIf="errorMessage" class="alert alert-danger mb-4">{{ errorMessage }}</div>
-
-    <div *ngIf="loading" class="text-center py-5">
-      <div class="spinner-border text-dark"></div>
-    </div>
-
-    <form *ngIf="!loading" class="profile-form" (ngSubmit)="updateProfile()">
-      <div class="profile-form__grid">
-        <div class="profile-field profile-field--wide">
-          <label class="form-label">Nombre completo</label>
-          <input
-            type="text"
-            class="form-control"
-            [(ngModel)]="user.name"
-            name="name"
-            (blur)="markFieldTouched('name')"
-            required>
-          <div class="text-danger small mt-1" *ngIf="nameError">{{ nameError }}</div>
-          <small class="text-muted">{{ nameHelpText }}</small>
-        </div>
-
-        <div class="profile-field profile-field--wide">
-          <label class="form-label">Correo electronico</label>
-          <input
-            type="email"
-            class="form-control"
-            [(ngModel)]="user.email"
-            name="email"
-            (blur)="markFieldTouched('email')"
-            required>
-          <div class="text-danger small mt-1" *ngIf="emailError">{{ emailError }}</div>
-          <small class="text-muted">{{ emailHelpText }}</small>
-        </div>
-
-        <div class="profile-field">
-          <label class="form-label">Rol</label>
-          <div class="profile-field__readonly">{{ roleLabel }}</div>
-        </div>
-
-        <div class="profile-field">
-          <label class="form-label">Estado de cuenta</label>
-          <div class="profile-field__readonly">{{ statusLabel }}</div>
-        </div>
-
-        <div class="profile-field profile-field--wide">
-          <label class="form-label">ID de usuario</label>
-          <div class="profile-field__readonly profile-field__readonly--code">{{ user._id || 'Sin asignar' }}</div>
-        </div>
-      </div>
-
-      <div class="profile-form__footer">
-        <button class="btn btn-outline-dark" type="button" (click)="loadProfile()" [disabled]="saving">
-          Recargar datos
-        </button>
-        <button class="btn btn-dark" type="submit" [disabled]="saving">
-          {{ saving ? 'Guardando...' : 'Guardar cambios' }}
-        </button>
-      </div>
-    </form>
   </div>
 </section>

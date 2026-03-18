@@ -1,24 +1,22 @@
 .profile-page {
   width: 100%;
-  padding: 56px 0 0;
+  padding: 0;
 }
 
 .profile-page__title {
-  margin: 0 auto 20px;
-  max-width: 860px;
-  padding: 0 16px;
+  margin: 0 0 24px;
 }
 
 .profile-card {
-  width: min(100%, 860px);
-  margin: 0 auto 40px;
-  padding: 32px;
-  border-radius: 18px;
+  width: 100%;
+  margin: 0 0 40px;
+  padding: 28px;
+  border-radius: 16px;
   border: 1px solid rgba(15, 23, 42, 0.1);
   background:
     radial-gradient(circle at top right, rgba(15, 23, 42, 0.06), transparent 28%),
     linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-  box-shadow: 0 22px 44px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 16px 34px rgba(15, 23, 42, 0.08);
 }
 
 .profile-card__hero {
@@ -26,8 +24,13 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 20px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   margin-bottom: 28px;
+}
+
+.profile-card__intro {
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .profile-card__eyebrow {
@@ -41,13 +44,15 @@
 
 .profile-card__lead {
   color: #4b5563;
-  max-width: 560px;
+  max-width: 720px;
 }
 
 .profile-card__badges {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
+  justify-content: flex-end;
+  flex: 0 0 auto;
 }
 
 .profile-card__badge {
@@ -66,19 +71,20 @@
 
 .profile-form__grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: 18px;
 }
 
 .profile-field {
+  grid-column: span 6;
   padding: 18px;
-  border-radius: 20px;
+  border-radius: 18px;
   border: 1px solid rgba(15, 23, 42, 0.08);
   background: rgba(255, 255, 255, 0.88);
 }
 
 .profile-field--wide {
-  grid-column: span 2;
+  grid-column: span 12;
 }
 
 .profile-field small {
@@ -110,29 +116,42 @@
   margin-top: 24px;
 }
 
+@media (max-width: 991px) {
+  .profile-card__hero {
+    flex-wrap: wrap;
+  }
+
+  .profile-card__badges {
+    justify-content: flex-start;
+  }
+}
+
 @media (max-width: 767px) {
   .profile-page {
-    padding-top: 40px;
+    padding: 0;
   }
 
   .profile-page__title {
     margin-bottom: 16px;
-    padding: 0 12px;
   }
 
   .profile-card {
-    width: calc(100% - 24px);
-    margin: 0 auto 24px;
+    margin: 0 0 24px;
     padding: 22px;
-    border-radius: 18px;
+    border-radius: 16px;
   }
 
   .profile-form__grid {
     grid-template-columns: 1fr;
   }
 
+  .profile-field,
   .profile-field--wide {
     grid-column: span 1;
+  }
+
+  .profile-card__badges {
+    width: 100%;
   }
 
   .profile-form__footer {

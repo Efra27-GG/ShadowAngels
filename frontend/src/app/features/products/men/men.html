@@ -1,6 +1,16 @@
 <div class="container py-4">
   <h2 class="mb-4">Productos para hombre</h2>
 
+  <app-catalog-filters
+    *ngIf="!loading"
+    [searchTerm]="searchTerm"
+    [sortOption]="sortOption"
+    [sortOptions]="sortOptions"
+    [resultCount]="products.length"
+    (searchTermChange)="searchTerm = $event; applyFilters()"
+    (sortOptionChange)="sortOption = $event; applyFilters()">
+  </app-catalog-filters>
+
   <div *ngIf="loading" class="text-center py-4">
     <div class="spinner-border text-dark"></div>
   </div>

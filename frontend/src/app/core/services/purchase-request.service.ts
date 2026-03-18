@@ -18,8 +18,20 @@ export class PurchaseRequestService {
     );
   }
 
-  getMyProductStatus(productId: string): Observable<{ request: PurchaseRequest | null; can_review: boolean; has_purchased: boolean }> {
-    return this.http.get<{ request: PurchaseRequest | null; can_review: boolean; has_purchased: boolean }>(
+  createGuestRequest(productId: string, channel: 'whatsapp' | 'instagram', guestName: string, guestContact: string) {
+    return this.http.post<{ message: string; request: PurchaseRequest }>(
+      `${this.apiUrl}/guest-purchase-requests`,
+      {
+        product_id: productId,
+        channel,
+        guest_name: guestName,
+        guest_contact: guestContact
+      }
+    );
+  }
+
+  getMyProductStatus(productId: string): Observable<{ request: PurchaseRequest | null; confirmed_request?: PurchaseRequest | null; can_review: boolean; has_purchased: boolean }> {
+    return this.http.get<{ request: PurchaseRequest | null; confirmed_request?: PurchaseRequest | null; can_review: boolean; has_purchased: boolean }>(
       `${this.apiUrl}/purchase-requests/status/${productId}`
     );
   }

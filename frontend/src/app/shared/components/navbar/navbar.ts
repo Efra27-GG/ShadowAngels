@@ -10,16 +10,16 @@ import { NotificationService } from '../../../core/services/notification.service
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './navbar.html',
-  styleUrl: './navbar.css'
+  styleUrls: ['./navbar.css']
 })
 export class NavbarComponent {
-  private authService = inject(AuthService);
-  private router = inject(Router);
-  private cartService = inject(CartService);
-  private notificationService = inject(NotificationService);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly cartService = inject(CartService);
+  private readonly notificationService = inject(NotificationService);
 
-  cartCount = 0;
-  unreadNotifications = 0;
+  public cartCount = 0;
+  public unreadNotifications = 0;
 
   constructor() {
     this.cartService.cart$.subscribe((cart) => {
@@ -30,25 +30,31 @@ export class NavbarComponent {
       this.unreadNotifications = count;
     });
 
-    if (this.isLoggedIn && !this.isAdmin) {
-      this.cartService.loadCart().subscribe();
-      this.notificationService.refreshUnreadCount();
-    }
+    this.authService.authState$.subscribe((user) => {
+      if (user?.role === 'user') {
+        this.cartService.loadCart().subscribe();
+        this.notificationService.refreshUnreadCount();
+        return;
+      }
+
+      this.cartService.clearCartState();
+      this.notificationService.clearUnreadCount();
+    });
   }
 
-  get user() {
+  public get user() {
     return this.authService.getUser();
   }
 
-  get isLoggedIn(): boolean {
+  public get isLoggedIn(): boolean {
     return this.authService.isLoggedIn();
   }
 
-  get isAdmin(): boolean {
+  public get isAdmin(): boolean {
     return this.user?.role === 'admin' || this.user?.role === 'superadmin';
   }
 
-  logout(): void {
+  public logout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);
   }

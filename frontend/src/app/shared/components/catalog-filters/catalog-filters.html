@@ -1,0 +1,27 @@
+<div class="row g-3 align-items-end mb-4">
+  <div class="col-12 col-md-6">
+    <label class="form-label">Buscar</label>
+    <input
+      type="text"
+      class="form-control"
+      [ngModel]="searchTerm"
+      (ngModelChange)="onSearchChange($event)"
+      placeholder="Buscar por nombre o descripcion">
+  </div>
+
+  <div class="col-12 col-md-4">
+    <label class="form-label">Ordenar por</label>
+    <select
+      class="form-select"
+      [ngModel]="sortOption"
+      (ngModelChange)="onSortChange($event)">
+      <option *ngFor="let option of sortOptions" [ngValue]="option.value">
+        {{ option.label }}
+      </option>
+    </select>
+  </div>
+
+  <div class="col-12 col-md-2">
+    <div class="catalog-filters__count">Resultados: {{ resultCount }}</div>
+  </div>
+</div>
