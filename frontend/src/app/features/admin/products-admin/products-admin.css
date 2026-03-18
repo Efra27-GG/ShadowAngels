@@ -7,6 +7,12 @@ textarea {
   resize: none;
 }
 
+.products-table__actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
 .image-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -51,5 +57,61 @@ textarea {
 
   .image-card:first-child {
     grid-column: span 2;
+  }
+
+  .products-table thead {
+    display: none;
+  }
+
+  .products-table,
+  .products-table tbody,
+  .products-table tr,
+  .products-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .products-table tbody {
+    display: grid;
+    gap: 14px;
+  }
+
+  .products-table tr {
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 14px;
+    padding: 12px 14px;
+    background: #fff;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+  }
+
+  .products-table td {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 0;
+    border: 0;
+    text-align: right;
+    font-size: 0.95rem;
+  }
+
+  .products-table td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    color: #111827;
+    text-align: left;
+  }
+
+  .products-table__actions {
+    padding-top: 12px;
+    justify-content: flex-end;
+  }
+
+  .products-table__actions::before {
+    margin-right: auto;
+  }
+
+  .products-table__actions .btn {
+    min-width: 88px;
   }
 }

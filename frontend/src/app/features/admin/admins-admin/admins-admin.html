@@ -67,7 +67,7 @@
         </div>
 
         <div class="table-responsive" *ngIf="!loading">
-          <table class="table table-striped align-middle">
+          <table class="table table-striped align-middle admins-table">
             <thead>
               <tr>
                 <th>Nombre</th>
@@ -78,10 +78,10 @@
             </thead>
             <tbody>
               <tr *ngFor="let admin of admins">
-                <td>{{ admin.name }}</td>
-                <td>{{ admin.email }}</td>
-                <td>{{ admin.role }}</td>
-                <td class="d-flex gap-2">
+                <td data-label="Nombre">{{ admin.name }}</td>
+                <td data-label="Correo">{{ admin.email }}</td>
+                <td data-label="Rol">{{ admin.role }}</td>
+                <td data-label="Acciones" class="admins-table__actions">
                   <button class="btn btn-sm btn-outline-primary" (click)="editAdmin(admin)">Editar</button>
                   <button
                     class="btn btn-sm btn-outline-danger"

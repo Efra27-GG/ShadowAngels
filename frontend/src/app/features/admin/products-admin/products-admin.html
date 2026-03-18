@@ -129,7 +129,7 @@
         </div>
 
         <div class="table-responsive" *ngIf="!loading">
-          <table class="table table-striped align-middle">
+          <table class="table table-striped align-middle products-table">
             <thead>
               <tr>
                 <th>Nombre</th>
@@ -143,13 +143,13 @@
             </thead>
             <tbody>
               <tr *ngFor="let product of products">
-                <td>{{ product.name }}</td>
-                <td>{{ product.category }}</td>
-                <td>${{ product.price }}</td>
-                <td>{{ product.discount }}%</td>
-                <td>${{ product.final_price }}</td>
-                <td>{{ product.is_new ? 'Si' : 'No' }}</td>
-                <td class="d-flex gap-2">
+                <td data-label="Nombre">{{ product.name }}</td>
+                <td data-label="Categoria">{{ product.category }}</td>
+                <td data-label="Precio">${{ product.price }}</td>
+                <td data-label="Descuento">{{ product.discount }}%</td>
+                <td data-label="Final">${{ product.final_price }}</td>
+                <td data-label="Nuevo">{{ product.is_new ? 'Si' : 'No' }}</td>
+                <td data-label="Acciones" class="products-table__actions">
                   <button class="btn btn-sm btn-outline-primary" (click)="editProduct(product)">Editar</button>
                   <button class="btn btn-sm btn-outline-danger" (click)="deleteProduct(product._id)">Eliminar</button>
                 </td>
