@@ -46,6 +46,69 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
+.app-navbar__icon-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-navbar__icon-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+}
+
+.app-navbar__bell {
+  width: 20px;
+  height: 20px;
+  fill: #fff;
+}
+
+.app-navbar__icon-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  min-width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #f59e0b;
+  color: #111827;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.app-navbar__icon-tooltip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  transform: translateX(-50%) translateY(4px);
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: rgba(17, 17, 17, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #fff;
+  font-size: 0.75rem;
+  line-height: 1;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  box-shadow: 0 14px 26px rgba(0, 0, 0, 0.25);
+}
+
+.app-navbar__icon-link:hover .app-navbar__icon-tooltip,
+.app-navbar__icon-link:focus-visible .app-navbar__icon-tooltip,
+.app-navbar__icon-link.active-link .app-navbar__icon-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
 @media (max-width: 991px) {
   .navbar-collapse {
     margin-top: 14px;
@@ -63,5 +126,10 @@
     margin-top: 10px;
     padding-top: 10px;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .app-navbar__icon-tooltip {
+    bottom: auto;
+    top: calc(100% + 8px);
   }
 }

@@ -13,6 +13,8 @@ import { ContactInfo } from '../../../shared/interfaces/contact.interface';
   styleUrl: './contact-admin.css'
 })
 export class ContactAdminComponent implements OnInit {
+  private readonly urlPattern = /^https?:\/\/.+/i;
+  private readonly phonePattern = /^\d{10,15}$/;
   private fb = inject(FormBuilder);
   private contactService = inject(ContactService);
   private cdr = inject(ChangeDetectorRef);
@@ -22,13 +24,13 @@ export class ContactAdminComponent implements OnInit {
   errorMessage = '';
 
   form = this.fb.group({
-    whatsapp_number: [''],
-    whatsapp_label: [''],
-    instagram: [''],
-    facebook: [''],
-    tiktok: [''],
+    whatsapp_number: ['', Validators.pattern(this.phonePattern)],
+    whatsapp_label: ['', [Validators.minLength(6), Validators.maxLength(40)]],
+    instagram: ['', Validators.pattern(this.urlPattern)],
+    facebook: ['', Validators.pattern(this.urlPattern)],
+    tiktok: ['', Validators.pattern(this.urlPattern)],
     email: ['', Validators.email],
-    location: ['']
+    location: ['', [Validators.maxLength(140)]]
   });
 
   ngOnInit(): void {
@@ -64,7 +66,7 @@ export class ContactAdminComponent implements OnInit {
     }
 
     const payload: ContactInfo = {
-      whatsapp_number: this.form.getRawValue().whatsapp_number || '',
+      whatsapp_number: (this.form.getRawValue().whatsapp_number || '').replace(/\D/g, ''),
       whatsapp_label: this.form.getRawValue().whatsapp_label || '',
       instagram: this.form.getRawValue().instagram || '',
       facebook: this.form.getRawValue().facebook || '',
@@ -85,5 +87,9 @@ export class ContactAdminComponent implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  get controls() {
+    return this.form.controls;
   }
 }

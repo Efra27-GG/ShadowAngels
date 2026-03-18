@@ -18,8 +18,12 @@
       <a routerLink="/admin/solicitudes" routerLinkActive="active-link" class="admin-link" (click)="closeMobileMenu()">
         Solicitudes
       </a>
-      <a routerLink="/admin/resenas" routerLinkActive="active-link" class="admin-link" (click)="closeMobileMenu()">
-        Resenas
+      <a routerLink="/admin/notificaciones" routerLinkActive="active-link" class="admin-link" (click)="closeMobileMenu()">
+        Notificaciones
+      </a>
+      <a routerLink="/admin/resenas" routerLinkActive="active-link" class="admin-link admin-link--with-badge" (click)="closeMobileMenu()">
+        <span>Resenas</span>
+        <span class="admin-link__badge" *ngIf="recentReviewsCount">{{ recentReviewsCount }}</span>
       </a>
       <a routerLink="/admin/perfil" routerLinkActive="active-link" class="admin-link" (click)="closeMobileMenu()">
         Perfil

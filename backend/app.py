@@ -20,6 +20,7 @@ app = Flask(__name__)
 app.config.from_object(Config)
 CORS(app)
 os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
+os.makedirs(app.config["NOTIFICATION_UPLOAD_FOLDER"], exist_ok=True)
 
 ALLOWED_IMAGE_EXTENSIONS = {"png", "jpg", "jpeg", "webp", "gif"}
 
@@ -28,7 +29,7 @@ def allowed_image(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_IMAGE_EXTENSIONS
 
 
-def save_uploaded_images(files):
+def save_uploaded_images(files, upload_folder):
     saved_files = []
 
     for file in files:
@@ -41,11 +42,20 @@ def save_uploaded_images(files):
         safe_name = secure_filename(file.filename)
         extension = safe_name.rsplit(".", 1)[1].lower()
         unique_name = f"{uuid.uuid4().hex}.{extension}"
-        destination = os.path.join(app.config["UPLOAD_FOLDER"], unique_name)
+        destination = os.path.join(upload_folder, unique_name)
         file.save(destination)
         saved_files.append(unique_name)
 
     return saved_files
+
+
+def delete_uploaded_file(upload_folder, filename):
+    if not filename:
+        return
+
+    file_path = os.path.join(upload_folder, filename)
+    if os.path.exists(file_path):
+        os.remove(file_path)
 
 
 @app.route("/")
@@ -56,6 +66,11 @@ def home():
 @app.route("/uploads/products/<path:filename>")
 def uploaded_product_file(filename):
     return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
+
+
+@app.route("/uploads/notifications/<path:filename>")
+def uploaded_notification_file(filename):
+    return send_from_directory(app.config["NOTIFICATION_UPLOAD_FOLDER"], filename)
 
 
 # =========================
@@ -224,7 +239,7 @@ def upload_product_images(current_user):
         return jsonify({"error": "No se enviaron imagenes"}), 400
 
     try:
-        saved_files = save_uploaded_images(files)
+        saved_files = save_uploaded_images(files, app.config["UPLOAD_FOLDER"])
     except ValueError as exc:
         return jsonify({"error": str(exc)}), 400
 
@@ -233,6 +248,28 @@ def upload_product_images(current_user):
 
     return jsonify({
         "message": "Imagenes subidas correctamente",
+        "images": saved_files
+    }), 201
+
+
+@app.route("/api/uploads/notifications", methods=["POST"])
+@token_required(allowed_roles=["admin", "superadmin"])
+def upload_notification_image(current_user):
+    files = request.files.getlist("images")
+
+    if not files:
+        return jsonify({"error": "No se envio ninguna imagen"}), 400
+
+    try:
+        saved_files = save_uploaded_images(files[:1], app.config["NOTIFICATION_UPLOAD_FOLDER"])
+    except ValueError as exc:
+        return jsonify({"error": str(exc)}), 400
+
+    if not saved_files:
+        return jsonify({"error": "No se pudo procesar la imagen"}), 400
+
+    return jsonify({
+        "message": "Imagen subida correctamente",
         "images": saved_files
     }), 201
 
@@ -333,6 +370,13 @@ def create_review(current_user, product_id):
 def delete_review(current_user, review_id):
     ReviewModel.delete_review(review_id)
     return jsonify({"message": "Resena eliminada"})
+
+
+@app.route("/api/admin/reviews", methods=["GET"])
+@token_required(allowed_roles=["admin", "superadmin"])
+def get_admin_reviews(current_user):
+    reviews = [ReviewModel.enrich_with_product(review) for review in ReviewModel.get_all()]
+    return jsonify(serialize_list(reviews))
 
 
 @app.route("/api/reviews/<review_id>", methods=["PUT"])
@@ -590,21 +634,78 @@ def get_notifications(current_user):
 def create_notification(current_user):
     data = request.json
 
-    required = ["title", "message"]
+    required = ["title", "summary", "content", "status"]
     for field in required:
         if not data.get(field):
             return jsonify({"error": f"Falta el campo {field}"}), 400
 
-    result = NotificationModel.create_notification({
+    if data.get("status") not in ["draft", "scheduled", "published"]:
+        return jsonify({"error": "Estado de notificacion no valido"}), 400
+
+    notification = NotificationModel.create_notification({
         "title": data["title"],
-        "message": data["message"],
+        "summary": data["summary"],
+        "content": data["content"],
+        "image": data.get("image", ""),
+        "status": data["status"],
+        "scheduled_for": data.get("scheduled_for"),
         "created_by": str(current_user["_id"])
     })
 
     return jsonify({
-        "message": "Notificacion publicada",
-        "notification_id": str(result.inserted_id)
+        "message": "Notificacion guardada correctamente",
+        "notification": serialize_doc(notification)
     }), 201
+
+
+@app.route("/api/admin/notifications", methods=["GET"])
+@token_required(allowed_roles=["admin", "superadmin"])
+def get_admin_notifications(current_user):
+    notifications = NotificationModel.get_all()
+    return jsonify(serialize_list(notifications))
+
+
+@app.route("/api/admin/notifications/<notification_id>", methods=["PUT"])
+@token_required(allowed_roles=["admin", "superadmin"])
+def update_admin_notification(current_user, notification_id):
+    notification = NotificationModel.get_by_id(notification_id)
+    if not notification:
+        return jsonify({"error": "Notificacion no encontrada"}), 404
+
+    data = request.json or {}
+    if data.get("status") and data.get("status") not in ["draft", "scheduled", "published"]:
+        return jsonify({"error": "Estado de notificacion no valido"}), 400
+
+    updated = NotificationModel.update_notification(notification_id, data)
+
+    previous_image = notification.get("image", "")
+    next_image = (data.get("image") if data.get("image") is not None else previous_image) or ""
+    if previous_image and previous_image != next_image:
+        delete_uploaded_file(app.config["NOTIFICATION_UPLOAD_FOLDER"], previous_image)
+
+    return jsonify({
+        "message": "Notificacion actualizada",
+        "notification": serialize_doc(updated)
+    })
+
+
+@app.route("/api/admin/notifications/<notification_id>", methods=["DELETE"])
+@token_required(allowed_roles=["admin", "superadmin"])
+def delete_admin_notification(current_user, notification_id):
+    notification = NotificationModel.get_by_id(notification_id)
+    if not notification:
+        return jsonify({"error": "Notificacion no encontrada"}), 404
+
+    NotificationModel.delete_notification(notification_id)
+    delete_uploaded_file(app.config["NOTIFICATION_UPLOAD_FOLDER"], notification.get("image", ""))
+    return jsonify({"message": "Notificacion eliminada"})
+
+
+@app.route("/api/notifications/<user_notification_id>/read", methods=["PUT"])
+@token_required(allowed_roles=["user"])
+def mark_notification_as_read(current_user, user_notification_id):
+    NotificationModel.mark_as_read(str(current_user["_id"]), user_notification_id)
+    return jsonify({"message": "Notificacion marcada como leida"})
 
 
 @app.route("/api/notifications/<user_notification_id>", methods=["DELETE"])

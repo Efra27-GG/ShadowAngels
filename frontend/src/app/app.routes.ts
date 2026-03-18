@@ -61,6 +61,12 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/cart/cart-page/cart-page').then((m) => m.CartPageComponent),
   },
+  {
+    path: 'notificaciones',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/notifications/notifications-page/notifications-page').then((m) => m.NotificationsPageComponent),
+  },
 
   {
     path: 'admin/login',
@@ -91,6 +97,14 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/admin/solicitudes-admin/solicitudes-admin').then(
         (m) => m.SolicitudesAdminComponent
+      ),
+  },
+  {
+    path: 'admin/notificaciones',
+    canActivate: [adminGuard],
+    loadComponent: () =>
+      import('./features/admin/notifications-admin/notifications-admin').then(
+        (m) => m.NotificationsAdminComponent
       ),
   },
   {

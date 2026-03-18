@@ -8,16 +8,34 @@
           <div class="mb-3">
             <label class="form-label">Nombre</label>
             <input type="text" class="form-control" formControlName="name">
+            <div class="text-danger small mt-1" *ngIf="registerForm.controls.name.touched && registerForm.controls.name.hasError('required')">
+              El nombre es obligatorio.
+            </div>
+            <div class="text-danger small mt-1" *ngIf="registerForm.controls.name.touched && registerForm.controls.name.hasError('minlength')">
+              El nombre debe tener al menos 2 caracteres.
+            </div>
           </div>
 
           <div class="mb-3">
             <label class="form-label">Correo</label>
             <input type="email" class="form-control" formControlName="email">
+            <div class="text-danger small mt-1" *ngIf="registerForm.controls.email.touched && registerForm.controls.email.hasError('required')">
+              El correo es obligatorio.
+            </div>
+            <div class="text-danger small mt-1" *ngIf="registerForm.controls.email.touched && registerForm.controls.email.hasError('email')">
+              Ingresa un correo valido.
+            </div>
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Contraseña</label>
+            <label class="form-label">Contrasena</label>
             <input type="password" class="form-control" formControlName="password">
+            <div class="text-danger small mt-1" *ngIf="registerForm.controls.password.touched && registerForm.controls.password.hasError('required')">
+              La contrasena es obligatoria.
+            </div>
+            <div class="text-danger small mt-1" *ngIf="registerForm.controls.password.touched && registerForm.controls.password.hasError('minlength')">
+              La contrasena debe tener al menos 6 caracteres.
+            </div>
           </div>
 
           <button type="submit" class="btn btn-dark w-100">Crear cuenta</button>
@@ -32,8 +50,8 @@
         </div>
 
         <p class="text-center mt-3 mb-0">
-          ¿Ya tienes cuenta?
-          <a routerLink="/login">Inicia sesión</a>
+          Ya tienes cuenta?
+          <a routerLink="/login">Inicia sesion</a>
         </p>
       </div>
     </div>

@@ -46,19 +46,55 @@
           <li class="nav-item">
             <a class="nav-link app-navbar__link" routerLink="/registro" routerLinkActive="active-link">Registro</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link app-navbar__link" routerLink="/admin/login" routerLinkActive="active-link">Admin</a>
-          </li>
         </ng-container>
 
         <ng-container *ngIf="isLoggedIn">
           <li class="nav-item" *ngIf="!isAdmin">
-            <a class="nav-link app-navbar__link" routerLink="/carrito" routerLinkActive="active-link">
-              Carrito<span *ngIf="cartCount"> ({{ cartCount }})</span>
+            <a
+              class="nav-link app-navbar__link app-navbar__icon-link"
+              routerLink="/notificaciones"
+              routerLinkActive="active-link"
+              aria-label="Notificaciones"
+              title="Notificaciones">
+              <span class="app-navbar__icon-wrap">
+                <svg class="app-navbar__bell" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 3a5 5 0 0 0-5 5v2.13c0 .8-.32 1.56-.88 2.12L4.4 14a1 1 0 0 0 .7 1.7h13.8a1 1 0 0 0 .7-1.7l-1.72-1.75a3 3 0 0 1-.88-2.12V8a5 5 0 0 0-5-5Zm0 19a2.75 2.75 0 0 0 2.58-1.8h-5.16A2.75 2.75 0 0 0 12 22Z"/>
+                </svg>
+                <span class="app-navbar__icon-badge" *ngIf="unreadNotifications">{{ unreadNotifications }}</span>
+                <span class="app-navbar__icon-tooltip">Notificaciones</span>
+              </span>
             </a>
           </li>
           <li class="nav-item" *ngIf="!isAdmin">
-            <a class="nav-link app-navbar__link" routerLink="/perfil" routerLinkActive="active-link">Perfil</a>
+            <a
+              class="nav-link app-navbar__link app-navbar__icon-link"
+              routerLink="/carrito"
+              routerLinkActive="active-link"
+              aria-label="Carrito"
+              title="Carrito">
+              <span class="app-navbar__icon-wrap">
+                <svg class="app-navbar__bell" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M7 5h14l-1.6 8.02a2 2 0 0 1-1.96 1.6H10.2a2 2 0 0 1-1.96-1.57L6.12 4H3V2h4.76l.58 3Zm3 15a1.75 1.75 0 1 1 0-3.5A1.75 1.75 0 0 1 10 20Zm7 0a1.75 1.75 0 1 1 0-3.5A1.75 1.75 0 0 1 17 20Z"/>
+                </svg>
+                <span class="app-navbar__icon-badge" *ngIf="cartCount">{{ cartCount }}</span>
+                <span class="app-navbar__icon-tooltip">Carrito</span>
+              </span>
+            </a>
+          </li>
+          <li class="nav-item" *ngIf="!isAdmin">
+            <a
+              class="nav-link app-navbar__link app-navbar__icon-link"
+              routerLink="/perfil"
+              routerLinkActive="active-link"
+              aria-label="Perfil"
+              title="Perfil">
+              <span class="app-navbar__icon-wrap">
+                <svg class="app-navbar__bell" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 12a4.25 4.25 0 1 0 0-8.5 4.25 4.25 0 0 0 0 8.5Zm0 2c-4.06 0-7.5 2.2-7.5 5.25 0 .41.34.75.75.75h13.5c.41 0 .75-.34.75-.75C19.5 16.2 16.06 14 12 14Z"/>
+                </svg>
+                <span class="app-navbar__icon-tooltip">Perfil</span>
+              </span>
+            </a>
           </li>
           <li class="nav-item">
             <button class="btn app-navbar__logout btn-sm ms-lg-2 mt-2 mt-lg-0" (click)="logout()">

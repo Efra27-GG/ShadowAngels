@@ -2,25 +2,142 @@
   <div class="container py-4 px-0">
     <h2 class="mb-4">Gestion de notificaciones</h2>
 
-    <div class="card shadow-sm p-4">
-      <h4 class="mb-3">Nueva notificacion</h4>
+    <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+    <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
 
-      <form [formGroup]="form" (ngSubmit)="submit()">
-        <div class="mb-3">
-          <label class="form-label">Titulo</label>
-          <input class="form-control" formControlName="title">
+    <div class="notifications-admin-grid">
+      <section class="card shadow-sm p-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+          <h4 class="mb-0">{{ editingId ? 'Editar notificacion' : 'Nueva notificacion' }}</h4>
+          <button class="btn btn-outline-dark btn-sm" type="button" (click)="resetForm()" *ngIf="editingId">
+            Cancelar edicion
+          </button>
         </div>
 
-        <div class="mb-3">
-          <label class="form-label">Mensaje</label>
-          <textarea class="form-control" rows="5" formControlName="message"></textarea>
+        <form [formGroup]="form" (ngSubmit)="submit()">
+          <div class="mb-3">
+            <label class="form-label">Titulo</label>
+            <input class="form-control" formControlName="title">
+            <div class="text-danger small mt-1" *ngIf="controls.title.touched && controls.title.hasError('required')">
+              El titulo es obligatorio.
+            </div>
+            <div class="text-danger small mt-1" *ngIf="controls.title.touched && controls.title.hasError('minlength')">
+              El titulo debe tener al menos 4 caracteres.
+            </div>
+            <div class="text-danger small mt-1" *ngIf="controls.title.touched && controls.title.hasError('maxlength')">
+              El titulo no debe superar los 120 caracteres.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Resumen</label>
+            <textarea class="form-control" rows="3" formControlName="summary"></textarea>
+            <div class="text-danger small mt-1" *ngIf="controls.summary.touched && controls.summary.hasError('required')">
+              El resumen es obligatorio.
+            </div>
+            <div class="text-danger small mt-1" *ngIf="controls.summary.touched && controls.summary.hasError('minlength')">
+              El resumen debe tener al menos 8 caracteres.
+            </div>
+            <div class="text-danger small mt-1" *ngIf="controls.summary.touched && controls.summary.hasError('maxlength')">
+              El resumen no debe superar los 220 caracteres.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Contenido completo</label>
+            <textarea class="form-control" rows="6" formControlName="content"></textarea>
+            <div class="text-danger small mt-1" *ngIf="controls.content.touched && controls.content.hasError('required')">
+              El contenido es obligatorio.
+            </div>
+            <div class="text-danger small mt-1" *ngIf="controls.content.touched && controls.content.hasError('minlength')">
+              El contenido debe tener al menos 12 caracteres.
+            </div>
+            <div class="text-danger small mt-1" *ngIf="controls.content.touched && controls.content.hasError('maxlength')">
+              El contenido no debe superar los 3000 caracteres.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Imagen</label>
+            <input class="form-control" type="file" accept="image/*" (change)="onImageSelected($event)">
+            <div class="notification-image-preview mt-3" *ngIf="imagePreview">
+              <img [src]="imagePreview" alt="Vista previa de notificacion">
+              <button class="btn btn-outline-danger btn-sm" type="button" (click)="removeImage()">Quitar imagen</button>
+            </div>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-12 col-md-6">
+              <label class="form-label">Estado</label>
+              <select class="form-select" formControlName="status">
+                <option value="draft">Borrador</option>
+                <option value="scheduled">Programada</option>
+                <option value="published">Publicar ahora</option>
+              </select>
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label">Programar para</label>
+              <input class="form-control" type="datetime-local" formControlName="scheduled_for">
+              <small class="text-muted d-block mt-1">
+                Solo es obligatorio cuando eliges "Programada".
+              </small>
+              <div class="text-danger small mt-1" *ngIf="controls.scheduled_for.touched && controls.scheduled_for.hasError('required')">
+                Elige una fecha y hora para programar la notificacion.
+              </div>
+              <div class="text-danger small mt-1" *ngIf="controls.scheduled_for.touched && controls.scheduled_for.hasError('notFutureDate')">
+                La fecha programada debe estar en el futuro.
+              </div>
+            </div>
+          </div>
+
+          <button class="btn btn-dark mt-4" type="submit">
+            {{ editingId ? 'Guardar cambios' : 'Guardar notificacion' }}
+          </button>
+        </form>
+      </section>
+
+      <section class="card shadow-sm p-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+          <h4 class="mb-0">Notificaciones creadas</h4>
+          <button class="btn btn-outline-dark btn-sm" type="button" (click)="loadNotifications()">Recargar</button>
         </div>
 
-        <button class="btn btn-dark" type="submit">Publicar</button>
-      </form>
+        <div *ngIf="loading" class="text-center py-4">
+          <div class="spinner-border text-dark"></div>
+        </div>
 
-      <div *ngIf="successMessage" class="alert alert-success mt-3 mb-0">{{ successMessage }}</div>
-      <div *ngIf="errorMessage" class="alert alert-danger mt-3 mb-0">{{ errorMessage }}</div>
+        <div *ngIf="!loading && !notifications.length" class="alert alert-secondary mb-0">
+          No hay notificaciones registradas.
+        </div>
+
+        <div class="notification-admin-list" *ngIf="!loading && notifications.length">
+          <article class="notification-admin-card" *ngFor="let notification of notifications">
+            <div class="notification-admin-card__top">
+              <div>
+                <h5 class="mb-1">{{ notification.title }}</h5>
+                <p class="mb-1 text-muted">{{ notification.summary }}</p>
+                <p class="mb-0 text-muted">
+                  Creada: {{ formatDate(notification.created_at) }}
+                  <span *ngIf="notification.published_at"> · Publicada: {{ formatDate(notification.published_at) }}</span>
+                  <span *ngIf="notification.scheduled_for"> · Programada: {{ formatDate(notification.scheduled_for) }}</span>
+                </p>
+              </div>
+              <span class="notification-admin-card__status">{{ notification.status }}</span>
+            </div>
+
+            <img *ngIf="notification.image" class="notification-admin-card__image" [src]="getImagePath(notification.image)" [alt]="notification.title">
+
+            <div class="notification-admin-card__actions">
+              <button class="btn btn-outline-dark btn-sm" type="button" (click)="editNotification(notification)">
+                Editar
+              </button>
+              <button class="btn btn-outline-danger btn-sm" type="button" (click)="deleteNotification(notification)">
+                Eliminar
+              </button>
+            </div>
+          </article>
+        </div>
+      </section>
     </div>
   </div>
 </app-admin-shell>

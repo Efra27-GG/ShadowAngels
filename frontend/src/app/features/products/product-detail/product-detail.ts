@@ -51,6 +51,7 @@ export class ProductDetailComponent implements OnInit {
     rating: 5,
     comment: ''
   };
+  reviewSubmitted = false;
 
   ngOnInit(): void {
     this.contactService.contact$.subscribe((contact) => {
@@ -97,6 +98,8 @@ export class ProductDetailComponent implements OnInit {
             comment: ''
           };
         }
+
+        this.reviewSubmitted = false;
 
         this.loading = false;
         this.loadPurchaseStatus(id);
@@ -196,7 +199,16 @@ export class ProductDetailComponent implements OnInit {
   }
 
   submitReview(): void {
+    this.reviewSubmitted = true;
+
     if (!this.product || (!this.canReview && !this.canEditOwnReview)) {
+      return;
+    }
+
+    if (this.commentError) {
+      this.reviewErrorMessage = this.commentError;
+      this.reviewMessage = '';
+      this.cdr.detectChanges();
       return;
     }
 
@@ -210,6 +222,7 @@ export class ProductDetailComponent implements OnInit {
           ? 'Tu reseña se actualizó correctamente.'
           : 'Tu reseña se guardó correctamente.';
         this.reviewErrorMessage = '';
+        this.reviewSubmitted = false;
         this.loadProduct(this.product!._id);
       },
       error: (error) => {
@@ -294,6 +307,28 @@ export class ProductDetailComponent implements OnInit {
     }
 
     return `http://127.0.0.1:5000/uploads/products/${image}`;
+  }
+
+  get commentError(): string {
+    const comment = this.reviewForm.comment.trim();
+
+    if (!this.reviewSubmitted) {
+      return '';
+    }
+
+    if (!comment) {
+      return 'El comentario es obligatorio.';
+    }
+
+    if (comment.length < 5) {
+      return 'El comentario debe tener al menos 5 caracteres.';
+    }
+
+    if (comment.length > 500) {
+      return 'El comentario no debe superar los 500 caracteres.';
+    }
+
+    return '';
   }
 
   onImageError(event: Event): void {

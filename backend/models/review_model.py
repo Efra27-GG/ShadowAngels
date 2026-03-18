@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from models.db import db
 
 reviews_collection = db["reviews"]
+products_collection = db["products"]
 
 class ReviewModel:
 
@@ -30,6 +31,21 @@ class ReviewModel:
         return list(reviews_collection.find(
             {"product_id": ObjectId(product_id)}
         ).sort("created_at", -1))
+
+    @staticmethod
+    def get_all():
+        return list(reviews_collection.find({}).sort("created_at", -1))
+
+    @staticmethod
+    def enrich_with_product(review):
+        if not review:
+            return None
+
+        product = products_collection.find_one({"_id": review.get("product_id")})
+        enriched = dict(review)
+        enriched["product_name"] = product.get("name") if product else "Producto eliminado"
+        enriched["product_image"] = product.get("images", [""])[0] if product and product.get("images") else ""
+        return enriched
 
     @staticmethod
     def get_by_id(review_id):

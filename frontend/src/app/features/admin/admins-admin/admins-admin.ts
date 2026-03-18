@@ -29,12 +29,13 @@ export class AdminsAdminComponent implements OnInit {
   }
 
   form = this.fb.group({
-    name: ['', Validators.required],
+    name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(80)]],
     email: ['', [Validators.required, Validators.email]],
     password: ['']
   });
 
   ngOnInit(): void {
+    this.updatePasswordValidators();
     this.loadAdmins();
   }
 
@@ -54,7 +55,13 @@ export class AdminsAdminComponent implements OnInit {
   }
 
   submit(): void {
-    if (this.form.invalid) return;
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      this.errorMessage = 'Revisa los campos del administrador antes de guardar.';
+      this.successMessage = '';
+      this.cdr.detectChanges();
+      return;
+    }
 
     const payload = this.form.getRawValue();
 
@@ -95,11 +102,13 @@ export class AdminsAdminComponent implements OnInit {
       email: admin.email,
       password: ''
     });
+    this.updatePasswordValidators();
   }
 
   cancelEdit(): void {
     this.editingId = null;
     this.form.reset();
+    this.updatePasswordValidators();
   }
 
   canDelete(admin: any): boolean {
@@ -126,5 +135,21 @@ export class AdminsAdminComponent implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  get controls() {
+    return this.form.controls;
+  }
+
+  private updatePasswordValidators(): void {
+    const passwordControl = this.form.controls.password;
+
+    if (this.editingId) {
+      passwordControl.setValidators([Validators.minLength(6)]);
+    } else {
+      passwordControl.setValidators([Validators.required, Validators.minLength(6)]);
+    }
+
+    passwordControl.updateValueAndValidity({ emitEvent: false });
   }
 }

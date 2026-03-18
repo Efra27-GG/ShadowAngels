@@ -1,0 +1,73 @@
+<div class="container py-5 notifications-page">
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+    <div>
+      <h2 class="mb-1">Notificaciones</h2>
+      <p class="text-muted mb-0">Aqui puedes revisar avisos publicados por administracion.</p>
+    </div>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-dark"></div>
+  </div>
+
+  <div *ngIf="!loading && !notifications.length" class="notifications-empty">
+    <h3 class="mb-2">No tienes notificaciones</h3>
+    <p class="text-muted mb-0">Cuando administracion publique una, aparecera aqui.</p>
+  </div>
+
+  <div class="notifications-list" *ngIf="!loading && notifications.length">
+    <article class="notifications-card" *ngFor="let notification of notifications" [class.notifications-card--unread]="!notification.is_read">
+      <div class="notifications-card__layout">
+        <img
+          *ngIf="notification.notification.image"
+          class="notifications-card__thumb"
+          [src]="getImagePath(notification.notification.image)"
+          [alt]="notification.notification.title">
+
+        <div class="notifications-card__content">
+          <div class="notifications-card__top">
+            <div>
+              <h4 class="mb-1">{{ notification.notification.title }}</h4>
+              <p class="text-muted mb-1">{{ formatDate(notification.notification.published_at || notification.notification.created_at) }}</p>
+            </div>
+            <span class="notifications-card__badge" *ngIf="!notification.is_read">Nueva</span>
+          </div>
+
+          <p class="mb-0">{{ notification.notification.summary }}</p>
+
+          <div class="notifications-card__actions">
+            <button class="btn btn-dark btn-sm" type="button" (click)="openNotification(notification)">Ver</button>
+            <button class="btn btn-outline-dark btn-sm" type="button" (click)="markAsRead(notification)" [disabled]="notification.is_read">
+              Marcar leida
+            </button>
+            <button class="btn btn-outline-danger btn-sm" type="button" (click)="deleteNotification(notification)">
+              Eliminar
+            </button>
+          </div>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <div class="notifications-modal" *ngIf="selectedNotification" (click)="closeModal()">
+    <div class="notifications-modal__dialog" (click)="$event.stopPropagation()">
+      <div class="notifications-modal__header">
+        <div>
+          <h3 class="mb-1">{{ selectedNotification.notification.title }}</h3>
+          <p class="text-muted mb-0">{{ formatDate(selectedNotification.notification.published_at || selectedNotification.notification.created_at) }}</p>
+        </div>
+        <button class="btn btn-outline-dark btn-sm" type="button" (click)="closeModal()">Cerrar</button>
+      </div>
+
+      <p class="notifications-modal__summary">{{ selectedNotification.notification.summary }}</p>
+      <div class="notifications-modal__content">{{ selectedNotification.notification.content }}</div>
+      <img
+        *ngIf="selectedNotification.notification.image"
+        class="notifications-modal__image"
+        [src]="getImagePath(selectedNotification.notification.image)"
+        [alt]="selectedNotification.notification.title">
+    </div>
+  </div>
+</div>

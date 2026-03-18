@@ -14,17 +14,26 @@
               formControlName="email"
               placeholder="superadmin@shadowangels.com"
             />
+            <div class="text-danger small mt-1" *ngIf="loginForm.controls.email.touched && loginForm.controls.email.hasError('required')">
+              El correo es obligatorio.
+            </div>
+            <div class="text-danger small mt-1" *ngIf="loginForm.controls.email.touched && loginForm.controls.email.hasError('email')">
+              Ingresa un correo valido.
+            </div>
           </div>
 
           <div class="mb-3">
-            <label for="password" class="form-label">Contraseña</label>
+            <label for="password" class="form-label">Contrasena</label>
             <input
               id="password"
               type="password"
               class="form-control"
               formControlName="password"
-              placeholder="Ingresa tu contraseña"
+              placeholder="Ingresa tu contrasena"
             />
+            <div class="text-danger small mt-1" *ngIf="loginForm.controls.password.touched && loginForm.controls.password.hasError('required')">
+              La contrasena es obligatoria.
+            </div>
           </div>
 
           <button type="submit" class="btn btn-dark w-100" [disabled]="loading">

@@ -12,6 +12,15 @@
         <div class="col-md-6">
           <label class="form-label">Nombre</label>
           <input class="form-control" formControlName="name">
+          <div class="text-danger small mt-1" *ngIf="controls.name.touched && controls.name.hasError('required')">
+            El nombre es obligatorio.
+          </div>
+          <div class="text-danger small mt-1" *ngIf="controls.name.touched && controls.name.hasError('minlength')">
+            El nombre debe tener al menos 3 caracteres.
+          </div>
+          <div class="text-danger small mt-1" *ngIf="controls.name.touched && controls.name.hasError('maxlength')">
+            El nombre no debe superar los 120 caracteres.
+          </div>
         </div>
 
         <div class="col-md-6">
@@ -25,16 +34,37 @@
         <div class="col-12">
           <label class="form-label">Descripcion</label>
           <textarea class="form-control" rows="3" formControlName="description"></textarea>
+          <div class="text-danger small mt-1" *ngIf="controls.description.touched && controls.description.hasError('required')">
+            La descripcion es obligatoria.
+          </div>
+          <div class="text-danger small mt-1" *ngIf="controls.description.touched && controls.description.hasError('minlength')">
+            La descripcion debe tener al menos 10 caracteres.
+          </div>
+          <div class="text-danger small mt-1" *ngIf="controls.description.touched && controls.description.hasError('maxlength')">
+            La descripcion no debe superar los 1200 caracteres.
+          </div>
         </div>
 
         <div class="col-md-4">
           <label class="form-label">Precio</label>
           <input type="number" class="form-control" formControlName="price">
+          <div class="text-danger small mt-1" *ngIf="controls.price.touched && controls.price.hasError('required')">
+            El precio es obligatorio.
+          </div>
+          <div class="text-danger small mt-1" *ngIf="controls.price.touched && controls.price.hasError('min')">
+            El precio debe ser mayor a 0.
+          </div>
         </div>
 
         <div class="col-md-4">
           <label class="form-label">Descuento</label>
           <input type="number" class="form-control" formControlName="discount">
+          <div class="text-danger small mt-1" *ngIf="controls.discount.touched && controls.discount.hasError('min')">
+            El descuento no puede ser negativo.
+          </div>
+          <div class="text-danger small mt-1" *ngIf="controls.discount.touched && controls.discount.hasError('max')">
+            El descuento no puede superar el 100%.
+          </div>
         </div>
 
         <div class="col-md-4 d-flex align-items-end">
@@ -47,6 +77,9 @@
         <div class="col-md-6">
           <label class="form-label">Tallas (coma separadas)</label>
           <input class="form-control" formControlName="sizesText">
+          <div class="text-danger small mt-1" *ngIf="controls.sizesText.touched && (controls.sizesText.hasError('required') || controls.sizesText.hasError('invalidSizes'))">
+            Ingresa al menos una talla valida, por ejemplo: S,M,L
+          </div>
         </div>
 
         <div class="col-md-6">

@@ -14,6 +14,7 @@ import { User } from '../../../shared/interfaces/user.interface';
 export class ProfilePage implements OnInit {
   private profileService = inject(ProfileService);
   private cdr = inject(ChangeDetectorRef);
+  private readonly emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   user: User = {
     _id: '',
@@ -27,6 +28,10 @@ export class ProfilePage implements OnInit {
   saving = false;
   successMessage = '';
   errorMessage = '';
+  touchedFields = {
+    name: false,
+    email: false
+  };
 
   ngOnInit(): void {
     this.loadProfile();
@@ -46,6 +51,10 @@ export class ProfilePage implements OnInit {
           role: data.role,
           is_active: data.is_active ?? true
         };
+        this.touchedFields = {
+          name: false,
+          email: false
+        };
         this.loading = false;
         this.cdr.detectChanges();
       },
@@ -58,6 +67,16 @@ export class ProfilePage implements OnInit {
   }
 
   updateProfile(): void {
+    this.touchedFields.name = true;
+    this.touchedFields.email = true;
+
+    if (this.nameError || this.emailError) {
+      this.errorMessage = 'Revisa los datos del perfil antes de guardar.';
+      this.successMessage = '';
+      this.cdr.detectChanges();
+      return;
+    }
+
     this.saving = true;
     this.successMessage = '';
     this.errorMessage = '';
@@ -134,5 +153,49 @@ export class ProfilePage implements OnInit {
     }
 
     return 'Usamos este correo para identificar tu cuenta.';
+  }
+
+  get nameError(): string {
+    const value = this.user.name.trim();
+
+    if (!this.touchedFields.name) {
+      return '';
+    }
+
+    if (!value) {
+      return 'El nombre es obligatorio.';
+    }
+
+    if (value.length < 2) {
+      return 'El nombre debe tener al menos 2 caracteres.';
+    }
+
+    if (value.length > 80) {
+      return 'El nombre no debe superar los 80 caracteres.';
+    }
+
+    return '';
+  }
+
+  get emailError(): string {
+    const value = this.user.email.trim();
+
+    if (!this.touchedFields.email) {
+      return '';
+    }
+
+    if (!value) {
+      return 'El correo es obligatorio.';
+    }
+
+    if (!this.emailPattern.test(value)) {
+      return 'Ingresa un correo valido.';
+    }
+
+    return '';
+  }
+
+  markFieldTouched(field: 'name' | 'email'): void {
+    this.touchedFields[field] = true;
   }
 }

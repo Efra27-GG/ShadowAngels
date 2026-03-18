@@ -2,11 +2,66 @@
   <div class="container py-4 px-0">
     <h2 class="mb-4">Gestion de resenas</h2>
 
-    <div class="card shadow-sm p-4">
-      <h4 class="mb-2">Seccion en preparacion</h4>
-      <p class="text-muted mb-0">
-        Este acceso ya queda integrado al panel para mantener la navegacion completa del admin.
-      </p>
+    <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+    <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+          <div>
+            <h4 class="mb-1">Bandeja de moderacion</h4>
+            <p class="text-muted mb-0">Resenas recientes para revisar, consultar en producto o eliminar.</p>
+          </div>
+          <button class="btn btn-outline-dark btn-sm" type="button" (click)="loadReviews()">Recargar</button>
+        </div>
+
+        <div class="request-filters mb-3">
+          <button type="button" class="request-filter" [class.request-filter--active]="selectedFilter === 'new'" (click)="setFilter('new')">
+            Nuevas
+          </button>
+          <button type="button" class="request-filter" [class.request-filter--active]="selectedFilter === 'recent'" (click)="setFilter('recent')">
+            Recientes
+          </button>
+          <button type="button" class="request-filter" [class.request-filter--active]="selectedFilter === 'all'" (click)="setFilter('all')">
+            Todas
+          </button>
+        </div>
+
+        <div *ngIf="loading" class="text-center py-4">
+          <div class="spinner-border text-dark"></div>
+        </div>
+
+        <div *ngIf="!loading && !filteredReviews.length" class="alert alert-secondary mb-0">
+          No hay resenas para el filtro seleccionado.
+        </div>
+
+        <div class="review-admin-list" *ngIf="!loading && filteredReviews.length">
+          <article class="review-admin-card" *ngFor="let review of filteredReviews">
+            <img [src]="getImagePath(review.product_image)" [alt]="review.product_name || 'Producto'" class="review-admin-card__image">
+
+            <div class="review-admin-card__body">
+              <div class="review-admin-card__top">
+                <div>
+                  <h5 class="mb-1">{{ review.product_name || 'Producto' }}</h5>
+                  <p class="mb-1 text-muted">{{ review.user_name }} · {{ formatDate(review.created_at) }}</p>
+                </div>
+                <span class="review-admin-card__rating">{{ review.rating }}/5</span>
+              </div>
+
+              <p class="review-admin-card__comment mb-0">{{ review.comment }}</p>
+
+              <div class="review-admin-card__actions">
+                <a class="btn btn-outline-dark btn-sm" [routerLink]="['/producto', review.product_id]">
+                  Ver producto
+                </a>
+                <button class="btn btn-outline-danger btn-sm" type="button" (click)="deleteReview(review)">
+                  Eliminar
+                </button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
     </div>
   </div>
 </app-admin-shell>

@@ -35,7 +35,7 @@ export class ContactService {
 
   updateContact(payload: ContactInfo) {
     return this.http.put<{ message: string }>(`${this.apiUrl}/contact`, payload).pipe(
-      tap(() => this.contactSubject.next({ ...payload }))
+      tap(() => this.contactSubject.next({ ...this.defaultContact, ...payload }))
     );
   }
 }

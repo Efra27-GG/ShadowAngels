@@ -6,3 +6,68 @@
 textarea {
   resize: none;
 }
+
+.notifications-admin-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 20px;
+}
+
+.notification-admin-list {
+  display: grid;
+  gap: 14px;
+}
+
+.notification-admin-card {
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.06);
+}
+
+.notification-admin-card__image,
+.notification-image-preview img {
+  width: 100%;
+  max-width: 220px;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 16px;
+  margin-top: 14px;
+}
+
+.notification-image-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.notification-admin-card__top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.notification-admin-card__status {
+  border-radius: 999px;
+  padding: 6px 12px;
+  background: #e5e7eb;
+  color: #111827;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.notification-admin-card__actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+@media (max-width: 991px) {
+  .notifications-admin-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { of } from 'rxjs';
 import { ProductService } from '../../../core/services/product.service';
 import { Product } from '../../../shared/interfaces/product.interface';
@@ -14,6 +14,7 @@ import { AdminShellComponent } from '../../../shared/components/admin-shell/admi
   styleUrl: './products-admin.css'
 })
 export class ProductsAdminComponent implements OnInit, OnDestroy {
+  private readonly maxImageSize = 5 * 1024 * 1024;
   private fb = inject(FormBuilder);
   private productService = inject(ProductService);
   private cdr = inject(ChangeDetectorRef);
@@ -29,12 +30,12 @@ export class ProductsAdminComponent implements OnInit, OnDestroy {
   uploadingImages = false;
 
   productForm = this.fb.group({
-    name: ['', Validators.required],
-    description: ['', Validators.required],
+    name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(120)]],
+    description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(1200)]],
     category: ['dama', Validators.required],
-    price: [0, Validators.required],
-    discount: [0, Validators.required],
-    sizesText: ['S,M,L'],
+    price: [0, [Validators.required, Validators.min(1)]],
+    discount: [0, [Validators.required, Validators.min(0), Validators.max(100)]],
+    sizesText: ['S,M,L', [Validators.required, this.sizesValidator]],
     is_new: [false]
   });
 
@@ -64,6 +65,9 @@ export class ProductsAdminComponent implements OnInit, OnDestroy {
   submit(): void {
     if (this.productForm.invalid) {
       this.productForm.markAllAsTouched();
+      this.errorMessage = 'Revisa los campos del producto antes de guardar.';
+      this.successMessage = '';
+      this.cdr.detectChanges();
       return;
     }
 
@@ -144,8 +148,26 @@ export class ProductsAdminComponent implements OnInit, OnDestroy {
     }
 
     const acceptedFiles = files.filter((file) => file.type.startsWith('image/'));
+    const oversizedFiles = acceptedFiles.filter((file) => file.size > this.maxImageSize);
 
-    this.selectedFiles = [...this.selectedFiles, ...acceptedFiles];
+    if (files.length !== acceptedFiles.length) {
+      this.errorMessage = 'Solo puedes subir archivos de imagen para el producto.';
+      this.successMessage = '';
+    }
+
+    if (oversizedFiles.length) {
+      this.errorMessage = 'Cada imagen del producto debe pesar como maximo 5 MB.';
+      this.successMessage = '';
+    }
+
+    if (oversizedFiles.length || files.length !== acceptedFiles.length) {
+      this.cdr.detectChanges();
+    }
+
+    this.selectedFiles = [
+      ...this.selectedFiles,
+      ...acceptedFiles.filter((file) => file.size <= this.maxImageSize)
+    ];
     this.rebuildNewImagePreviews();
     input.value = '';
     this.cdr.detectChanges();
@@ -232,5 +254,18 @@ export class ProductsAdminComponent implements OnInit, OnDestroy {
       sizesText: 'S,M,L',
       is_new: false
     });
+  }
+
+  get controls() {
+    return this.productForm.controls;
+  }
+
+  private sizesValidator(control: AbstractControl) {
+    const sizes = String(control.value || '')
+      .split(',')
+      .map((size) => size.trim())
+      .filter(Boolean);
+
+    return sizes.length ? null : { invalidSizes: true };
   }
 }

@@ -33,7 +33,9 @@
             class="form-control"
             [(ngModel)]="user.name"
             name="name"
+            (blur)="markFieldTouched('name')"
             required>
+          <div class="text-danger small mt-1" *ngIf="nameError">{{ nameError }}</div>
           <small class="text-muted">{{ nameHelpText }}</small>
         </div>
 
@@ -44,7 +46,9 @@
             class="form-control"
             [(ngModel)]="user.email"
             name="email"
+            (blur)="markFieldTouched('email')"
             required>
+          <div class="text-danger small mt-1" *ngIf="emailError">{{ emailError }}</div>
           <small class="text-muted">{{ emailHelpText }}</small>
         </div>
 

@@ -16,36 +16,60 @@
             <label class="form-label">Numero de WhatsApp</label>
             <input class="form-control" formControlName="whatsapp_number" placeholder="525512345678">
             <small class="text-muted">Usa el numero completo con lada. Se limpiaran espacios y simbolos.</small>
+            <div class="text-danger small mt-1" *ngIf="controls.whatsapp_number.touched && controls.whatsapp_number.hasError('pattern')">
+              El numero debe tener entre 10 y 15 digitos.
+            </div>
           </div>
 
           <div class="col-12 col-md-6">
             <label class="form-label">Texto visible de WhatsApp</label>
             <input class="form-control" formControlName="whatsapp_label" placeholder="55-1234-5678">
+            <div class="text-danger small mt-1" *ngIf="controls.whatsapp_label.touched && controls.whatsapp_label.hasError('minlength')">
+              El texto visible debe tener al menos 6 caracteres.
+            </div>
+            <div class="text-danger small mt-1" *ngIf="controls.whatsapp_label.touched && controls.whatsapp_label.hasError('maxlength')">
+              El texto visible no debe superar los 40 caracteres.
+            </div>
           </div>
 
           <div class="col-12 col-md-6">
             <label class="form-label">Instagram</label>
             <input class="form-control" formControlName="instagram" placeholder="https://www.instagram.com/tu_cuenta/">
+            <div class="text-danger small mt-1" *ngIf="controls.instagram.touched && controls.instagram.hasError('pattern')">
+              Usa una URL valida que comience con http:// o https://
+            </div>
           </div>
 
           <div class="col-12 col-md-6">
             <label class="form-label">Facebook</label>
             <input class="form-control" formControlName="facebook" placeholder="https://www.facebook.com/tu_pagina">
+            <div class="text-danger small mt-1" *ngIf="controls.facebook.touched && controls.facebook.hasError('pattern')">
+              Usa una URL valida que comience con http:// o https://
+            </div>
           </div>
 
           <div class="col-12 col-md-6">
             <label class="form-label">TikTok</label>
             <input class="form-control" formControlName="tiktok" placeholder="https://www.tiktok.com/@tu_cuenta">
+            <div class="text-danger small mt-1" *ngIf="controls.tiktok.touched && controls.tiktok.hasError('pattern')">
+              Usa una URL valida que comience con http:// o https://
+            </div>
           </div>
 
           <div class="col-12 col-md-6">
             <label class="form-label">Email</label>
             <input class="form-control" formControlName="email" placeholder="contacto@shadowangels.com">
+            <div class="text-danger small mt-1" *ngIf="controls.email.touched && controls.email.hasError('email')">
+              Ingresa un correo valido.
+            </div>
           </div>
 
           <div class="col-12">
             <label class="form-label">Ubicacion o descripcion</label>
             <input class="form-control" formControlName="location" placeholder="Tianguis: Domingos 8am - 2pm">
+            <div class="text-danger small mt-1" *ngIf="controls.location.touched && controls.location.hasError('maxlength')">
+              La descripcion no debe superar los 140 caracteres.
+            </div>
           </div>
         </div>
 

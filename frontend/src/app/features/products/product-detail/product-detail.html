@@ -129,6 +129,7 @@
             name="comment"
             [(ngModel)]="reviewForm.comment"
             required></textarea>
+          <div class="text-danger small mt-1" *ngIf="commentError">{{ commentError }}</div>
         </div>
 
         <button class="btn btn-dark" type="submit">
