@@ -1,6 +1,6 @@
 <app-admin-shell>
   <div class="container py-4 px-0">
-    <h2 class="mb-4">Gestion de productos</h2>
+    <h2 class="mb-4">Gestión de productos</h2>
 
     <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
     <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
@@ -24,7 +24,7 @@
         </div>
 
         <div class="col-md-6">
-          <label class="form-label">Categoria</label>
+          <label class="form-label">Categoría</label>
           <select class="form-select" formControlName="category">
             <option value="dama">Dama</option>
             <option value="caballero">Caballero</option>
@@ -32,16 +32,16 @@
         </div>
 
         <div class="col-12">
-          <label class="form-label">Descripcion</label>
+          <label class="form-label">Descripción</label>
           <textarea class="form-control" rows="3" formControlName="description"></textarea>
           <div class="text-danger small mt-1" *ngIf="controls.description.touched && controls.description.hasError('required')">
-            La descripcion es obligatoria.
+            La descripción es obligatoria.
           </div>
           <div class="text-danger small mt-1" *ngIf="controls.description.touched && controls.description.hasError('minlength')">
-            La descripcion debe tener al menos 10 caracteres.
+            La descripción debe tener al menos 10 caracteres.
           </div>
           <div class="text-danger small mt-1" *ngIf="controls.description.touched && controls.description.hasError('maxlength')">
-            La descripcion no debe superar los 1200 caracteres.
+            La descripción no debe superar los 1200 caracteres.
           </div>
         </div>
 
@@ -75,23 +75,23 @@
         </div>
 
         <div class="col-md-6">
-          <label class="form-label">Tallas (coma separadas)</label>
+          <label class="form-label">Tallas (comas separadas)</label>
           <input class="form-control" formControlName="sizesText">
           <div class="text-danger small mt-1" *ngIf="controls.sizesText.touched && (controls.sizesText.hasError('required') || controls.sizesText.hasError('invalidSizes'))">
-            Ingresa al menos una talla valida, por ejemplo: S,M,L
+            Ingresa al menos una talla válida, por ejemplo: S,M,L
           </div>
         </div>
 
         <div class="col-md-6">
-          <label class="form-label">Imagenes</label>
+          <label class="form-label">Imágenes</label>
           <input class="form-control" type="file" accept="image/*" multiple (change)="onFilesSelected($event)">
           <small class="text-muted">
-            Selecciona imagenes desde tu explorador. Si quitas una y guardas, se elimina del producto y del servidor cuando ya no la usa nadie.
+            Selecciona imágenes desde tu explorador. Si quitas una y guardas, se elimina del producto y del servidor cuando ya no la usa nadie.
           </small>
         </div>
 
         <div class="col-12" *ngIf="existingImages.length || selectedFiles.length">
-          <label class="form-label d-block">Imagenes del producto</label>
+          <label class="form-label d-block">Imágenes del producto</label>
           <div class="image-grid">
             <div class="image-card" *ngFor="let image of existingImages">
               <img [src]="getExistingImageUrl(image)" [alt]="image">
@@ -111,7 +111,7 @@
 
         <div class="col-12 d-flex gap-2">
           <button class="btn btn-dark" type="submit" [disabled]="uploadingImages">
-            {{ editingId ? 'Actualizar' : 'Guardar' }}
+            {{ editingId ? 'Actualizar producto' : 'Guardar producto' }}
           </button>
           <button *ngIf="editingId" class="btn btn-secondary" type="button" (click)="cancelEdit()">
             Cancelar
@@ -133,9 +133,9 @@
             <thead>
               <tr>
                 <th>Nombre</th>
-                <th>Categoria</th>
+                <th>Categoría</th>
                 <th>Precio</th>
-                <th>Desc.</th>
+                <th>Descuento</th>
                 <th>Final</th>
                 <th>Nuevo</th>
                 <th>Acciones</th>
@@ -144,11 +144,11 @@
             <tbody>
               <tr *ngFor="let product of products">
                 <td data-label="Nombre">{{ product.name }}</td>
-                <td data-label="Categoria">{{ product.category }}</td>
+                <td data-label="Categoría">{{ product.category }}</td>
                 <td data-label="Precio">${{ product.price }}</td>
                 <td data-label="Descuento">{{ product.discount }}%</td>
                 <td data-label="Final">${{ product.final_price }}</td>
-                <td data-label="Nuevo">{{ product.is_new ? 'Si' : 'No' }}</td>
+                <td data-label="Nuevo">{{ product.is_new ? 'Sí' : 'No' }}</td>
                 <td data-label="Acciones" class="products-table__actions">
                   <button class="btn btn-sm btn-outline-primary" (click)="editProduct(product)">Editar</button>
                   <button class="btn btn-sm btn-outline-danger" (click)="deleteProduct(product._id)">Eliminar</button>

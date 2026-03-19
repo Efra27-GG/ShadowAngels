@@ -132,7 +132,7 @@ export class ProductsAdminComponent implements OnInit, OnDestroy {
       },
       error: () => {
         this.uploadingImages = false;
-        this.errorMessage = 'No se pudieron subir las imagenes.';
+        this.errorMessage = 'No se pudieron subir las imágenes.';
         this.successMessage = '';
         this.cdr.detectChanges();
       }

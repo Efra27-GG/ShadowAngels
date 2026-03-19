@@ -1,6 +1,6 @@
 <app-admin-shell>
   <div class="container py-4 px-0">
-    <h2 class="mb-4">Gestion de notificaciones</h2>
+    <h2 class="mb-4">Gestión de notificaciones</h2>
 
     <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
     <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
@@ -10,7 +10,7 @@
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
           <h4 class="mb-0">{{ editingId ? 'Editar notificacion' : 'Nueva notificacion' }}</h4>
           <button class="btn btn-outline-dark btn-sm" type="button" (click)="resetForm()" *ngIf="editingId">
-            Cancelar edicion
+            Cancelar edición
           </button>
         </div>
 
@@ -19,13 +19,13 @@
             <label class="form-label">Titulo</label>
             <input class="form-control" formControlName="title">
             <div class="text-danger small mt-1" *ngIf="controls.title.touched && controls.title.hasError('required')">
-              El titulo es obligatorio.
+              El título es obligatorio.
             </div>
             <div class="text-danger small mt-1" *ngIf="controls.title.touched && controls.title.hasError('minlength')">
-              El titulo debe tener al menos 4 caracteres.
+              El título debe tener al menos 4 caracteres.
             </div>
             <div class="text-danger small mt-1" *ngIf="controls.title.touched && controls.title.hasError('maxlength')">
-              El titulo no debe superar los 120 caracteres.
+              El título no debe superar los 120 caracteres.
             </div>
           </div>
 
@@ -82,7 +82,7 @@
                 Solo es obligatorio cuando eliges "Programada".
               </small>
               <div class="text-danger small mt-1" *ngIf="controls.scheduled_for.touched && controls.scheduled_for.hasError('required')">
-                Elige una fecha y hora para programar la notificacion.
+                Elige una fecha y hora para programar la notificación.
               </div>
               <div class="text-danger small mt-1" *ngIf="controls.scheduled_for.touched && controls.scheduled_for.hasError('notFutureDate')">
                 La fecha programada debe estar en el futuro.
@@ -91,7 +91,7 @@
           </div>
 
           <button class="btn btn-dark mt-4" type="submit">
-            {{ editingId ? 'Guardar cambios' : 'Guardar notificacion' }}
+            {{ editingId ? 'Guardar cambios' : 'Guardar notificación' }}
           </button>
         </form>
       </section>

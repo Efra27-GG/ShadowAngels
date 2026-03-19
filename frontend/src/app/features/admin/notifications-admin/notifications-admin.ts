@@ -57,7 +57,7 @@ export class NotificationsAdminComponent implements OnInit {
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.errorMessage = 'Revisa los campos marcados antes de guardar la notificacion.';
+      this.errorMessage = 'Revisa los campos marcados antes de guardar la notificación.';
       this.successMessage = '';
       this.cdr.detectChanges();
       return;
@@ -78,13 +78,13 @@ export class NotificationsAdminComponent implements OnInit {
 
     request.subscribe({
       next: () => {
-        this.successMessage = this.editingId ? 'Notificacion actualizada correctamente.' : 'Notificacion guardada correctamente.';
+        this.successMessage = this.editingId ? 'Notificación actualizada correctamente.' : 'Notificación guardada correctamente.';
         this.errorMessage = '';
         this.resetForm();
         this.loadNotifications();
       },
       error: () => {
-        this.errorMessage = 'No se pudo guardar la notificacion.';
+        this.errorMessage = 'No se pudo guardar la notificación.';
         this.successMessage = '';
         this.cdr.detectChanges();
       }
@@ -106,14 +106,14 @@ export class NotificationsAdminComponent implements OnInit {
   }
 
   deleteNotification(notification: NotificationItem): void {
-    const confirmed = window.confirm('¿Deseas eliminar esta notificacion?');
+    const confirmed = window.confirm('¿Deseas eliminar esta notificación?');
     if (!confirmed) {
       return;
     }
 
     this.notificationService.deleteNotification(notification._id).subscribe({
       next: () => {
-        this.successMessage = 'Notificacion eliminada correctamente.';
+        this.successMessage = 'Notificación eliminada correctamente.';
         this.errorMessage = '';
         if (this.editingId === notification._id) {
           this.resetForm();
@@ -121,7 +121,7 @@ export class NotificationsAdminComponent implements OnInit {
         this.loadNotifications();
       },
       error: () => {
-        this.errorMessage = 'No se pudo eliminar la notificacion.';
+        this.errorMessage = 'No se pudo eliminar la notificación.';
         this.successMessage = '';
         this.cdr.detectChanges();
       }
@@ -164,7 +164,7 @@ export class NotificationsAdminComponent implements OnInit {
     }
 
     if (!file.type.startsWith('image/')) {
-      this.errorMessage = 'Selecciona un archivo de imagen valido para la notificacion.';
+      this.errorMessage = 'Selecciona un archivo de imagen valido para la notificación.';
       this.successMessage = '';
       input.value = '';
       this.cdr.detectChanges();
@@ -172,7 +172,7 @@ export class NotificationsAdminComponent implements OnInit {
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      this.errorMessage = 'La imagen de la notificacion no debe superar los 5 MB.';
+      this.errorMessage = 'La imagen de la notificación no debe superar los 5 MB.';
       this.successMessage = '';
       input.value = '';
       this.cdr.detectChanges();
@@ -186,7 +186,7 @@ export class NotificationsAdminComponent implements OnInit {
         this.cdr.detectChanges();
       },
       error: () => {
-        this.errorMessage = 'No se pudo subir la imagen de la notificacion.';
+        this.errorMessage = 'No se pudo subir la imagen de la notificación.';
         this.successMessage = '';
         this.cdr.detectChanges();
       }
