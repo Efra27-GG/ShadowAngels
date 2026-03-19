@@ -2,9 +2,9 @@
   <aside class="admin-shell__sidebar">
     <div class="admin-shell__sidebar-card">
       <div class="admin-shell__header">
-        <h4 class="mb-0">Panel Admin</h4>
+        <h4 class="mb-0">Panel de Administración</h4>
         <button type="button" class="admin-shell__toggle" (click)="toggleMobileMenu()">
-          {{ mobileMenuOpen ? 'Cerrar' : 'Menu' }}
+          {{ mobileMenuOpen ? 'Cerrar' : 'Menú' }}
         </button>
       </div>
 
@@ -23,20 +23,20 @@
         Notificaciones
       </a>
       <a routerLink="/admin/resenas" routerLinkActive="active-link" class="admin-link admin-link--with-badge" (click)="closeMobileMenu()">
-        <span>Resenas</span>
+        <span>Reseñas</span>
         <span class="admin-link__badge" *ngIf="recentReviewsCount">{{ recentReviewsCount }}</span>
       </a>
       <a routerLink="/admin/perfil" routerLinkActive="active-link" class="admin-link" (click)="closeMobileMenu()">
         Perfil
       </a>
       <a *ngIf="isSuperAdmin" routerLink="/admin/admins" routerLinkActive="active-link" class="admin-link" (click)="closeMobileMenu()">
-        Admins
+        Administradores
       </a>
       <a *ngIf="isSuperAdmin" routerLink="/admin/contacto" routerLinkActive="active-link" class="admin-link" (click)="closeMobileMenu()">
         Contacto
       </a>
       <a *ngIf="isSuperAdmin" routerLink="/admin/personalizacion" routerLinkActive="active-link" class="admin-link" (click)="closeMobileMenu()">
-        Personalizacion
+        Personalización
       </a>
       </div>
     </div>
