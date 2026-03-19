@@ -41,7 +41,7 @@ export class HeroAdminComponent implements OnInit {
         this.cdr.detectChanges();
       },
       error: () => {
-        this.errorMessage = 'No se pudo cargar la configuracion del banner principal.';
+        this.errorMessage = 'No se pudo cargar la configuración del banner principal.';
         this.loading = false;
         this.cdr.detectChanges();
       }

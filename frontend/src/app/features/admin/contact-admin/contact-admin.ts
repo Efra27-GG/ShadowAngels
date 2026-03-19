@@ -49,7 +49,7 @@ export class ContactAdminComponent implements OnInit {
         this.cdr.detectChanges();
       },
       error: () => {
-        this.errorMessage = 'No se pudo cargar la configuracion de contacto.';
+        this.errorMessage = 'No se pudo cargar la configuración de contacto.';
         this.loading = false;
         this.cdr.detectChanges();
       }
@@ -77,12 +77,12 @@ export class ContactAdminComponent implements OnInit {
 
     this.contactService.updateContact(payload).subscribe({
       next: () => {
-        this.successMessage = 'La informacion de contacto se actualizo correctamente.';
+        this.successMessage = 'La información de contacto se actualizo correctamente.';
         this.errorMessage = '';
         this.cdr.detectChanges();
       },
       error: () => {
-        this.errorMessage = 'No se pudo guardar la informacion de contacto.';
+        this.errorMessage = 'No se pudo guardar la información de contacto.';
         this.successMessage = '';
         this.cdr.detectChanges();
       }

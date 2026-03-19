@@ -34,7 +34,7 @@ export class ReviewsAdminComponent implements OnInit {
         this.cdr.detectChanges();
       },
       error: () => {
-        this.errorMessage = 'No se pudieron cargar las resenas.';
+        this.errorMessage = 'No se pudieron cargar las reseñas.';
         this.loading = false;
         this.cdr.detectChanges();
       }
@@ -42,20 +42,20 @@ export class ReviewsAdminComponent implements OnInit {
   }
 
   deleteReview(review: Review): void {
-    const confirmed = window.confirm('¿Deseas eliminar esta resena?');
+    const confirmed = window.confirm('¿Deseas eliminar esta reseña?');
     if (!confirmed) {
       return;
     }
 
     this.adminService.deleteReview(review._id).subscribe({
       next: () => {
-        this.successMessage = 'Resena eliminada correctamente.';
+        this.successMessage = 'Reseña eliminada correctamente.';
         this.errorMessage = '';
         this.reviews = this.reviews.filter((item) => item._id !== review._id);
         this.cdr.detectChanges();
       },
       error: () => {
-        this.errorMessage = 'No se pudo eliminar la resena.';
+        this.errorMessage = 'No se pudo eliminar la reseña.';
         this.successMessage = '';
         this.cdr.detectChanges();
       }
