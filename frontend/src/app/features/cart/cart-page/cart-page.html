@@ -2,7 +2,7 @@
   <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
     <div>
       <h2 class="mb-1">Tu carrito</h2>
-      <p class="text-muted mb-0">Aqui puedes ajustar cantidades, quitar productos y enviar una sola solicitud.</p>
+      <p class="text-muted mb-0">Aquí puedes ajustar cantidades, quitar productos y enviar una sola solicitud.</p>
     </div>
     <a class="btn btn-outline-dark" routerLink="/">Seguir viendo productos</a>
   </div>
@@ -15,7 +15,7 @@
   </div>
 
   <div *ngIf="!loading && !cart.items.length" class="cart-empty">
-    <h3 class="mb-2">Tu carrito esta vacío</h3>
+    <h3 class="mb-2">Tu carrito está vacío</h3>
     <p class="text-muted mb-0">Agrega productos desde el detalle para empezar tu solicitud.</p>
   </div>
 
@@ -32,7 +32,7 @@
                 <p class="text-muted mb-0">Precio unitario: ${{ item.final_price }}</p>
               </div>
               <button class="btn btn-sm btn-outline-danger" type="button" (click)="removeItem(item)">
-                Eliminar
+                Eliminar producto(s)
               </button>
             </div>
 
@@ -62,7 +62,7 @@
         </div>
 
         <p class="text-muted small mb-3">
-          La venta sigue siendo externa. Al enviar la solicitud, el admin podrá verla en Solicitudes y luego podra confirmarla.
+          La compra se realiza de forma externa. Al enviar la solicitud, el admin podrá verla en Solicitudes y luego podrá confirmarla.
         </p>
 
         <div class="cart-summary__actions">

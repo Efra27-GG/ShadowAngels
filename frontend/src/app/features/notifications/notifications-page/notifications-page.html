@@ -2,7 +2,7 @@
   <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
     <div>
       <h2 class="mb-1">Notificaciones</h2>
-      <p class="text-muted mb-0">Aqui puedes revisar avisos publicados por administración.</p>
+      <p class="text-muted mb-0">Avisos publicados por la administración.</p>
     </div>
   </div>
 
@@ -14,7 +14,7 @@
 
   <div *ngIf="!loading && !notifications.length" class="notifications-empty">
     <h3 class="mb-2">No tienes notificaciones</h3>
-    <p class="text-muted mb-0">Cuando administración publique una, aparecera aqui.</p>
+    <p class="text-muted mb-0">Cuando se publique una notificación, aparecerá aquí.</p>
   </div>
 
   <div class="notifications-list" *ngIf="!loading && notifications.length">
@@ -40,7 +40,7 @@
           <div class="notifications-card__actions">
             <button class="btn btn-dark btn-sm" type="button" (click)="openNotification(notification)">Ver</button>
             <button class="btn btn-outline-dark btn-sm" type="button" (click)="markAsRead(notification)" [disabled]="notification.is_read">
-              Marcar leida
+              Marcar como leída
             </button>
             <button class="btn btn-outline-danger btn-sm" type="button" (click)="deleteNotification(notification)">
               Eliminar
