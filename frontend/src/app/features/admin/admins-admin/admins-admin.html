@@ -1,6 +1,6 @@
 <app-admin-shell>
   <div class="container py-4 px-0">
-    <h2 class="mb-4">Gestion de administradores</h2>
+    <h2 class="mb-4">Gestión de administradores</h2>
 
     <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
     <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
@@ -30,26 +30,26 @@
             El correo es obligatorio.
           </div>
           <div class="text-danger small mt-1" *ngIf="controls.email.touched && controls.email.hasError('email')">
-            Ingresa un correo valido.
+            Ingresa un correo válido.
           </div>
         </div>
 
         <div class="col-md-6">
           <label class="form-label">
-            {{ editingId ? 'Nueva contrasena (opcional)' : 'Contrasena' }}
+            {{ editingId ? 'Nueva contraseña (opcional)' : 'Contraseña' }}
           </label>
           <input type="password" class="form-control" formControlName="password">
           <div class="text-danger small mt-1" *ngIf="controls.password.touched && controls.password.hasError('required')">
-            La contrasena es obligatoria para crear un administrador.
+            La contraseña es obligatoria para crear un administrador.
           </div>
           <div class="text-danger small mt-1" *ngIf="controls.password.touched && controls.password.hasError('minlength')">
-            La contrasena debe tener al menos 6 caracteres.
+            La contraseña debe tener al menos 6 caracteres.
           </div>
         </div>
 
         <div class="col-12 d-flex gap-2">
           <button class="btn btn-dark" type="submit">
-            {{ editingId ? 'Actualizar' : 'Crear' }}
+            {{ editingId ? 'Actualizar administrador' : 'Crear administrador' }}
           </button>
           <button *ngIf="editingId" class="btn btn-secondary" type="button" (click)="cancelEdit()">
             Cancelar

@@ -1,8 +1,8 @@
 <app-admin-shell>
   <div class="container py-4 px-0">
-    <h2 class="mb-2">Personalizacion</h2>
+    <h2 class="mb-2">Personalización</h2>
     <p class="text-muted mb-4">
-      Edita el banner principal del inicio. Si no subes imagen, se mostrara un fondo negro con una flecha hacia los productos.
+      Edita el banner principal del inicio. Si no subes una imagen, se mostrará un fondo negro con una flecha hacia los productos.
     </p>
 
     <div *ngIf="loading" class="card shadow-sm p-4 text-center">
@@ -16,27 +16,27 @@
             <label class="form-label">Titulo</label>
             <input class="form-control" formControlName="title">
             <div class="text-danger small mt-1" *ngIf="controls.title.touched && controls.title.hasError('required')">
-              El titulo es obligatorio.
+              El título es obligatorio.
             </div>
             <div class="text-danger small mt-1" *ngIf="controls.title.touched && controls.title.hasError('minlength')">
-              El titulo debe tener al menos 4 caracteres.
+              El título debe tener al menos 4 caracteres.
             </div>
             <div class="text-danger small mt-1" *ngIf="controls.title.touched && controls.title.hasError('maxlength')">
-              El titulo no debe superar los 90 caracteres.
+              El tíulo no debe superar los 90 caracteres.
             </div>
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Subtitulo</label>
+            <label class="form-label">Subtítulo</label>
             <textarea class="form-control" rows="4" formControlName="subtitle"></textarea>
             <div class="text-danger small mt-1" *ngIf="controls.subtitle.touched && controls.subtitle.hasError('required')">
-              El subtitulo es obligatorio.
+              El subtítulo es obligatorio.
             </div>
             <div class="text-danger small mt-1" *ngIf="controls.subtitle.touched && controls.subtitle.hasError('minlength')">
-              El subtitulo debe tener al menos 10 caracteres.
+              El subtítulo debe tener al menos 10 caracteres.
             </div>
             <div class="text-danger small mt-1" *ngIf="controls.subtitle.touched && controls.subtitle.hasError('maxlength')">
-              El subtitulo no debe superar los 180 caracteres.
+              El subtítulo no debe superar los 180 caracteres.
             </div>
           </div>
 
