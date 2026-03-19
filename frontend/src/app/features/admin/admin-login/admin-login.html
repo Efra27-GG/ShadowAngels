@@ -18,7 +18,7 @@
               El correo es obligatorio.
             </div>
             <div class="text-danger small mt-1" *ngIf="loginForm.controls.email.touched && loginForm.controls.email.hasError('email')">
-              Ingresa un correo valido.
+              Ingresa un correo válido.
             </div>
           </div>
 
@@ -29,7 +29,7 @@
               type="password"
               class="form-control"
               formControlName="password"
-              placeholder="Ingresa tu contrasena"
+              placeholder="Ingresa tu contraseña"
             />
             <div class="text-danger small mt-1" *ngIf="loginForm.controls.password.touched && loginForm.controls.password.hasError('required')">
               La contraseña es obligatoria.
@@ -37,7 +37,7 @@
           </div>
 
           <button type="submit" class="btn btn-dark w-100" [disabled]="loading">
-            {{ loading ? 'Entrando...' : 'Entrar' }}
+            {{ loading ? 'niciando sesión...' : 'Iniciar sesión' }}
           </button>
         </form>
 

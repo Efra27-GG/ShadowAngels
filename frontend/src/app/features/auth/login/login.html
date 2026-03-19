@@ -2,7 +2,7 @@
   <div class="row justify-content-center">
     <div class="col-12 col-md-6 col-lg-5">
       <div class="card shadow-sm p-4">
-        <h2 class="mb-4 text-center">Iniciar sesion</h2>
+        <h2 class="mb-4 text-center">Inicia sesión</h2>
 
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
           <div class="mb-3">
@@ -12,7 +12,7 @@
               El correo es obligatorio.
             </div>
             <div class="text-danger small mt-1" *ngIf="loginForm.controls.email.touched && loginForm.controls.email.hasError('email')">
-              Ingresa un correo valido.
+              Ingresa un correo válido.
             </div>
           </div>
 
@@ -24,7 +24,7 @@
             </div>
           </div>
 
-          <button type="submit" class="btn btn-dark w-100">Entrar</button>
+          <button type="submit" class="btn btn-dark w-100">Iniciar sesión</button>
         </form>
 
         <div *ngIf="errorMessage" class="alert alert-danger mt-3 mb-0">
@@ -33,7 +33,7 @@
 
         <p class="text-center mt-3 mb-0">
           ¿No tienes cuenta?
-          <a routerLink="/registro">Registrate</a>
+          <a routerLink="/registro">Regístrate</a>
         </p>
       </div>
     </div>
