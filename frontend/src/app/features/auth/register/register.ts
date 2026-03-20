@@ -20,13 +20,50 @@ export class RegisterComponent {
   errorMessage = '';
 
   registerForm = this.fb.group({
-    name: ['', [Validators.required, Validators.minLength(2),Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$')]],
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]]
-  });
+  name: [
+    '',
+    [
+      Validators.required,
+      Validators.minLength(4), 
+      Validators.maxLength(20), 
+      Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$') 
+    ]
+  ],
+  email: [
+    '',
+    [
+      Validators.required,
+      Validators.email,
+      Validators.maxLength(50), 
+    ]
+  ],
+  password: [
+    '',
+    [
+      Validators.required,
+      Validators.minLength(6), 
+      Validators.maxLength(15)
+    ]
+  ]
+
+});
     get controls() {
   return this.registerForm.controls;
 }
+
+soloLetras(event: KeyboardEvent): void {
+  const char = String.fromCharCode(event.keyCode);
+
+  const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+
+  if (!regex.test(char)) {
+    event.preventDefault(); 
+    this.errorMessage = 'Solo se permiten letras en el nombre.';
+  } else {
+    this.errorMessage = '';
+  }
+}
+
   onSubmit(): void {
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();

@@ -7,38 +7,81 @@
         <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
           <div class="mb-3">
             <label class="form-label">Nombre</label>
-            <input type="text" class="form-control" formControlName="name">
+            <input 
+            type="text" 
+            class="form-control"
+            [class.input-limit]="controls.name.value?.length === 20"
+            formControlName="name"
+            maxlength="20"
+            (keypress)="soloLetras($event)"
+            >
+            <div class="text-end small text-muted">
+            {{ controls.name.value?.length || 0 }}/20
+            </div>
             <div class="text-danger small mt-1" *ngIf="registerForm.controls.name.touched && registerForm.controls.name.hasError('required')">
               El nombre es obligatorio.
             </div>
             <div class="text-danger small mt-1" *ngIf="registerForm.controls.name.touched && registerForm.controls.name.hasError('minlength')">
-              El nombre debe tener al menos 2 caracteres.
+              El nombre debe tener al menos 4 caracteres.
             </div>
-            <div class="text-danger small mt-1" *ngIf="controls.name.touched && controls.name.hasError('pattern')">
-          El nombre no debe contener números ni caracteres especiales.
-          </div>
+            <div 
+  class="text-danger small mt-1"
+  *ngIf="controls.name.value?.length === 20"
+>
+  Límite máximo alcanzado
+</div>
           </div>
 
           <div class="mb-3">
             <label class="form-label">Correo</label>
-            <input type="email" class="form-control" formControlName="email">
+            <input 
+            type="email" 
+            class="form-control"
+            formControlName="email"
+            maxlength="50"
+            [class.input-limit]="controls.email.value?.length === 50"
+            >
+            <div class="text-end small text-muted">
+            {{ controls.email.value?.length || 0 }}/50
+            </div>
             <div class="text-danger small mt-1" *ngIf="registerForm.controls.email.touched && registerForm.controls.email.hasError('required')">
               El correo es obligatorio.
             </div>
             <div class="text-danger small mt-1" *ngIf="registerForm.controls.email.touched && registerForm.controls.email.hasError('email')">
               Ingresa un correo válido.
             </div>
+           <div 
+  class="text-danger small mt-1"
+  *ngIf="controls.email.value?.length === 50"
+>
+  Límite máximo alcanzado
+</div>
           </div>
 
           <div class="mb-3">
             <label class="form-label">Contraseña</label>
-            <input type="password" class="form-control" formControlName="password">
+            <input 
+            type="password" 
+            class="form-control"
+            [class.input-limit]="controls.password.value?.length === 15"
+            formControlName="password"
+            maxlength="15"
+            >
+            <div class="text-end small text-muted">
+           {{ controls.password.value?.length || 0 }}/15
+          </div>
             <div class="text-danger small mt-1" *ngIf="registerForm.controls.password.touched && registerForm.controls.password.hasError('required')">
               La contraseña es obligatoria.
             </div>
             <div class="text-danger small mt-1" *ngIf="registerForm.controls.password.touched && registerForm.controls.password.hasError('minlength')">
               La contraseña debe tener al menos 6 caracteres.
             </div>
+            <div 
+  class="text-danger small mt-1"
+  *ngIf="controls.password.value?.length === 15"
+>
+  Límite máximo alcanzado
+</div>
           </div>
 
           <button type="submit" class="btn btn-dark w-100">Crear cuenta</button>
