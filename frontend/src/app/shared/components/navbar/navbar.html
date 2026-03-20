@@ -5,35 +5,34 @@
     <button
       class="navbar-toggler app-navbar__toggler"
       type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarShadow"
       aria-controls="navbarShadow"
-      aria-expanded="false"
-      aria-label="Toggle navigation">
+      [attr.aria-expanded]="isMobileMenuOpen"
+      aria-label="Toggle navigation"
+      (click)="toggleMobileMenu()">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse" id="navbarShadow">
+    <div class="collapse navbar-collapse" id="navbarShadow" [class.show]="isMobileMenuOpen">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0 app-navbar__nav">
         <li class="nav-item">
-          <a class="nav-link app-navbar__link" routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">Inicio</a>
+          <a class="nav-link app-navbar__link" routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMobileMenu()">Inicio</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link app-navbar__link" routerLink="/mujeres" routerLinkActive="active-link">Mujeres</a>
+          <a class="nav-link app-navbar__link" routerLink="/mujeres" routerLinkActive="active-link" (click)="closeMobileMenu()">Mujeres</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link app-navbar__link" routerLink="/hombres" routerLinkActive="active-link">Hombres</a>
+          <a class="nav-link app-navbar__link" routerLink="/hombres" routerLinkActive="active-link" (click)="closeMobileMenu()">Hombres</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link app-navbar__link" routerLink="/ofertas" routerLinkActive="active-link">Ofertas</a>
+          <a class="nav-link app-navbar__link" routerLink="/ofertas" routerLinkActive="active-link" (click)="closeMobileMenu()">Ofertas</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link app-navbar__link" routerLink="/novedades" routerLinkActive="active-link">Novedades</a>
+          <a class="nav-link app-navbar__link" routerLink="/novedades" routerLinkActive="active-link" (click)="closeMobileMenu()">Novedades</a>
         </li>
 
         <ng-container *ngIf="isAdmin">
           <li class="nav-item">
-            <a class="nav-link app-navbar__link" routerLink="/admin" routerLinkActive="active-link">Panel</a>
+            <a class="nav-link app-navbar__link" routerLink="/admin" routerLinkActive="active-link" (click)="closeMobileMenu()">Panel</a>
           </li>
         </ng-container>
       </ul>
@@ -55,7 +54,8 @@
               routerLink="/notificaciones"
               routerLinkActive="active-link"
               aria-label="Notificaciones"
-              title="Notificaciones">
+              title="Notificaciones"
+              (click)="closeMobileMenu()">
               <span class="app-navbar__icon-wrap">
                 <svg class="app-navbar__bell" viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M12 3a5 5 0 0 0-5 5v2.13c0 .8-.32 1.56-.88 2.12L4.4 14a1 1 0 0 0 .7 1.7h13.8a1 1 0 0 0 .7-1.7l-1.72-1.75a3 3 0 0 1-.88-2.12V8a5 5 0 0 0-5-5Zm0 19a2.75 2.75 0 0 0 2.58-1.8h-5.16A2.75 2.75 0 0 0 12 22Z"/>
@@ -71,7 +71,8 @@
               routerLink="/carrito"
               routerLinkActive="active-link"
               aria-label="Carrito"
-              title="Carrito">
+              title="Carrito"
+              (click)="closeMobileMenu()">
               <span class="app-navbar__icon-wrap">
                 <svg class="app-navbar__bell" viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M7 5h14l-1.6 8.02a2 2 0 0 1-1.96 1.6H10.2a2 2 0 0 1-1.96-1.57L6.12 4H3V2h4.76l.58 3Zm3 15a1.75 1.75 0 1 1 0-3.5A1.75 1.75 0 0 1 10 20Zm7 0a1.75 1.75 0 1 1 0-3.5A1.75 1.75 0 0 1 17 20Z"/>
@@ -87,7 +88,8 @@
               routerLink="/perfil"
               routerLinkActive="active-link"
               aria-label="Perfil"
-              title="Perfil">
+              title="Perfil"
+              (click)="closeMobileMenu()">
               <span class="app-navbar__icon-wrap">
                 <svg class="app-navbar__bell" viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M12 12a4.25 4.25 0 1 0 0-8.5 4.25 4.25 0 0 0 0 8.5Zm0 2c-4.06 0-7.5 2.2-7.5 5.25 0 .41.34.75.75.75h13.5c.41 0 .75-.34.75-.75C19.5 16.2 16.06 14 12 14Z"/>

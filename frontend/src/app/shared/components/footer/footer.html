@@ -11,10 +11,10 @@
       <section>
         <h3 class="site-footer__title">Enlaces rápidos</h3>
         <nav class="site-footer__links">
-          <a routerLink="/mujeres">Dama</a>
-          <a routerLink="/hombres">Caballero</a>
-          <a routerLink="/ofertas">Ofertas</a>
-          <a routerLink="/admin/login">Admin</a>
+          <a href="" (click)="$event.preventDefault(); navigateFromFooter('/mujeres')">Dama</a>
+          <a href="" (click)="$event.preventDefault(); navigateFromFooter('/hombres')">Caballero</a>
+          <a href="" (click)="$event.preventDefault(); navigateFromFooter('/ofertas')">Ofertas</a>
+          <a href="" (click)="$event.preventDefault(); goToAdminLogin()">Admin</a>
         </nav>
       </section>
 

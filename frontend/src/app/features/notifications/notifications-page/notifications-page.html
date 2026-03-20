@@ -2,7 +2,7 @@
   <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
     <div>
       <h2 class="mb-1">Notificaciones</h2>
-      <p class="text-muted mb-0">Avisos publicados por la administración.</p>
+      <p class="text-muted mb-0">Avisos publicados por la administracion.</p>
     </div>
   </div>
 
@@ -14,12 +14,36 @@
 
   <div *ngIf="!loading && !notifications.length" class="notifications-empty">
     <h3 class="mb-2">No tienes notificaciones</h3>
-    <p class="text-muted mb-0">Cuando se publique una notificación, aparecerá aquí.</p>
+    <p class="text-muted mb-0">Cuando se publique una notificacion, aparecera aqui.</p>
   </div>
 
-  <div class="notifications-list" *ngIf="!loading && notifications.length">
-    <article class="notifications-card" *ngFor="let notification of notifications" [class.notifications-card--unread]="!notification.is_read">
-      <div class="notifications-card__layout">
+  <div *ngIf="!loading && notifications.length" class="notifications-filters">
+    <button
+      type="button"
+      class="notifications-filter"
+      [class.notifications-filter--active]="selectedFilter === 'new'"
+      (click)="setFilter('new')">
+      Nuevas
+    </button>
+    <button
+      type="button"
+      class="notifications-filter"
+      [class.notifications-filter--active]="selectedFilter === 'read'"
+      (click)="setFilter('read')">
+      Leidas
+    </button>
+  </div>
+
+  <div *ngIf="!loading && notifications.length && !filteredNotifications.length" class="notifications-empty">
+    <h3 class="mb-2">Sin resultados</h3>
+    <p class="text-muted mb-0">No hay notificaciones {{ selectedFilter === 'new' ? 'nuevas' : 'leidas' }} por ahora.</p>
+  </div>
+
+  <div class="notifications-list" *ngIf="!loading && filteredNotifications.length">
+    <article class="notifications-card" *ngFor="let notification of filteredNotifications" [class.notifications-card--unread]="!notification.is_read">
+      <div
+        class="notifications-card__layout"
+        [class.notifications-card__layout--no-image]="!notification.notification.image">
         <img
           *ngIf="notification.notification.image"
           class="notifications-card__thumb"
@@ -39,8 +63,20 @@
 
           <div class="notifications-card__actions">
             <button class="btn btn-dark btn-sm" type="button" (click)="openNotification(notification)">Ver</button>
-            <button class="btn btn-outline-dark btn-sm" type="button" (click)="markAsRead(notification)" [disabled]="notification.is_read">
-              Marcar como leída
+            <button
+              *ngIf="hasRedirectTarget(notification)"
+              class="btn btn-outline-primary btn-sm"
+              type="button"
+              (click)="openNotificationTarget(notification)">
+              {{ getRedirectLabel(notification) }}
+            </button>
+            <button
+              *ngIf="selectedFilter !== 'read'"
+              class="btn btn-outline-dark btn-sm"
+              type="button"
+              (click)="markAsRead(notification)"
+              [disabled]="notification.is_read">
+              Marcar como leida
             </button>
             <button class="btn btn-outline-danger btn-sm" type="button" (click)="deleteNotification(notification)">
               Eliminar
@@ -63,6 +99,18 @@
 
       <p class="notifications-modal__summary">{{ selectedNotification.notification.summary }}</p>
       <div class="notifications-modal__content">{{ selectedNotification.notification.content }}</div>
+
+      <section
+        *ngIf="hasRelatedItems(selectedNotification)"
+        class="notifications-modal__related">
+        <h4 class="notifications-modal__related-title">{{ getRelatedItemsTitle(selectedNotification) }}</h4>
+        <ul class="notifications-modal__related-list">
+          <li *ngFor="let item of getRelatedItems(selectedNotification)">
+            {{ formatRelatedItem(item) }}
+          </li>
+        </ul>
+      </section>
+
       <img
         *ngIf="selectedNotification.notification.image"
         class="notifications-modal__image"

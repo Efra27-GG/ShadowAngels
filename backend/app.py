@@ -410,7 +410,7 @@ def delete_product(current_user, product_id):
 
 
 # =========================
-# RESENAS
+# reseñaS
 # =========================
 @app.route("/api/products/<product_id>/reviews", methods=["POST"])
 @token_required(allowed_roles=["user"])
@@ -421,7 +421,7 @@ def create_review(current_user, product_id):
         return jsonify({"error": "Solo puedes reseñar productos con compra confirmada"}), 403
 
     if ReviewModel.already_reviewed(product_id, str(current_user["_id"])):
-        return jsonify({"error": "Ya dejaste una resena para este producto"}), 409
+        return jsonify({"error": "Ya dejaste una reseña para este producto"}), 409
 
     required = ["rating", "comment"]
     for field in required:
@@ -450,7 +450,7 @@ def create_review(current_user, product_id):
 
     result = ReviewModel.create_review(review_data)
     return jsonify({
-        "message": "Resena creada",
+        "message": "reseña creada",
         "review_id": str(result.inserted_id)
     }), 201
 
@@ -459,7 +459,7 @@ def create_review(current_user, product_id):
 @token_required(allowed_roles=["admin", "superadmin"])
 def delete_review(current_user, review_id):
     ReviewModel.delete_review(review_id)
-    return jsonify({"message": "Resena eliminada"})
+    return jsonify({"message": "reseña eliminada"})
 
 
 @app.route("/api/admin/reviews", methods=["GET"])
@@ -476,13 +476,13 @@ def update_review(current_user, review_id):
     review = ReviewModel.get_by_id(review_id)
 
     if not review:
-        return jsonify({"error": "Resena no encontrada"}), 404
+        return jsonify({"error": "reseña no encontrada"}), 404
 
     if str(review["user_id"]) != str(current_user["_id"]):
-        return jsonify({"error": "No puedes editar esta resena"}), 403
+        return jsonify({"error": "No puedes editar esta reseña"}), 403
 
     if not ReviewModel.can_edit(review):
-        return jsonify({"error": "Solo puedes editar tu resena durante los primeros 10 minutos"}), 403
+        return jsonify({"error": "Solo puedes editar tu reseña durante los primeros 10 minutos"}), 403
 
     required = ["rating", "comment"]
     for field in required:
@@ -502,7 +502,7 @@ def update_review(current_user, review_id):
         return jsonify({"error": "El comentario debe tener entre 5 y 500 caracteres"}), 400
 
     ReviewModel.update_review(review_id, {"rating": rating, "comment": comment})
-    return jsonify({"message": "Resena actualizada"})
+    return jsonify({"message": "reseña actualizada"})
 
 
 # =========================
@@ -773,24 +773,48 @@ def update_admin_purchase_request(current_user, request_id):
     ):
         title = "Compra confirmada"
         if updated_request.get("request_type") == "cart":
-            summary = "Tu solicitud de compra fue confirmada. Ya puedes dejar resenas en los productos incluidos."
+            summary = "Tu solicitud de compra fue confirmada. Ya puedes dejar reseñas en los productos incluidos."
             content = (
                 "El administrador confirmo tu solicitud de carrito. "
-                "Ya puedes volver a los productos de esa compra y dejar tus resenas."
+                "Ya puedes volver a los productos de esa compra y dejar tus reseñas."
             )
+            target_type = "cart"
+            target_id = str(updated_request.get("cart_id")) if updated_request.get("cart_id") else None
+            related_items = [
+                {
+                    "product_id": str(item.get("product_id")) if item.get("product_id") else None,
+                    "product_name": item.get("product_name", ""),
+                    "selected_size": item.get("selected_size", ""),
+                    "quantity": int(item.get("quantity", 1))
+                }
+                for item in updated_request.get("items", [])
+            ]
         else:
             product_name = updated_request.get("product_name", "tu producto")
-            summary = f"Tu compra de {product_name} fue confirmada. Ya puedes dejar tu resena."
+            summary = f"Tu compra de {product_name} fue confirmada. Ya puedes dejar tu reseña."
             content = (
                 f"El administrador confirmo la compra de {product_name}. "
-                "Ya puedes entrar al detalle del producto y publicar tu resena."
+                "Ya puedes entrar al detalle del producto y publicar tu reseña."
             )
+            target_type = "product"
+            target_id = str(updated_request.get("product_id")) if updated_request.get("product_id") else None
+            related_items = [
+                {
+                    "product_id": target_id,
+                    "product_name": product_name,
+                    "selected_size": updated_request.get("selected_size", ""),
+                    "quantity": 1
+                }
+            ]
 
         NotificationModel.create_system_notification_for_users(
             {
                 "title": title,
                 "summary": summary,
                 "content": content,
+                "target_type": target_type,
+                "target_id": target_id,
+                "related_items": related_items,
                 "created_by": str(current_user["_id"])
             },
             [str(updated_request["user_id"])]

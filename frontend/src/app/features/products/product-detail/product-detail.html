@@ -60,22 +60,21 @@
         </p>
 
         <div class="product-meta-block">
-  <p class="product-meta-label">Tallas disponibles</p>
-  <div class="product-size-list">
-    <button
-      type="button"
-      class="product-size-chip"
-      *ngFor="let size of product.sizes"
-      (click)="seleccionarTalla(size)"
-      [class.active]="tallaSeleccionada === size"
-    >
-      {{ size }}
-    </button>
-  </div>
-   <p *ngIf="tallaSeleccionada" class="selected-size-text">
-    Talla seleccionada: <strong>{{ tallaSeleccionada }}</strong>
-  </p>
-</div>
+          <p class="product-meta-label">Selecciona tu talla</p>
+          <div class="product-size-list">
+            <button
+              type="button"
+              class="product-size-chip"
+              *ngFor="let size of product.sizes"
+              (click)="selectSize(size)"
+              [class.product-size-chip--active]="selectedSize === size">
+              {{ size }}
+            </button>
+          </div>
+          <p *ngIf="selectedSize" class="product-size-selection">
+            Talla seleccionada: <strong>{{ selectedSize }}</strong>
+          </p>
+        </div>
 
         <div class="product-meta-grid">
           <div class="product-meta-item">
@@ -89,14 +88,13 @@
         </div>
 
         <div class="contact-actions" *ngIf="isUser">
-          <button 
-  class="product-action-btn product-action-btn--cart" 
-  type="button" 
-  (click)="addToCart()"
-  [disabled]="!tallaSeleccionada"
->
-  Agregar al carrito
-</button>
+          <button
+            class="product-action-btn product-action-btn--cart"
+            type="button"
+            (click)="addToCart()"
+            [disabled]="!selectedSize">
+            Agregar al carrito
+          </button>
           <button class="product-action-btn product-action-btn--whatsapp" type="button" (click)="createPurchaseRequest('whatsapp')">
             Contactar por WhatsApp
           </button>

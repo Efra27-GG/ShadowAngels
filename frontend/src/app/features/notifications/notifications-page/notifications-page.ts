@@ -1,23 +1,26 @@
 import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router, RouterModule } from '@angular/router';
 import { NotificationService } from '../../../core/services/notification.service';
-import { UserNotification } from '../../../shared/interfaces/notification.interface';
+import { NotificationRelatedItem, UserNotification } from '../../../shared/interfaces/notification.interface';
 
 @Component({
   selector: 'app-notifications-page',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './notifications-page.html',
   styleUrl: './notifications-page.css'
 })
 export class NotificationsPageComponent implements OnInit {
   private notificationService = inject(NotificationService);
+  private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
 
   notifications: UserNotification[] = [];
   selectedNotification: UserNotification | null = null;
   loading = true;
   errorMessage = '';
+  selectedFilter: 'new' | 'read' = 'new';
 
   ngOnInit(): void {
     this.loadNotifications();
@@ -36,6 +39,16 @@ export class NotificationsPageComponent implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  get filteredNotifications(): UserNotification[] {
+    return this.notifications.filter((notification) =>
+      this.selectedFilter === 'new' ? !notification.is_read : notification.is_read
+    );
+  }
+
+  setFilter(filter: 'new' | 'read'): void {
+    this.selectedFilter = filter;
   }
 
   openNotification(notification: UserNotification): void {
@@ -66,6 +79,46 @@ export class NotificationsPageComponent implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  hasRedirectTarget(notification: UserNotification): boolean {
+    const targetType = this.getNotificationTargetType(notification);
+    return targetType === 'cart' || (targetType === 'product' && !!notification.notification.target_id);
+  }
+
+  openNotificationTarget(notification: UserNotification): void {
+    const targetType = this.getNotificationTargetType(notification);
+
+    if (targetType === 'product' && notification.notification.target_id) {
+      this.router.navigate(['/producto', notification.notification.target_id]);
+      return;
+    }
+
+    if (targetType === 'cart') {
+      this.router.navigate(['/carrito']);
+    }
+  }
+
+  getRedirectLabel(notification: UserNotification): string {
+    return this.getNotificationTargetType(notification) === 'product' ? 'Ir al producto' : 'Ver carrito';
+  }
+
+  getRelatedItems(notification: UserNotification): NotificationRelatedItem[] {
+    return notification.notification.related_items ?? [];
+  }
+
+  hasRelatedItems(notification: UserNotification): boolean {
+    return this.getRelatedItems(notification).length > 0;
+  }
+
+  getRelatedItemsTitle(notification: UserNotification): string {
+    return this.getRelatedItems(notification).length > 1 ? 'Productos confirmados' : 'Producto confirmado';
+  }
+
+  formatRelatedItem(item: NotificationRelatedItem): string {
+    const sizeText = item.selected_size ? ` - talla ${item.selected_size}` : '';
+    const quantityText = item.quantity > 1 ? ` x${item.quantity}` : '';
+    return `${item.product_name}${sizeText}${quantityText}`;
   }
 
   deleteNotification(notification: UserNotification): void {
@@ -104,5 +157,19 @@ export class NotificationsPageComponent implements OnInit {
     }
 
     return `http://127.0.0.1:5000/uploads/notifications/${image}`;
+  }
+
+  private getNotificationTargetType(notification: UserNotification): 'product' | 'cart' | null {
+    const explicitTarget = notification.notification.target_type;
+    if (explicitTarget === 'product' || explicitTarget === 'cart') {
+      return explicitTarget;
+    }
+
+    const joinedText = `${notification.notification.title} ${notification.notification.summary} ${notification.notification.content}`.toLowerCase();
+    if (joinedText.includes('compra confirmada') && (joinedText.includes('carrito') || joinedText.includes('productos incluidos'))) {
+      return 'cart';
+    }
+
+    return null;
   }
 }
