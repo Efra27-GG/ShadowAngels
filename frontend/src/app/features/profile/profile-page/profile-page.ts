@@ -66,6 +66,13 @@ export class ProfilePage implements OnInit {
     });
   }
 
+ onNameInput(event: any): void {
+  const inputElement = event.target as HTMLInputElement;
+  const filtered = inputElement.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+  inputElement.value = filtered;
+  this.user.name = filtered;
+}
+
   updateProfile(): void {
     this.touchedFields.name = true;
     this.touchedFields.email = true;
@@ -172,6 +179,11 @@ export class ProfilePage implements OnInit {
 
     if (value.length > 80) {
       return 'El nombre no debe superar los 80 caracteres.';
+    }
+
+    // 🔥 VALIDACIÓN EXTRA
+    if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(value)) {
+      return 'El nombre no debe contener números ni caracteres especiales.';
     }
 
     return '';
