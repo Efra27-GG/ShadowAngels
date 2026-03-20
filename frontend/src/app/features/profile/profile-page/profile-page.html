@@ -27,19 +27,26 @@
 
       <form *ngIf="!loading" class="profile-form" (ngSubmit)="updateProfile()">
         <div class="profile-form__grid">
+          <!-- 🔥 NOMBRE -->
           <div class="profile-field profile-field--wide">
             <label class="form-label">Nombre completo</label>
             <input
-              type="text"
-              class="form-control"
-              [(ngModel)]="user.name"
-              name="name"
-              (blur)="markFieldTouched('name')"
-              required>
-            <div class="text-danger small mt-1" *ngIf="nameError">{{ nameError }}</div>
+  type="text"
+  class="form-control"
+  [(ngModel)]="user.name"
+  name="name"
+  (input)="onNameInput($event)"
+  (blur)="markFieldTouched('name')"
+  required>
+
+            <div class="text-danger small mt-1" *ngIf="nameError">
+              {{ nameError }}
+            </div>
+
             <small class="text-muted">{{ nameHelpText }}</small>
           </div>
 
+          <!-- EMAIL -->
           <div class="profile-field profile-field--wide">
             <label class="form-label">Correo electrónico</label>
             <input
@@ -48,8 +55,13 @@
               [(ngModel)]="user.email"
               name="email"
               (blur)="markFieldTouched('email')"
-              required>
-            <div class="text-danger small mt-1" *ngIf="emailError">{{ emailError }}</div>
+              required
+            />
+
+            <div class="text-danger small mt-1" *ngIf="emailError">
+              {{ emailError }}
+            </div>
+
             <small class="text-muted">{{ emailHelpText }}</small>
           </div>
 
@@ -65,14 +77,22 @@
 
           <div class="profile-field profile-field--wide">
             <label class="form-label">ID de usuario</label>
-            <div class="profile-field__readonly profile-field__readonly--code">{{ user._id || 'Sin asignar' }}</div>
+            <div class="profile-field__readonly profile-field__readonly--code">
+              {{ user._id || 'Sin asignar' }}
+            </div>
           </div>
         </div>
 
         <div class="profile-form__footer">
-          <button class="btn btn-outline-dark" type="button" (click)="loadProfile()" [disabled]="saving">
+          <button
+            class="btn btn-outline-dark"
+            type="button"
+            (click)="loadProfile()"
+            [disabled]="saving"
+          >
             Recargar datos
           </button>
+
           <button class="btn btn-dark" type="submit" [disabled]="saving">
             {{ saving ? 'Guardando...' : 'Guardar cambios' }}
           </button>
