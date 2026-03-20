@@ -26,9 +26,9 @@ export class NotificationsAdminComponent implements OnInit {
   imageName = '';
 
   form = this.fb.group({
-    title: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(120)]],
+    title: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(30), Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ,\\s]+$')]],
     summary: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(220)]],
-    content: ['', [Validators.required, Validators.minLength(12), Validators.maxLength(3000)]],
+    content: ['', [Validators.required, Validators.minLength(12), Validators.maxLength(450)]],
     status: ['draft', Validators.required],
     scheduled_for: ['']
   });

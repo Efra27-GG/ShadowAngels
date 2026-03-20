@@ -30,12 +30,12 @@ export class ProductsAdminComponent implements OnInit, OnDestroy {
   uploadingImages = false;
 
   productForm = this.fb.group({
-    name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(120), Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$')]],
-    description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(1200)]],
+    name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(40), Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$')]],
+    description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(250)]],
     category: ['dama', Validators.required],
     price: [0, [Validators.required, Validators.min(1)]],
     discount: [0, [Validators.required, Validators.min(0), Validators.max(100)]],
-    sizesText: ['S,M,L', [Validators.required, this.sizesValidator]],
+    sizesText: ['XS,S,M,L,XL', [Validators.required, this.sizesValidator,Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ,\\s]+$')]],
     is_new: [false]
   });
 
@@ -251,7 +251,7 @@ export class ProductsAdminComponent implements OnInit, OnDestroy {
       category: 'dama',
       price: 0,
       discount: 0,
-      sizesText: 'S,M,L',
+      sizesText: 'XS,S,M,L,XL',
       is_new: false
     });
   }
@@ -261,11 +261,19 @@ export class ProductsAdminComponent implements OnInit, OnDestroy {
   }
 
   private sizesValidator(control: AbstractControl) {
-    const sizes = String(control.value || '')
-      .split(',')
-      .map((size) => size.trim())
-      .filter(Boolean);
+  const sizes = String(control.value || '')
+    .split(',')
+    .map((size) => size.trim())
+    .filter(Boolean);
 
-    return sizes.length ? null : { invalidSizes: true };
+  // Validar que haya al menos una talla
+  if (!sizes.length) {
+    return { invalidSizes: true };
   }
+
+  // Validar que TODAS sean solo letras (sin números)
+  const valid = sizes.every((size) => /^[a-zA-Z]+$/.test(size));
+
+  return valid ? null : { invalidSizes: true };
+}
 }

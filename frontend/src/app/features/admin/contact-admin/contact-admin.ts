@@ -15,6 +15,7 @@ import { ContactInfo } from '../../../shared/interfaces/contact.interface';
 export class ContactAdminComponent implements OnInit {
   private readonly urlPattern = /^https?:\/\/.+/i;
   private readonly phonePattern = /^\d{10,15}$/;
+
   private fb = inject(FormBuilder);
   private contactService = inject(ContactService);
   private cdr = inject(ChangeDetectorRef);
@@ -24,13 +25,26 @@ export class ContactAdminComponent implements OnInit {
   errorMessage = '';
 
   form = this.fb.group({
-    whatsapp_number: ['', Validators.pattern(this.phonePattern)],
-    whatsapp_label: ['', [Validators.minLength(6), Validators.maxLength(40)]],
+    // 🔥 SOLO NÚMEROS + LIMITE
+    whatsapp_number: [
+      '',
+      [
+        Validators.pattern(this.phonePattern),
+        Validators.maxLength(15)
+      ]
+    ],
+
+    whatsapp_label: ['', [Validators.minLength(6), Validators.maxLength(20)]],
+
     instagram: ['', Validators.pattern(this.urlPattern)],
     facebook: ['', Validators.pattern(this.urlPattern)],
     tiktok: ['', Validators.pattern(this.urlPattern)],
-    email: ['', Validators.email],
-    location: ['', [Validators.maxLength(140)]]
+
+    // 🔥 EMAIL LIMITADO
+    email: ['', [Validators.email, Validators.maxLength(50)]],
+
+    // 🔥 UBICACIÓN LIMITADA
+    location: ['', [Validators.maxLength(60)]]
   });
 
   ngOnInit(): void {
@@ -54,6 +68,18 @@ export class ContactAdminComponent implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  // 🔥 BLOQUEAR LETRAS EN TELÉFONO EN TIEMPO REAL
+  onPhoneInput(event: any): void {
+    const input = event.target as HTMLInputElement;
+
+    // Solo números
+    const filtered = input.value.replace(/\D/g, '');
+
+    input.value = filtered;
+
+    this.form.get('whatsapp_number')?.setValue(filtered, { emitEvent: false });
   }
 
   submit(): void {
@@ -92,4 +118,14 @@ export class ContactAdminComponent implements OnInit {
   get controls() {
     return this.form.controls;
   }
+  onWhatsappLabelInput(event: any): void {
+  const input = event.target as HTMLInputElement;
+
+  // Permitir solo números, espacios y guiones
+  const filtered = input.value.replace(/[^0-9-\s]/g, '');
+
+  input.value = filtered;
+
+  this.form.get('whatsapp_label')?.setValue(filtered, { emitEvent: false });
+}
 }

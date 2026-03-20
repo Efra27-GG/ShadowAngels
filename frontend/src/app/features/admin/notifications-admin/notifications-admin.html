@@ -9,7 +9,12 @@
       <section class="card shadow-sm p-4">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
           <h4 class="mb-0">{{ editingId ? 'Editar notificacion' : 'Nueva notificación' }}</h4>
-          <button class="btn btn-outline-dark btn-sm" type="button" (click)="resetForm()" *ngIf="editingId">
+          <button
+            class="btn btn-outline-dark btn-sm"
+            type="button"
+            (click)="resetForm()"
+            *ngIf="editingId"
+          >
             Cancelar edición
           </button>
         </div>
@@ -17,52 +22,120 @@
         <form [formGroup]="form" (ngSubmit)="submit()">
           <div class="mb-3">
             <label class="form-label">Titulo</label>
-            <input class="form-control" formControlName="title">
-            <div class="text-danger small mt-1" *ngIf="controls.title.touched && controls.title.hasError('required')">
+            <input class="form-control" formControlName="title" maxlength="30" />
+            <small class="text-muted">
+              {{ controls.title.value?.length || 0 }}/30 caracteres
+            </small>
+            <div
+              class="text-danger small mt-1"
+              *ngIf="controls.title.touched && controls.title.hasError('required')"
+            >
               El título es obligatorio.
             </div>
-            <div class="text-danger small mt-1" *ngIf="controls.title.touched && controls.title.hasError('minlength')">
+            <div
+              class="text-danger small mt-1"
+              *ngIf="controls.title.touched && controls.title.hasError('pattern')"
+            >
+              El título no debe contener números ni caracteres especiales.
+            </div>
+            <div
+              class="text-danger small mt-1"
+              *ngIf="controls.title.touched && controls.title.hasError('minlength')"
+            >
               El título debe tener al menos 4 caracteres.
             </div>
-            <div class="text-danger small mt-1" *ngIf="controls.title.touched && controls.title.hasError('maxlength')">
-              El título no debe superar los 120 caracteres.
+            <div
+              class="text-danger small mt-1"
+              *ngIf="controls.title.touched && controls.title.hasError('maxlength')"
+            >
+              El título no debe superar los 30 caracteres.
             </div>
           </div>
 
           <div class="mb-3">
             <label class="form-label">Resumen</label>
-            <textarea class="form-control" rows="3" formControlName="summary"></textarea>
-            <div class="text-danger small mt-1" *ngIf="controls.summary.touched && controls.summary.hasError('required')">
+
+            <textarea class="form-control" rows="3" formControlName="summary" maxlength="220">
+            </textarea>
+
+            <!-- 🔥 CONTADOR CORRECTO -->
+            <small class="text-muted">
+              {{ controls.summary.value?.length || 0 }}/220 caracteres
+            </small>
+
+            <!-- ERRORES -->
+            <div
+              class="text-danger small mt-1"
+              *ngIf="controls.summary.touched && controls.summary.hasError('required')"
+            >
               El resumen es obligatorio.
             </div>
-            <div class="text-danger small mt-1" *ngIf="controls.summary.touched && controls.summary.hasError('minlength')">
+
+            <div
+              class="text-danger small mt-1"
+              *ngIf="controls.summary.touched && controls.summary.hasError('minlength')"
+            >
               El resumen debe tener al menos 8 caracteres.
             </div>
-            <div class="text-danger small mt-1" *ngIf="controls.summary.touched && controls.summary.hasError('maxlength')">
+
+            <div
+              class="text-danger small mt-1"
+              *ngIf="controls.summary.touched && controls.summary.hasError('maxlength')"
+            >
               El resumen no debe superar los 220 caracteres.
             </div>
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Contenido completo</label>
-            <textarea class="form-control" rows="6" formControlName="content"></textarea>
-            <div class="text-danger small mt-1" *ngIf="controls.content.touched && controls.content.hasError('required')">
-              El contenido es obligatorio.
-            </div>
-            <div class="text-danger small mt-1" *ngIf="controls.content.touched && controls.content.hasError('minlength')">
-              El contenido debe tener al menos 12 caracteres.
-            </div>
-            <div class="text-danger small mt-1" *ngIf="controls.content.touched && controls.content.hasError('maxlength')">
-              El contenido no debe superar los 3000 caracteres.
-            </div>
-          </div>
+  <label class="form-label">Contenido completo</label>
 
+  <textarea 
+    class="form-control" 
+    rows="6" 
+    formControlName="content"
+    maxlength="450">
+  </textarea>
+
+  <!-- 🔥 CONTADOR -->
+  <small class="text-muted">
+    {{ controls.content.value?.length || 0 }}/450 caracteres
+  </small>
+
+  <!-- ERRORES -->
+  <div
+    class="text-danger small mt-1"
+    *ngIf="controls.content.touched && controls.content.hasError('required')"
+  >
+    El contenido es obligatorio.
+  </div>
+
+  <div
+    class="text-danger small mt-1"
+    *ngIf="controls.content.touched && controls.content.hasError('minlength')"
+  >
+    El contenido debe tener al menos 12 caracteres.
+  </div>
+
+  <div
+    class="text-danger small mt-1"
+    *ngIf="controls.content.touched && controls.content.hasError('maxlength')"
+  >
+    El contenido no debe superar los 450 caracteres.
+  </div>
+</div>
           <div class="mb-3">
             <label class="form-label">Imagen</label>
-            <input class="form-control" type="file" accept="image/*" (change)="onImageSelected($event)">
+            <input
+              class="form-control"
+              type="file"
+              accept="image/*"
+              (change)="onImageSelected($event)"
+            />
             <div class="notification-image-preview mt-3" *ngIf="imagePreview">
-              <img [src]="imagePreview" alt="Vista previa de notificacion">
-              <button class="btn btn-outline-danger btn-sm" type="button" (click)="removeImage()">Quitar imagen</button>
+              <img [src]="imagePreview" alt="Vista previa de notificacion" />
+              <button class="btn btn-outline-danger btn-sm" type="button" (click)="removeImage()">
+                Quitar imagen
+              </button>
             </div>
           </div>
 
@@ -77,14 +150,24 @@
             </div>
             <div class="col-12 col-md-6">
               <label class="form-label">Programar para</label>
-              <input class="form-control" type="datetime-local" formControlName="scheduled_for">
+              <input class="form-control" type="datetime-local" formControlName="scheduled_for" />
               <small class="text-muted d-block mt-1">
                 Solo es obligatorio cuando eliges "Programada".
               </small>
-              <div class="text-danger small mt-1" *ngIf="controls.scheduled_for.touched && controls.scheduled_for.hasError('required')">
+              <div
+                class="text-danger small mt-1"
+                *ngIf="
+                  controls.scheduled_for.touched && controls.scheduled_for.hasError('required')
+                "
+              >
                 Elige una fecha y hora para programar la notificación.
               </div>
-              <div class="text-danger small mt-1" *ngIf="controls.scheduled_for.touched && controls.scheduled_for.hasError('notFutureDate')">
+              <div
+                class="text-danger small mt-1"
+                *ngIf="
+                  controls.scheduled_for.touched && controls.scheduled_for.hasError('notFutureDate')
+                "
+              >
                 La fecha programada debe estar en el futuro.
               </div>
             </div>
@@ -99,7 +182,9 @@
       <section class="card shadow-sm p-4">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
           <h4 class="mb-0">Notificaciones creadas</h4>
-          <button class="btn btn-outline-dark btn-sm" type="button" (click)="loadNotifications()">Recargar</button>
+          <button class="btn btn-outline-dark btn-sm" type="button" (click)="loadNotifications()">
+            Recargar
+          </button>
         </div>
 
         <div *ngIf="loading" class="text-center py-4">
@@ -118,20 +203,37 @@
                 <p class="mb-1 text-muted">{{ notification.summary }}</p>
                 <p class="mb-0 text-muted">
                   Creada: {{ formatDate(notification.created_at) }}
-                  <span *ngIf="notification.published_at"> · Publicada: {{ formatDate(notification.published_at) }}</span>
-                  <span *ngIf="notification.scheduled_for"> · Programada: {{ formatDate(notification.scheduled_for) }}</span>
+                  <span *ngIf="notification.published_at">
+                    · Publicada: {{ formatDate(notification.published_at) }}</span
+                  >
+                  <span *ngIf="notification.scheduled_for">
+                    · Programada: {{ formatDate(notification.scheduled_for) }}</span
+                  >
                 </p>
               </div>
               <span class="notification-admin-card__status">{{ notification.status }}</span>
             </div>
 
-            <img *ngIf="notification.image" class="notification-admin-card__image" [src]="getImagePath(notification.image)" [alt]="notification.title">
+            <img
+              *ngIf="notification.image"
+              class="notification-admin-card__image"
+              [src]="getImagePath(notification.image)"
+              [alt]="notification.title"
+            />
 
             <div class="notification-admin-card__actions">
-              <button class="btn btn-outline-dark btn-sm" type="button" (click)="editNotification(notification)">
+              <button
+                class="btn btn-outline-dark btn-sm"
+                type="button"
+                (click)="editNotification(notification)"
+              >
                 Editar
               </button>
-              <button class="btn btn-outline-danger btn-sm" type="button" (click)="deleteNotification(notification)">
+              <button
+                class="btn btn-outline-danger btn-sm"
+                type="button"
+                (click)="deleteNotification(notification)"
+              >
                 Eliminar
               </button>
             </div>
