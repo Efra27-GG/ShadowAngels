@@ -38,6 +38,7 @@ export class ProductDetailComponent implements OnInit {
   requestMessage = '';
   reviewMessage = '';
   reviewErrorMessage = '';
+  tallaSeleccionada: string | null = null;
   contact: ContactInfo = {
     whatsapp_number: '',
     whatsapp_label: '',
@@ -164,6 +165,10 @@ export class ProductDetailComponent implements OnInit {
     this.selectedImage = image;
   }
 
+  seleccionarTalla(size: string): void {
+  this.tallaSeleccionada = size;
+}
+
   createPurchaseRequest(channel: 'whatsapp' | 'instagram'): void {
     if (!this.product || !this.isUser) {
       return;
@@ -213,24 +218,30 @@ export class ProductDetailComponent implements OnInit {
     });
   }
 
-  addToCart(): void {
-    if (!this.product || !this.isUser) {
-      return;
-    }
-
-    this.cartService.addItem(this.product._id).subscribe({
-      next: () => {
-        this.requestMessage = 'Producto agregado al carrito.';
-        this.reviewErrorMessage = '';
-        this.reviewMessage = '';
-        this.cdr.detectChanges();
-      },
-      error: (error) => {
-        this.requestMessage = error?.error?.error || 'No se pudo agregar el producto al carrito.';
-        this.cdr.detectChanges();
-      }
-    });
+addToCart(): void {
+  if (!this.product || !this.isUser) {
+    return;
   }
+
+  if (!this.tallaSeleccionada) {
+    this.requestMessage = 'Debes seleccionar una talla antes de agregar al carrito.';
+    this.cdr.detectChanges();
+    return;
+  }
+
+  this.cartService.addItem(this.product._id, this.tallaSeleccionada).subscribe({
+    next: () => {
+      this.requestMessage = `Producto agregado al carrito (Talla: ${this.tallaSeleccionada}).`;
+      this.reviewErrorMessage = '';
+      this.reviewMessage = '';
+      this.cdr.detectChanges();
+    },
+    error: (error) => {
+      this.requestMessage = error?.error?.error || 'No se pudo agregar el producto al carrito.';
+      this.cdr.detectChanges();
+    }
+  });
+}
 
   submitReview(): void {
     this.reviewSubmitted = true;

@@ -29,14 +29,15 @@ export class CartService {
     return this.http.get<PurchaseRequest[]>(`${this.apiUrl}/cart/history`);
   }
 
-  addItem(productId: string, quantity = 1) {
-    return this.http.post<{ message: string; cart: Cart }>(`${this.apiUrl}/cart/items`, {
-      product_id: productId,
-      quantity
-    }).pipe(
-      tap((response) => this.cartSubject.next(response.cart))
-    );
-  }
+addItem(productId: string, talla: string, quantity = 1) {
+  return this.http.post<{ message: string; cart: Cart }>(`${this.apiUrl}/cart/items`, {
+    product_id: productId,
+    quantity,
+    talla // 👈 agregamos la talla
+  }).pipe(
+    tap((response) => this.cartSubject.next(response.cart))
+  );
+}
 
   updateItem(productId: string, quantity: number) {
     return this.http.put<{ message: string; cart: Cart }>(`${this.apiUrl}/cart/items/${productId}`, {
