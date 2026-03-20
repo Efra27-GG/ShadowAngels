@@ -30,7 +30,7 @@ export class ProductsAdminComponent implements OnInit, OnDestroy {
   uploadingImages = false;
 
   productForm = this.fb.group({
-    name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(120)]],
+    name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(120), Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$')]],
     description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(1200)]],
     category: ['dama', Validators.required],
     price: [0, [Validators.required, Validators.min(1)]],
