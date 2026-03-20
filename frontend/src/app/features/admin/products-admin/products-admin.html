@@ -21,6 +21,9 @@
           <div class="text-danger small mt-1" *ngIf="controls.name.touched && controls.name.hasError('maxlength')">
             El nombre no debe superar los 120 caracteres.
           </div>
+          <div class="text-danger small mt-1" *ngIf="controls.name.touched && controls.name.hasError('pattern')">
+          El nombre no debe contener números ni caracteres especiales.
+          </div>
         </div>
 
         <div class="col-md-6">
