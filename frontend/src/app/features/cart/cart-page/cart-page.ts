@@ -78,7 +78,7 @@ export class CartPageComponent implements OnInit {
       return;
     }
 
-    this.cartService.updateItem(item.product_id, nextQuantity).subscribe({
+    this.cartService.updateItem(item.product_id, item.selected_size, nextQuantity).subscribe({
       next: (response) => {
         this.cart = response.cart;
         this.message = 'Cantidad actualizada.';
@@ -94,7 +94,7 @@ export class CartPageComponent implements OnInit {
   }
 
   removeItem(item: CartItem): void {
-    this.cartService.removeItem(item.product_id).subscribe({
+    this.cartService.removeItem(item.product_id, item.selected_size).subscribe({
       next: (response) => {
         this.cart = response.cart;
         this.message = 'Producto eliminado del carrito.';
@@ -173,20 +173,20 @@ export class CartPageComponent implements OnInit {
 
   getHistoryTitle(request: PurchaseRequest): string {
     if (request.request_type === 'cart') {
-      const totalProducts = request.items?.length || 0;
-      return `Carrito con ${totalProducts} producto${totalProducts === 1 ? '' : 's'}`;
+      const totalUnits = (request.items || []).reduce((total, item) => total + item.quantity, 0);
+      return `Carrito con ${totalUnits} prenda${totalUnits === 1 ? '' : 's'}`;
     }
 
     return request.product_name || 'Compra individual';
   }
 
-  getHistoryItems(request: PurchaseRequest): Array<{ product_name: string; quantity: number; final_price?: number }> {
+  getHistoryItems(request: PurchaseRequest): Array<{ product_name: string; quantity: number; final_price?: number; selected_size?: string }> {
     if (request.request_type === 'cart') {
       return request.items || [];
     }
 
     return request.product_name
-      ? [{ product_name: request.product_name, quantity: 1, final_price: undefined }]
+      ? [{ product_name: request.product_name, quantity: 1, final_price: undefined, selected_size: request.selected_size }]
       : [];
   }
 
@@ -212,7 +212,7 @@ export class CartPageComponent implements OnInit {
     }
 
     const summary = items
-      .map((item) => `${item.product_name} x${item.quantity}`)
+      .map((item) => `${item.product_name} talla ${item.selected_size} x${item.quantity}`)
       .join(', ');
     const message = encodeURIComponent(`Hola, quiero solicitar estos productos de mi carrito: ${summary}.`);
 

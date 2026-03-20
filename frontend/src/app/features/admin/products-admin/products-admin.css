@@ -27,21 +27,20 @@ textarea {
   box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
 }
 
-.image-card:first-child {
-  grid-column: span 2;
-  grid-row: span 2;
-}
 
 .image-card img {
   width: 100%;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
+  height: 200px;
+  object-fit: contain;  
+  background: #f8f9fa;  
   border-radius: 10px;
   margin-bottom: 8px;
 }
 
-.image-card:first-child img {
-  min-height: 100%;
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(620px, 1fr));
+  gap: 12px;
 }
 
 @media (max-width: 991px) {

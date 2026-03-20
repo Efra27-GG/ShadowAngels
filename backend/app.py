@@ -60,6 +60,19 @@ def delete_uploaded_file(upload_folder, filename):
         os.remove(file_path)
 
 
+def validate_selected_size(product, selected_size):
+    normalized_size = str(selected_size or "").strip()
+    available_sizes = [str(size).strip() for size in product.get("sizes", []) if str(size).strip()]
+
+    if not normalized_size:
+        return None, jsonify({"error": "Debes seleccionar una talla"}), 400
+
+    if normalized_size not in available_sizes:
+        return None, jsonify({"error": "La talla seleccionada no esta disponible para este producto"}), 400
+
+    return normalized_size, None, None
+
+
 @app.route("/")
 def home():
     return jsonify({"message": "ShadowAngels API funcionando"})
@@ -397,7 +410,7 @@ def delete_product(current_user, product_id):
 
 
 # =========================
-# RESENAS
+# reseñaS
 # =========================
 @app.route("/api/products/<product_id>/reviews", methods=["POST"])
 @token_required(allowed_roles=["user"])
@@ -408,7 +421,7 @@ def create_review(current_user, product_id):
         return jsonify({"error": "Solo puedes reseñar productos con compra confirmada"}), 403
 
     if ReviewModel.already_reviewed(product_id, str(current_user["_id"])):
-        return jsonify({"error": "Ya dejaste una resena para este producto"}), 409
+        return jsonify({"error": "Ya dejaste una reseña para este producto"}), 409
 
     required = ["rating", "comment"]
     for field in required:
@@ -437,7 +450,7 @@ def create_review(current_user, product_id):
 
     result = ReviewModel.create_review(review_data)
     return jsonify({
-        "message": "Resena creada",
+        "message": "reseña creada",
         "review_id": str(result.inserted_id)
     }), 201
 
@@ -446,7 +459,7 @@ def create_review(current_user, product_id):
 @token_required(allowed_roles=["admin", "superadmin"])
 def delete_review(current_user, review_id):
     ReviewModel.delete_review(review_id)
-    return jsonify({"message": "Resena eliminada"})
+    return jsonify({"message": "reseña eliminada"})
 
 
 @app.route("/api/admin/reviews", methods=["GET"])
@@ -463,13 +476,13 @@ def update_review(current_user, review_id):
     review = ReviewModel.get_by_id(review_id)
 
     if not review:
-        return jsonify({"error": "Resena no encontrada"}), 404
+        return jsonify({"error": "reseña no encontrada"}), 404
 
     if str(review["user_id"]) != str(current_user["_id"]):
-        return jsonify({"error": "No puedes editar esta resena"}), 403
+        return jsonify({"error": "No puedes editar esta reseña"}), 403
 
     if not ReviewModel.can_edit(review):
-        return jsonify({"error": "Solo puedes editar tu resena durante los primeros 10 minutos"}), 403
+        return jsonify({"error": "Solo puedes editar tu reseña durante los primeros 10 minutos"}), 403
 
     required = ["rating", "comment"]
     for field in required:
@@ -489,7 +502,7 @@ def update_review(current_user, review_id):
         return jsonify({"error": "El comentario debe tener entre 5 y 500 caracteres"}), 400
 
     ReviewModel.update_review(review_id, {"rating": rating, "comment": comment})
-    return jsonify({"message": "Resena actualizada"})
+    return jsonify({"message": "reseña actualizada"})
 
 
 # =========================
@@ -514,6 +527,7 @@ def get_cart_history(current_user):
 def add_cart_item(current_user):
     data = request.json or {}
     product_id = data.get("product_id")
+    selected_size = data.get("selected_size")
     quantity = int(data.get("quantity", 1))
 
     if not product_id:
@@ -526,9 +540,14 @@ def add_cart_item(current_user):
     if not product:
         return jsonify({"error": "Producto no encontrado"}), 404
 
+    normalized_size, error_response, status_code = validate_selected_size(product, selected_size)
+    if error_response:
+        return error_response, status_code
+
     cart = CartModel.add_item(str(current_user["_id"]), {
         "product_id": product_id,
         "product_name": product["name"],
+        "selected_size": normalized_size,
         "product_image": product.get("images", [""])[0] if product.get("images") else "",
         "price": product.get("price", 0),
         "final_price": product.get("final_price", 0),
@@ -545,12 +564,16 @@ def add_cart_item(current_user):
 @token_required(allowed_roles=["user"])
 def update_cart_item(current_user, product_id):
     data = request.json or {}
+    selected_size = str(data.get("selected_size", "")).strip()
     quantity = int(data.get("quantity", 1))
 
     if quantity < 1:
         return jsonify({"error": "La cantidad debe ser mayor a cero"}), 400
 
-    cart = CartModel.update_item_quantity(str(current_user["_id"]), product_id, quantity)
+    if not selected_size:
+        return jsonify({"error": "Falta la talla del producto"}), 400
+
+    cart = CartModel.update_item_quantity(str(current_user["_id"]), product_id, selected_size, quantity)
     return jsonify({
         "message": "Cantidad actualizada",
         "cart": serialize_doc(cart)
@@ -560,7 +583,13 @@ def update_cart_item(current_user, product_id):
 @app.route("/api/cart/items/<product_id>", methods=["DELETE"])
 @token_required(allowed_roles=["user"])
 def remove_cart_item(current_user, product_id):
-    cart = CartModel.remove_item(str(current_user["_id"]), product_id)
+    data = request.json or {}
+    selected_size = str(data.get("selected_size", "")).strip()
+
+    if not selected_size:
+        return jsonify({"error": "Falta la talla del producto"}), 400
+
+    cart = CartModel.remove_item(str(current_user["_id"]), product_id, selected_size)
     return jsonify({
         "message": "Producto eliminado del carrito",
         "cart": serialize_doc(cart)
@@ -591,6 +620,7 @@ def checkout_cart(current_user):
             {
                 "product_id": str(item["product_id"]),
                 "product_name": item["product_name"],
+                "selected_size": item.get("selected_size", ""),
                 "product_image": item.get("product_image", ""),
                 "price": item.get("price", 0),
                 "final_price": item.get("final_price", 0),
@@ -621,6 +651,7 @@ def create_purchase_request(current_user):
     data = request.json or {}
     product_id = data.get("product_id")
     channel = data.get("channel")
+    selected_size = data.get("selected_size")
 
     if not product_id or not channel:
         return jsonify({"error": "Faltan datos para registrar la solicitud"}), 400
@@ -632,12 +663,17 @@ def create_purchase_request(current_user):
     if not product:
         return jsonify({"error": "Producto no encontrado"}), 404
 
+    normalized_size, error_response, status_code = validate_selected_size(product, selected_size)
+    if error_response:
+        return error_response, status_code
+
     purchase_request, created = PurchaseRequestModel.create_or_get_pending({
         "user_id": str(current_user["_id"]),
         "user_name": current_user["name"],
         "user_email": current_user["email"],
         "product_id": product_id,
         "product_name": product["name"],
+        "selected_size": normalized_size,
         "channel": channel
     })
 
@@ -654,6 +690,7 @@ def create_guest_purchase_request():
     channel = data.get("channel")
     guest_name = data.get("guest_name", "").strip()
     guest_contact = data.get("guest_contact", "").strip()
+    selected_size = data.get("selected_size")
 
     if not product_id or not channel or not guest_name or not guest_contact:
         return jsonify({"error": "Faltan datos para registrar la solicitud"}), 400
@@ -665,11 +702,16 @@ def create_guest_purchase_request():
     if not product:
         return jsonify({"error": "Producto no encontrado"}), 404
 
+    normalized_size, error_response, status_code = validate_selected_size(product, selected_size)
+    if error_response:
+        return error_response, status_code
+
     purchase_request, created = PurchaseRequestModel.create_or_get_pending({
         "user_name": guest_name,
         "guest_contact": guest_contact,
         "product_id": product_id,
         "product_name": product["name"],
+        "selected_size": normalized_size,
         "channel": channel
     })
 
@@ -731,24 +773,48 @@ def update_admin_purchase_request(current_user, request_id):
     ):
         title = "Compra confirmada"
         if updated_request.get("request_type") == "cart":
-            summary = "Tu solicitud de compra fue confirmada. Ya puedes dejar resenas en los productos incluidos."
+            summary = "Tu solicitud de compra fue confirmada. Ya puedes dejar reseñas en los productos incluidos."
             content = (
                 "El administrador confirmo tu solicitud de carrito. "
-                "Ya puedes volver a los productos de esa compra y dejar tus resenas."
+                "Ya puedes volver a los productos de esa compra y dejar tus reseñas."
             )
+            target_type = "cart"
+            target_id = str(updated_request.get("cart_id")) if updated_request.get("cart_id") else None
+            related_items = [
+                {
+                    "product_id": str(item.get("product_id")) if item.get("product_id") else None,
+                    "product_name": item.get("product_name", ""),
+                    "selected_size": item.get("selected_size", ""),
+                    "quantity": int(item.get("quantity", 1))
+                }
+                for item in updated_request.get("items", [])
+            ]
         else:
             product_name = updated_request.get("product_name", "tu producto")
-            summary = f"Tu compra de {product_name} fue confirmada. Ya puedes dejar tu resena."
+            summary = f"Tu compra de {product_name} fue confirmada. Ya puedes dejar tu reseña."
             content = (
                 f"El administrador confirmo la compra de {product_name}. "
-                "Ya puedes entrar al detalle del producto y publicar tu resena."
+                "Ya puedes entrar al detalle del producto y publicar tu reseña."
             )
+            target_type = "product"
+            target_id = str(updated_request.get("product_id")) if updated_request.get("product_id") else None
+            related_items = [
+                {
+                    "product_id": target_id,
+                    "product_name": product_name,
+                    "selected_size": updated_request.get("selected_size", ""),
+                    "quantity": 1
+                }
+            ]
 
         NotificationModel.create_system_notification_for_users(
             {
                 "title": title,
                 "summary": summary,
                 "content": content,
+                "target_type": target_type,
+                "target_id": target_id,
+                "related_items": related_items,
                 "created_by": str(current_user["_id"])
             },
             [str(updated_request["user_id"])]

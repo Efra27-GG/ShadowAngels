@@ -51,6 +51,7 @@ export class ProductDetailComponent implements OnInit {
     rating: 5,
     comment: ''
   };
+  selectedSize = '';
   guestRequestForm = {
     guest_name: ''
   };
@@ -104,6 +105,7 @@ export class ProductDetailComponent implements OnInit {
         }
 
         this.reviewSubmitted = false;
+        this.selectedSize = '';
 
         this.loading = false;
         this.loadPurchaseStatus(id);
@@ -169,7 +171,13 @@ export class ProductDetailComponent implements OnInit {
       return;
     }
 
-    this.purchaseRequestService.createRequest(this.product._id, channel).subscribe({
+    if (this.sizeError) {
+      this.requestMessage = this.sizeError;
+      this.cdr.detectChanges();
+      return;
+    }
+
+    this.purchaseRequestService.createRequest(this.product._id, channel, this.selectedSize).subscribe({
       next: (response) => {
         this.purchaseRequest = response.request;
         this.requestMessage = response.message;
@@ -189,8 +197,8 @@ export class ProductDetailComponent implements OnInit {
   createGuestPurchaseRequest(channel: 'whatsapp' | 'instagram'): void {
     this.guestRequestSubmitted = true;
 
-    if (!this.product || !this.canGuestRequest || this.guestRequestError) {
-      this.requestMessage = this.guestRequestError || 'Completa tus datos para solicitar este producto.';
+    if (!this.product || !this.canGuestRequest || this.guestRequestError || this.sizeError) {
+      this.requestMessage = this.guestRequestError || this.sizeError || 'Completa tus datos para solicitar este producto.';
       this.cdr.detectChanges();
       return;
     }
@@ -199,7 +207,8 @@ export class ProductDetailComponent implements OnInit {
       this.product._id,
       channel,
       this.guestRequestForm.guest_name,
-      `${channel}:${this.guestRequestForm.guest_name.trim().toLowerCase()}`
+      `${channel}:${this.guestRequestForm.guest_name.trim().toLowerCase()}`,
+      this.selectedSize
     ).subscribe({
       next: (response) => {
         this.requestMessage = response.message;
@@ -218,9 +227,15 @@ export class ProductDetailComponent implements OnInit {
       return;
     }
 
-    this.cartService.addItem(this.product._id).subscribe({
+    if (this.sizeError) {
+      this.requestMessage = this.sizeError;
+      this.cdr.detectChanges();
+      return;
+    }
+
+    this.cartService.addItem(this.product._id, this.selectedSize).subscribe({
       next: () => {
-        this.requestMessage = 'Producto agregado al carrito.';
+        this.requestMessage = `Producto agregado al carrito en talla ${this.selectedSize}.`;
         this.reviewErrorMessage = '';
         this.reviewMessage = '';
         this.cdr.detectChanges();
@@ -293,7 +308,7 @@ export class ProductDetailComponent implements OnInit {
     }
 
     const message = encodeURIComponent(
-      `Hola, me interesa el producto ${this.product.name} de ShadowAngels.`
+      `Hola, me interesa el producto ${this.product.name} de ShadowAngels en talla ${this.selectedSize}.`
     );
 
     const url = channel === 'whatsapp'
@@ -381,6 +396,20 @@ export class ProductDetailComponent implements OnInit {
     }
 
     return '';
+  }
+
+  get sizeError(): string {
+    if (this.selectedSize) {
+      return '';
+    }
+
+    return 'Selecciona una talla para continuar.';
+  }
+
+  selectSize(size: string): void {
+    this.selectedSize = size;
+    this.requestMessage = '';
+    this.cdr.detectChanges();
   }
 
   onImageError(event: Event): void {
