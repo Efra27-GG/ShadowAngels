@@ -19,9 +19,23 @@ export class LoginComponent {
   errorMessage = '';
 
   loginForm = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required]]
-  });
+  email: [
+    '',
+    [
+      Validators.required,
+      Validators.email,
+      Validators.maxLength(50) 
+    ]
+  ],
+  password: [
+    '',
+    [
+      Validators.required,
+      Validators.minLength(6), 
+      Validators.maxLength(15)
+    ]
+  ]
+});
 
   onSubmit(): void {
     if (this.loginForm.invalid) {
