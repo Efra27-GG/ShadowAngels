@@ -60,13 +60,22 @@
         </p>
 
         <div class="product-meta-block">
-          <p class="product-meta-label">Tallas disponibles</p>
-          <div class="product-size-list">
-            <span class="product-size-chip" *ngFor="let size of product.sizes">
-              {{ size }}
-            </span>
-          </div>
-        </div>
+  <p class="product-meta-label">Tallas disponibles</p>
+  <div class="product-size-list">
+    <button
+      type="button"
+      class="product-size-chip"
+      *ngFor="let size of product.sizes"
+      (click)="seleccionarTalla(size)"
+      [class.active]="tallaSeleccionada === size"
+    >
+      {{ size }}
+    </button>
+  </div>
+   <p *ngIf="tallaSeleccionada" class="selected-size-text">
+    Talla seleccionada: <strong>{{ tallaSeleccionada }}</strong>
+  </p>
+</div>
 
         <div class="product-meta-grid">
           <div class="product-meta-item">
@@ -80,9 +89,14 @@
         </div>
 
         <div class="contact-actions" *ngIf="isUser">
-          <button class="product-action-btn product-action-btn--cart" type="button" (click)="addToCart()">
-            Agregar al carrito
-          </button>
+          <button 
+  class="product-action-btn product-action-btn--cart" 
+  type="button" 
+  (click)="addToCart()"
+  [disabled]="!tallaSeleccionada"
+>
+  Agregar al carrito
+</button>
           <button class="product-action-btn product-action-btn--whatsapp" type="button" (click)="createPurchaseRequest('whatsapp')">
             Contactar por WhatsApp
           </button>
@@ -134,7 +148,7 @@
 
   <section *ngIf="!loading && product && isUser" class="reviews-section mt-4">
     <div class="reviews-card">
-      <h3 class="mb-3">Tu resena</h3>
+      <h3 class="mb-3">Tu reseña</h3>
 
       <div class="alert alert-secondary mb-3" *ngIf="!ownReview && !canReview">
         La reseña se habilita cuando el administrador confirme que la compra del producto fue realizada.
