@@ -23,7 +23,7 @@
         Notificaciones
       </a>
       <a routerLink="/admin/resenas" routerLinkActive="active-link" class="admin-link admin-link--with-badge" (click)="closeMobileMenu()">
-        <span>Resenas</span>
+        <span>Reseñas</span>
         <span class="admin-link__badge" *ngIf="recentReviewsCount">{{ recentReviewsCount }}</span>
       </a>
       <a routerLink="/admin/perfil" routerLinkActive="active-link" class="admin-link" (click)="closeMobileMenu()">
@@ -36,7 +36,7 @@
         Contacto
       </a>
       <a *ngIf="isSuperAdmin" routerLink="/admin/personalizacion" routerLinkActive="active-link" class="admin-link" (click)="closeMobileMenu()">
-        Personalizacion
+        Personalización
       </a>
       </div>
     </div>
