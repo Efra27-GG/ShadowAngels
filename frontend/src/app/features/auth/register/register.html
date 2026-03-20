@@ -14,6 +14,9 @@
             <div class="text-danger small mt-1" *ngIf="registerForm.controls.name.touched && registerForm.controls.name.hasError('minlength')">
               El nombre debe tener al menos 2 caracteres.
             </div>
+            <div class="text-danger small mt-1" *ngIf="controls.name.touched && controls.name.hasError('pattern')">
+          El nombre no debe contener números ni caracteres especiales.
+          </div>
           </div>
 
           <div class="mb-3">
