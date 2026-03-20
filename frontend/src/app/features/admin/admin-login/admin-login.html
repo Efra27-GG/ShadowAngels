@@ -13,7 +13,18 @@
               class="form-control"
               formControlName="email"
               placeholder="superadmin@shadowangels.com"
+              maxlength="50"
+              [class.input-limit]="loginForm.controls.email.value?.length === 50"
             />
+            <div class="text-end small text-muted">
+  {{ loginForm.controls.email.value?.length || 0 }}/50
+</div>
+<div 
+  class="text-danger small mt-1"
+  *ngIf="loginForm.controls.email.value?.length === 50"
+>
+  Límite máximo alcanzado
+</div>
             <div class="text-danger small mt-1" *ngIf="loginForm.controls.email.touched && loginForm.controls.email.hasError('required')">
               El correo es obligatorio.
             </div>
@@ -30,10 +41,27 @@
               class="form-control"
               formControlName="password"
               placeholder="Ingresa tu contraseña"
+              maxlength="15"
+              [class.input-limit]="loginForm.controls.password.value?.length === 15"
             />
+            <div class="text-end small text-muted">
+  {{ loginForm.controls.password.value?.length || 0 }}/15
+</div>
+<div 
+  class="text-danger small mt-1"
+  *ngIf="loginForm.controls.password.value?.length === 15"
+>
+  Límite máximo alcanzado
+</div>
             <div class="text-danger small mt-1" *ngIf="loginForm.controls.password.touched && loginForm.controls.password.hasError('required')">
               La contraseña es obligatoria.
             </div>
+            <div 
+  class="text-danger small mt-1"
+  *ngIf="loginForm.controls.password.touched && loginForm.controls.password.hasError('minlength')"
+>
+  La contraseña debe tener al menos 6 caracteres.
+</div>
           </div>
 
           <button type="submit" class="btn btn-dark w-100" [disabled]="loading">
