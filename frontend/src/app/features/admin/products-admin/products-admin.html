@@ -11,18 +11,31 @@
       <form [formGroup]="productForm" (ngSubmit)="submit()" class="row g-3">
         <div class="col-md-6">
           <label class="form-label">Nombre</label>
-          <input class="form-control" formControlName="name">
-          <div class="text-danger small mt-1" *ngIf="controls.name.touched && controls.name.hasError('required')">
+          <input class="form-control" formControlName="name" maxlength="40" />
+          <small class="text-muted"> {{ controls.name.value?.length || 0 }}/40 caracteres </small>
+          <div
+            class="text-danger small mt-1"
+            *ngIf="controls.name.touched && controls.name.hasError('required')"
+          >
             El nombre es obligatorio.
           </div>
-          <div class="text-danger small mt-1" *ngIf="controls.name.touched && controls.name.hasError('minlength')">
+          <div
+            class="text-danger small mt-1"
+            *ngIf="controls.name.touched && controls.name.hasError('minlength')"
+          >
             El nombre debe tener al menos 3 caracteres.
           </div>
-          <div class="text-danger small mt-1" *ngIf="controls.name.touched && controls.name.hasError('maxlength')">
-            El nombre no debe superar los 120 caracteres.
+          <div
+            class="text-danger small mt-1"
+            *ngIf="controls.name.touched && controls.name.hasError('maxlength')"
+          >
+            El nombre no debe superar los 40 caracteres.
           </div>
-          <div class="text-danger small mt-1" *ngIf="controls.name.touched && controls.name.hasError('pattern')">
-          El nombre no debe contener números ni caracteres especiales.
+          <div
+            class="text-danger small mt-1"
+            *ngIf="controls.name.touched && controls.name.hasError('pattern')"
+          >
+            El nombre no debe contener números ni caracteres especiales.
           </div>
         </div>
 
@@ -36,60 +49,96 @@
 
         <div class="col-12">
           <label class="form-label">Descripción</label>
-          <textarea class="form-control" rows="3" formControlName="description"></textarea>
-          <div class="text-danger small mt-1" *ngIf="controls.description.touched && controls.description.hasError('required')">
+          <textarea class="form-control" rows="3" formControlName="description" maxlength="250"></textarea>
+          <small class="text-muted"> {{ controls.description.value?.length || 0 }}/250 caracteres </small>
+          <div
+            class="text-danger small mt-1"
+            *ngIf="controls.description.touched && controls.description.hasError('required')"
+          >
             La descripción es obligatoria.
           </div>
-          <div class="text-danger small mt-1" *ngIf="controls.description.touched && controls.description.hasError('minlength')">
+          <div
+            class="text-danger small mt-1"
+            *ngIf="controls.description.touched && controls.description.hasError('minlength')"
+          >
             La descripción debe tener al menos 10 caracteres.
           </div>
-          <div class="text-danger small mt-1" *ngIf="controls.description.touched && controls.description.hasError('maxlength')">
-            La descripción no debe superar los 1200 caracteres.
+          <div
+            class="text-danger small mt-1"
+            *ngIf="controls.description.touched && controls.description.hasError('maxlength')"
+          >
+            La descripción no debe superar los 250 caracteres.
           </div>
         </div>
 
         <div class="col-md-4">
           <label class="form-label">Precio</label>
-          <input type="number" class="form-control" formControlName="price">
-          <div class="text-danger small mt-1" *ngIf="controls.price.touched && controls.price.hasError('required')">
+          <input type="number" class="form-control" formControlName="price" />
+          <div
+            class="text-danger small mt-1"
+            *ngIf="controls.price.touched && controls.price.hasError('required')"
+          >
             El precio es obligatorio.
           </div>
-          <div class="text-danger small mt-1" *ngIf="controls.price.touched && controls.price.hasError('min')">
+          <div
+            class="text-danger small mt-1"
+            *ngIf="controls.price.touched && controls.price.hasError('min')"
+          >
             El precio debe ser mayor a 0.
           </div>
         </div>
 
         <div class="col-md-4">
           <label class="form-label">Descuento</label>
-          <input type="number" class="form-control" formControlName="discount">
-          <div class="text-danger small mt-1" *ngIf="controls.discount.touched && controls.discount.hasError('min')">
+          <input type="number" class="form-control" formControlName="discount" />
+          <div
+            class="text-danger small mt-1"
+            *ngIf="controls.discount.touched && controls.discount.hasError('min')"
+          >
             El descuento no puede ser negativo.
           </div>
-          <div class="text-danger small mt-1" *ngIf="controls.discount.touched && controls.discount.hasError('max')">
+          <div
+            class="text-danger small mt-1"
+            *ngIf="controls.discount.touched && controls.discount.hasError('max')"
+          >
             El descuento no puede superar el 100%.
           </div>
         </div>
 
         <div class="col-md-4 d-flex align-items-end">
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" formControlName="is_new" id="isNew">
+            <input class="form-check-input" type="checkbox" formControlName="is_new" id="isNew" />
             <label class="form-check-label" for="isNew">Marcar como nuevo</label>
           </div>
         </div>
 
         <div class="col-md-6">
           <label class="form-label">Tallas (comas separadas)</label>
-          <input class="form-control" formControlName="sizesText">
-          <div class="text-danger small mt-1" *ngIf="controls.sizesText.touched && (controls.sizesText.hasError('required') || controls.sizesText.hasError('invalidSizes'))">
-            Ingresa al menos una talla válida, por ejemplo: S,M,L
+          <input class="form-control" formControlName="sizesText" />
+          <div
+            class="text-danger small mt-1"
+            *ngIf="
+              controls.sizesText.touched &&
+              (controls.sizesText.hasError('required') ||
+                controls.sizesText.hasError('invalidSizes'))
+            "
+          >
+            Ingresa al menos una talla válida, por ejemplo: XS,S,M,L,XL
           </div>
         </div>
 
         <div class="col-md-6">
           <label class="form-label">Imágenes</label>
-          <input class="form-control" type="file" accept="image/*" multiple (change)="onFilesSelected($event)">
+          <input
+            class="form-control"
+            type="file"
+            accept="image/*"
+            multiple
+            (change)="onFilesSelected($event)"
+          />
           <small class="text-muted">
-            Selecciona imágenes desde tu explorador. Si quitas una y guardas, se elimina del producto y del servidor cuando ya no la usa nadie.
+            Selecciona imágenes desde tu explorador. Si quitas una y guardas, se elimina del
+            producto y del servidor cuando ya no la usa nadie.
           </small>
         </div>
 
@@ -97,15 +146,23 @@
           <label class="form-label d-block">Imágenes del producto</label>
           <div class="image-grid">
             <div class="image-card" *ngFor="let image of existingImages">
-              <img [src]="getExistingImageUrl(image)" [alt]="image">
-              <button type="button" class="btn btn-sm btn-outline-danger w-100" (click)="removeExistingImage(image)">
+              <img [src]="getExistingImageUrl(image)" [alt]="image" />
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-danger w-100"
+                (click)="removeExistingImage(image)"
+              >
                 Quitar
               </button>
             </div>
 
             <div class="image-card" *ngFor="let file of selectedFiles; let i = index">
-              <img [src]="newImagePreviews[i]" [alt]="file.name">
-              <button type="button" class="btn btn-sm btn-outline-danger w-100" (click)="removeSelectedFile(i)">
+              <img [src]="newImagePreviews[i]" [alt]="file.name" />
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-danger w-100"
+                (click)="removeSelectedFile(i)"
+              >
                 Quitar
               </button>
             </div>
@@ -153,8 +210,15 @@
                 <td data-label="Final">${{ product.final_price }}</td>
                 <td data-label="Nuevo">{{ product.is_new ? 'Sí' : 'No' }}</td>
                 <td data-label="Acciones" class="products-table__actions">
-                  <button class="btn btn-sm btn-outline-primary" (click)="editProduct(product)">Editar</button>
-                  <button class="btn btn-sm btn-outline-danger" (click)="deleteProduct(product._id)">Eliminar</button>
+                  <button class="btn btn-sm btn-outline-primary" (click)="editProduct(product)">
+                    Editar
+                  </button>
+                  <button
+                    class="btn btn-sm btn-outline-danger"
+                    (click)="deleteProduct(product._id)"
+                  >
+                    Eliminar
+                  </button>
                 </td>
               </tr>
             </tbody>
