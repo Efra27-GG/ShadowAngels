@@ -121,26 +121,26 @@ export class ProfilePage implements OnInit {
 
   get sectionTitle(): string {
     if (this.user.role === 'superadmin') {
-      return 'Gestion de perfil superadmin';
+      return 'Gestión de perfil superadmin';
     }
 
     if (this.user.role === 'admin') {
-      return 'Gestion de perfil administrativo';
+      return 'Gestión de perfil administrativo';
     }
 
-    return 'Gestion de perfil';
+    return 'Gestión de perfil';
   }
 
   get nameHelpText(): string {
     if (this.user.role === 'superadmin') {
-      return 'Este nombre identifica tu cuenta dentro de la gestion general del sistema.';
+      return 'Este nombre identifica tu cuenta dentro de la gestión general del sistema.';
     }
 
     if (this.user.role === 'admin') {
-      return 'Este nombre identifica tu cuenta dentro del panel y la gestion de solicitudes.';
+      return 'Este nombre identifica tu cuenta dentro del panel y la gestión de solicitudes.';
     }
 
-    return 'Este nombre se muestra en tus resenas y solicitudes.';
+    return 'Este nombre se muestra en tus reseñas y solicitudes.';
   }
 
   get emailHelpText(): string {
