@@ -29,6 +29,7 @@
             <div class="d-flex justify-content-between gap-3 flex-wrap">
               <div>
                 <h4 class="mb-1">{{ item.product_name }}</h4>
+                <p class="text-muted mb-1">Talla: {{ item.selected_size }}</p>
                 <p class="text-muted mb-0">Precio unitario: ${{ item.final_price }}</p>
               </div>
               <button class="btn btn-sm btn-outline-danger" type="button" (click)="removeItem(item)">
@@ -113,7 +114,7 @@
 
         <div class="cart-history__items">
           <div class="cart-history__item" *ngFor="let item of getHistoryItems(historyRequest)">
-            <span>{{ item.product_name }} x{{ item.quantity }}</span>
+            <span>{{ item.product_name }} - talla {{ item.selected_size }} x{{ item.quantity }}</span>
             <strong *ngIf="item.final_price !== undefined">${{ item.final_price * item.quantity }}</strong>
           </div>
         </div>

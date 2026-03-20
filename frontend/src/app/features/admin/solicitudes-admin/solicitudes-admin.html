@@ -103,11 +103,10 @@
                 </div>
                 <div>
                   <p class="mb-2"><strong>Productos</strong></p>
-                  <div class="small text-muted" *ngIf="request.request_type === 'cart' && request.items?.length">
-                    <div *ngFor="let item of request.items">{{ item.product_name }} x{{ item.quantity }}</div>
-                  </div>
-                  <div class="small text-muted" *ngIf="request.request_type !== 'cart'">
-                    {{ request.product_name }} x1
+                  <div class="small text-muted">
+                    <div *ngFor="let item of getRequestDetailItems(request)">
+                      {{ item.label }} x{{ item.quantity }} <span *ngIf="item.size">- talla {{ item.size }}</span>
+                    </div>
                   </div>
                 </div>
               </div>

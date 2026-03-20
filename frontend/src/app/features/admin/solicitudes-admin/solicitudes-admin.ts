@@ -141,10 +141,38 @@ export class SolicitudesAdminComponent implements OnInit {
   getProductsSummary(request: PurchaseRequest): string {
     if (request.request_type === 'cart') {
       const items = request.items || [];
-      const summary = items.map((item) => `${item.product_name} x${item.quantity}`).join(', ');
+      const groupedItems = new Map<string, number>();
+
+      items.forEach((item) => {
+        const currentQuantity = groupedItems.get(item.product_name) || 0;
+        groupedItems.set(item.product_name, currentQuantity + item.quantity);
+      });
+
+      const summary = Array.from(groupedItems.entries())
+        .map(([productName, quantity]) => `${productName} x${quantity}`)
+        .join(', ');
+
       return `Carrito: ${summary}`;
     }
 
     return `Producto: ${request.product_name || 'Sin nombre'} x1`;
+  }
+
+  getRequestDetailItems(request: PurchaseRequest): Array<{ label: string; quantity: number; size?: string }> {
+    if (request.request_type === 'cart') {
+      return (request.items || []).map((item) => ({
+        label: item.product_name,
+        quantity: item.quantity,
+        size: item.selected_size
+      }));
+    }
+
+    return request.product_name
+      ? [{
+          label: request.product_name,
+          quantity: 1,
+          size: request.selected_size
+        }]
+      : [];
   }
 }

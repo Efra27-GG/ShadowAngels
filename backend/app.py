@@ -60,6 +60,19 @@ def delete_uploaded_file(upload_folder, filename):
         os.remove(file_path)
 
 
+def validate_selected_size(product, selected_size):
+    normalized_size = str(selected_size or "").strip()
+    available_sizes = [str(size).strip() for size in product.get("sizes", []) if str(size).strip()]
+
+    if not normalized_size:
+        return None, jsonify({"error": "Debes seleccionar una talla"}), 400
+
+    if normalized_size not in available_sizes:
+        return None, jsonify({"error": "La talla seleccionada no esta disponible para este producto"}), 400
+
+    return normalized_size, None, None
+
+
 @app.route("/")
 def home():
     return jsonify({"message": "ShadowAngels API funcionando"})
@@ -514,6 +527,7 @@ def get_cart_history(current_user):
 def add_cart_item(current_user):
     data = request.json or {}
     product_id = data.get("product_id")
+    selected_size = data.get("selected_size")
     quantity = int(data.get("quantity", 1))
 
     if not product_id:
@@ -526,9 +540,14 @@ def add_cart_item(current_user):
     if not product:
         return jsonify({"error": "Producto no encontrado"}), 404
 
+    normalized_size, error_response, status_code = validate_selected_size(product, selected_size)
+    if error_response:
+        return error_response, status_code
+
     cart = CartModel.add_item(str(current_user["_id"]), {
         "product_id": product_id,
         "product_name": product["name"],
+        "selected_size": normalized_size,
         "product_image": product.get("images", [""])[0] if product.get("images") else "",
         "price": product.get("price", 0),
         "final_price": product.get("final_price", 0),
@@ -545,12 +564,16 @@ def add_cart_item(current_user):
 @token_required(allowed_roles=["user"])
 def update_cart_item(current_user, product_id):
     data = request.json or {}
+    selected_size = str(data.get("selected_size", "")).strip()
     quantity = int(data.get("quantity", 1))
 
     if quantity < 1:
         return jsonify({"error": "La cantidad debe ser mayor a cero"}), 400
 
-    cart = CartModel.update_item_quantity(str(current_user["_id"]), product_id, quantity)
+    if not selected_size:
+        return jsonify({"error": "Falta la talla del producto"}), 400
+
+    cart = CartModel.update_item_quantity(str(current_user["_id"]), product_id, selected_size, quantity)
     return jsonify({
         "message": "Cantidad actualizada",
         "cart": serialize_doc(cart)
@@ -560,7 +583,13 @@ def update_cart_item(current_user, product_id):
 @app.route("/api/cart/items/<product_id>", methods=["DELETE"])
 @token_required(allowed_roles=["user"])
 def remove_cart_item(current_user, product_id):
-    cart = CartModel.remove_item(str(current_user["_id"]), product_id)
+    data = request.json or {}
+    selected_size = str(data.get("selected_size", "")).strip()
+
+    if not selected_size:
+        return jsonify({"error": "Falta la talla del producto"}), 400
+
+    cart = CartModel.remove_item(str(current_user["_id"]), product_id, selected_size)
     return jsonify({
         "message": "Producto eliminado del carrito",
         "cart": serialize_doc(cart)
@@ -591,6 +620,7 @@ def checkout_cart(current_user):
             {
                 "product_id": str(item["product_id"]),
                 "product_name": item["product_name"],
+                "selected_size": item.get("selected_size", ""),
                 "product_image": item.get("product_image", ""),
                 "price": item.get("price", 0),
                 "final_price": item.get("final_price", 0),
@@ -621,6 +651,7 @@ def create_purchase_request(current_user):
     data = request.json or {}
     product_id = data.get("product_id")
     channel = data.get("channel")
+    selected_size = data.get("selected_size")
 
     if not product_id or not channel:
         return jsonify({"error": "Faltan datos para registrar la solicitud"}), 400
@@ -632,12 +663,17 @@ def create_purchase_request(current_user):
     if not product:
         return jsonify({"error": "Producto no encontrado"}), 404
 
+    normalized_size, error_response, status_code = validate_selected_size(product, selected_size)
+    if error_response:
+        return error_response, status_code
+
     purchase_request, created = PurchaseRequestModel.create_or_get_pending({
         "user_id": str(current_user["_id"]),
         "user_name": current_user["name"],
         "user_email": current_user["email"],
         "product_id": product_id,
         "product_name": product["name"],
+        "selected_size": normalized_size,
         "channel": channel
     })
 
@@ -654,6 +690,7 @@ def create_guest_purchase_request():
     channel = data.get("channel")
     guest_name = data.get("guest_name", "").strip()
     guest_contact = data.get("guest_contact", "").strip()
+    selected_size = data.get("selected_size")
 
     if not product_id or not channel or not guest_name or not guest_contact:
         return jsonify({"error": "Faltan datos para registrar la solicitud"}), 400
@@ -665,11 +702,16 @@ def create_guest_purchase_request():
     if not product:
         return jsonify({"error": "Producto no encontrado"}), 404
 
+    normalized_size, error_response, status_code = validate_selected_size(product, selected_size)
+    if error_response:
+        return error_response, status_code
+
     purchase_request, created = PurchaseRequestModel.create_or_get_pending({
         "user_name": guest_name,
         "guest_contact": guest_contact,
         "product_id": product_id,
         "product_name": product["name"],
+        "selected_size": normalized_size,
         "channel": channel
     })
 

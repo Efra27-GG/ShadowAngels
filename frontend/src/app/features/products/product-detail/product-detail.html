@@ -60,12 +60,19 @@
         </p>
 
         <div class="product-meta-block">
-          <p class="product-meta-label">Tallas disponibles</p>
+          <p class="product-meta-label">Selecciona tu talla</p>
           <div class="product-size-list">
-            <span class="product-size-chip" *ngFor="let size of product.sizes">
+            <button
+              type="button"
+              class="product-size-chip"
+              *ngFor="let size of product.sizes"
+              [class.product-size-chip--active]="selectedSize === size"
+              (click)="selectSize(size)">
               {{ size }}
-            </span>
+            </button>
           </div>
+          <p class="product-size-selection" *ngIf="selectedSize">Talla seleccionada: <strong>{{ selectedSize }}</strong></p>
+          <div class="text-danger small mt-2" *ngIf="requestMessage === sizeError">{{ sizeError }}</div>
         </div>
 
         <div class="product-meta-grid">
@@ -80,13 +87,13 @@
         </div>
 
         <div class="contact-actions" *ngIf="isUser">
-          <button class="product-action-btn product-action-btn--cart" type="button" (click)="addToCart()">
+          <button class="product-action-btn product-action-btn--cart" type="button" (click)="addToCart()" [disabled]="!selectedSize">
             Agregar al carrito
           </button>
-          <button class="product-action-btn product-action-btn--whatsapp" type="button" (click)="createPurchaseRequest('whatsapp')">
+          <button class="product-action-btn product-action-btn--whatsapp" type="button" (click)="createPurchaseRequest('whatsapp')" [disabled]="!selectedSize">
             Contactar por WhatsApp
           </button>
-          <button class="product-action-btn product-action-btn--instagram" type="button" (click)="createPurchaseRequest('instagram')">
+          <button class="product-action-btn product-action-btn--instagram" type="button" (click)="createPurchaseRequest('instagram')" [disabled]="!selectedSize">
             Contactar por Instagram
           </button>
         </div>
@@ -110,12 +117,11 @@
           </div>
 
           <div class="text-danger small mt-2" *ngIf="guestRequestError">{{ guestRequestError }}</div>
-
           <div class="contact-actions mt-3">
-            <button class="product-action-btn product-action-btn--whatsapp" type="button" (click)="createGuestPurchaseRequest('whatsapp')">
+            <button class="product-action-btn product-action-btn--whatsapp" type="button" (click)="createGuestPurchaseRequest('whatsapp')" [disabled]="!selectedSize">
               Contactar por WhatsApp
             </button>
-            <button class="product-action-btn product-action-btn--instagram" type="button" (click)="createGuestPurchaseRequest('instagram')">
+            <button class="product-action-btn product-action-btn--instagram" type="button" (click)="createGuestPurchaseRequest('instagram')" [disabled]="!selectedSize">
               Contactar por Instagram
             </button>
           </div>
