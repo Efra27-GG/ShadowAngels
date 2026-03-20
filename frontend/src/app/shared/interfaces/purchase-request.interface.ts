@@ -8,9 +8,11 @@ export interface PurchaseRequest {
   request_type?: 'single' | 'cart';
   product_id?: string;
   product_name?: string;
+  selected_size?: string;
   items?: Array<{
     product_id: string;
     product_name: string;
+    selected_size?: string;
     product_image?: string;
     price?: number;
     final_price?: number;

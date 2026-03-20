@@ -29,26 +29,29 @@ export class CartService {
     return this.http.get<PurchaseRequest[]>(`${this.apiUrl}/cart/history`);
   }
 
-addItem(productId: string, talla: string, quantity = 1) {
-  return this.http.post<{ message: string; cart: Cart }>(`${this.apiUrl}/cart/items`, {
-    product_id: productId,
-    quantity,
-    talla // 👈 agregamos la talla
-  }).pipe(
-    tap((response) => this.cartSubject.next(response.cart))
-  );
-}
-
-  updateItem(productId: string, quantity: number) {
-    return this.http.put<{ message: string; cart: Cart }>(`${this.apiUrl}/cart/items/${productId}`, {
+  addItem(productId: string, selectedSize: string, quantity = 1) {
+    return this.http.post<{ message: string; cart: Cart }>(`${this.apiUrl}/cart/items`, {
+      product_id: productId,
+      selected_size: selectedSize,
       quantity
     }).pipe(
       tap((response) => this.cartSubject.next(response.cart))
     );
   }
 
-  removeItem(productId: string) {
-    return this.http.delete<{ message: string; cart: Cart }>(`${this.apiUrl}/cart/items/${productId}`).pipe(
+  updateItem(productId: string, selectedSize: string, quantity: number) {
+    return this.http.put<{ message: string; cart: Cart }>(`${this.apiUrl}/cart/items/${productId}`, {
+      selected_size: selectedSize,
+      quantity
+    }).pipe(
+      tap((response) => this.cartSubject.next(response.cart))
+    );
+  }
+
+  removeItem(productId: string, selectedSize: string) {
+    return this.http.delete<{ message: string; cart: Cart }>(`${this.apiUrl}/cart/items/${productId}`, {
+      body: { selected_size: selectedSize }
+    }).pipe(
       tap((response) => this.cartSubject.next(response.cart))
     );
   }

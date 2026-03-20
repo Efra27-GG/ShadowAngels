@@ -100,7 +100,7 @@
           <button class="product-action-btn product-action-btn--whatsapp" type="button" (click)="createPurchaseRequest('whatsapp')">
             Contactar por WhatsApp
           </button>
-          <button class="product-action-btn product-action-btn--instagram" type="button" (click)="createPurchaseRequest('instagram')">
+          <button class="product-action-btn product-action-btn--instagram" type="button" (click)="createPurchaseRequest('instagram')" [disabled]="!selectedSize">
             Contactar por Instagram
           </button>
         </div>
@@ -124,12 +124,11 @@
           </div>
 
           <div class="text-danger small mt-2" *ngIf="guestRequestError">{{ guestRequestError }}</div>
-
           <div class="contact-actions mt-3">
-            <button class="product-action-btn product-action-btn--whatsapp" type="button" (click)="createGuestPurchaseRequest('whatsapp')">
+            <button class="product-action-btn product-action-btn--whatsapp" type="button" (click)="createGuestPurchaseRequest('whatsapp')" [disabled]="!selectedSize">
               Contactar por WhatsApp
             </button>
-            <button class="product-action-btn product-action-btn--instagram" type="button" (click)="createGuestPurchaseRequest('instagram')">
+            <button class="product-action-btn product-action-btn--instagram" type="button" (click)="createGuestPurchaseRequest('instagram')" [disabled]="!selectedSize">
               Contactar por Instagram
             </button>
           </div>

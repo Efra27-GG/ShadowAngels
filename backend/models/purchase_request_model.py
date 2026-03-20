@@ -13,9 +13,11 @@ class PurchaseRequestModel:
         if data.get("user_id"):
             query["user_id"] = ObjectId(data["user_id"])
             query["product_id"] = ObjectId(data["product_id"])
+            query["selected_size"] = data["selected_size"]
         else:
             query["guest_contact"] = data["guest_contact"].strip()
             query["product_id"] = ObjectId(data["product_id"])
+            query["selected_size"] = data["selected_size"]
 
         existing = purchase_requests_collection.find_one({
             **query
@@ -33,6 +35,7 @@ class PurchaseRequestModel:
             "request_type": "single",
             "product_id": ObjectId(data["product_id"]),
             "product_name": data["product_name"],
+            "selected_size": data["selected_size"],
             "channel": data["channel"],
             "status": "pending",
             "admin_note": "",
@@ -58,6 +61,7 @@ class PurchaseRequestModel:
                 {
                     "product_id": ObjectId(item["product_id"]),
                     "product_name": item["product_name"],
+                    "selected_size": item["selected_size"],
                     "product_image": item.get("product_image", ""),
                     "price": float(item.get("price", 0)),
                     "final_price": float(item.get("final_price", 0)),

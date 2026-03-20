@@ -59,7 +59,10 @@ class CartModel:
         items = cart.get("items", [])
 
         for current_item in items:
-            if current_item["product_id"] == ObjectId(item["product_id"]):
+            if (
+                current_item["product_id"] == ObjectId(item["product_id"]) and
+                current_item.get("selected_size") == item.get("selected_size")
+            ):
                 current_item["quantity"] += int(item.get("quantity", 1))
                 cart_collection.update_one(
                     {"_id": cart["_id"]},
@@ -70,6 +73,7 @@ class CartModel:
         items.append({
             "product_id": ObjectId(item["product_id"]),
             "product_name": item["product_name"],
+            "selected_size": item["selected_size"],
             "product_image": item.get("product_image", ""),
             "price": float(item.get("price", 0)),
             "final_price": float(item.get("final_price", 0)),
@@ -83,12 +87,15 @@ class CartModel:
         return CartModel.get_active_cart(user_id)
 
     @staticmethod
-    def update_item_quantity(user_id, product_id, quantity):
+    def update_item_quantity(user_id, product_id, selected_size, quantity):
         cart = CartModel.get_active_cart(user_id)
         items = cart.get("items", [])
 
         for current_item in items:
-            if current_item["product_id"] == ObjectId(product_id):
+            if (
+                current_item["product_id"] == ObjectId(product_id) and
+                current_item.get("selected_size") == selected_size
+            ):
                 current_item["quantity"] = int(quantity)
                 break
 
@@ -99,11 +106,14 @@ class CartModel:
         return CartModel.get_active_cart(user_id)
 
     @staticmethod
-    def remove_item(user_id, product_id):
+    def remove_item(user_id, product_id, selected_size):
         cart = CartModel.get_active_cart(user_id)
         items = [
             item for item in cart.get("items", [])
-            if item["product_id"] != ObjectId(product_id)
+            if not (
+                item["product_id"] == ObjectId(product_id) and
+                item.get("selected_size") == selected_size
+            )
         ]
 
         cart_collection.update_one(

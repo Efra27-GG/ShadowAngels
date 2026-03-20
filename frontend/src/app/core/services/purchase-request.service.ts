@@ -11,21 +11,22 @@ export class PurchaseRequestService {
   private http = inject(HttpClient);
   private apiUrl = environment.apiUrl;
 
-  createRequest(productId: string, channel: 'whatsapp' | 'instagram') {
+  createRequest(productId: string, channel: 'whatsapp' | 'instagram', selectedSize: string) {
     return this.http.post<{ message: string; request: PurchaseRequest }>(
       `${this.apiUrl}/purchase-requests`,
-      { product_id: productId, channel }
+      { product_id: productId, channel, selected_size: selectedSize }
     );
   }
 
-  createGuestRequest(productId: string, channel: 'whatsapp' | 'instagram', guestName: string, guestContact: string) {
+  createGuestRequest(productId: string, channel: 'whatsapp' | 'instagram', guestName: string, guestContact: string, selectedSize: string) {
     return this.http.post<{ message: string; request: PurchaseRequest }>(
       `${this.apiUrl}/guest-purchase-requests`,
       {
         product_id: productId,
         channel,
         guest_name: guestName,
-        guest_contact: guestContact
+        guest_contact: guestContact,
+        selected_size: selectedSize
       }
     );
   }

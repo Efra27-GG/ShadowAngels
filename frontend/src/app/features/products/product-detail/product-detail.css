@@ -270,6 +270,14 @@
   filter: brightness(1.03);
 }
 
+.product-action-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  filter: none;
+  box-shadow: none;
+}
+
 .product-action-btn--cart {
   background: linear-gradient(135deg, #2563eb 0%, #111827 100%);
 }
