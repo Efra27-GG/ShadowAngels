@@ -35,6 +35,16 @@
     <div class="spinner-border text-dark"></div>
   </div>
 
+  <app-catalog-filters
+    *ngIf="!loading"
+    [searchTerm]="searchTerm"
+    [sortOption]="sortOption"
+    [resultCount]="products.length"
+    [sortOptions]="sortOptions"
+    (searchTermChange)="searchTerm = $event; applyFilters()"
+    (sortOptionChange)="sortOption = $event; applyFilters()">
+  </app-catalog-filters>
+
   <div *ngIf="!loading" class="row g-4">
     <div class="col-12 col-sm-6 col-lg-4" *ngFor="let product of products">
       <app-product-card [product]="product"></app-product-card>

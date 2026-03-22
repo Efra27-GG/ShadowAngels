@@ -1,6 +1,6 @@
 <app-admin-shell>
   <div class="container py-4 px-0">
-    <h2 class="mb-4">Gestión de administradores</h2>
+    <h2 class="mb-4">Gestion de administradores</h2>
 
     <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
     <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
@@ -11,52 +11,38 @@
       <form [formGroup]="form" (ngSubmit)="submit()" class="row g-3">
         <div class="col-md-6">
           <label class="form-label">Nombre</label>
-          <input class="form-control" formControlName="name">
-          <div class="text-danger small mt-1" *ngIf="controls.name.touched && controls.name.hasError('required')">
-            El nombre es obligatorio.
-          </div>
-          <div class="text-danger small mt-1" *ngIf="controls.name.touched && controls.name.hasError('minlength')">
-            El nombre debe tener al menos 3 caracteres.
-          </div>
-          <div class="text-danger small mt-1" *ngIf="controls.name.touched && controls.name.hasError('maxlength')">
-            El nombre no debe superar los 80 caracteres.
-          </div>
-          <div class="text-danger small mt-1" *ngIf="controls.name.touched && controls.name.hasError('pattern')">
-          El nombre no debe contener números ni caracteres especiales.
-          </div>
+          <input class="form-control" formControlName="name" maxlength="80" [class.input-limit]="controls.name.value?.length === 80">
+          <small class="text-muted">{{ controls.name.value?.length || 0 }}/80 caracteres</small>
+          <div class="text-danger small mt-1" *ngIf="controls.name.value?.length === 80">Limite maximo alcanzado.</div>
+          <div class="text-danger small mt-1" *ngIf="controls.name.touched && controls.name.hasError('required')">El nombre es obligatorio.</div>
+          <div class="text-danger small mt-1" *ngIf="controls.name.touched && controls.name.hasError('minlength')">El nombre debe tener al menos 3 caracteres.</div>
+          <div class="text-danger small mt-1" *ngIf="controls.name.touched && controls.name.hasError('maxlength')">El nombre no debe superar los 80 caracteres.</div>
+          <div class="text-danger small mt-1" *ngIf="controls.name.touched && controls.name.hasError('pattern')">El nombre no debe contener numeros ni caracteres especiales.</div>
         </div>
 
         <div class="col-md-6">
           <label class="form-label">Correo</label>
-          <input class="form-control" formControlName="email">
-          <div class="text-danger small mt-1" *ngIf="controls.email.touched && controls.email.hasError('required')">
-            El correo es obligatorio.
-          </div>
-          <div class="text-danger small mt-1" *ngIf="controls.email.touched && controls.email.hasError('email')">
-            Ingresa un correo válido.
-          </div>
+          <input class="form-control" formControlName="email" maxlength="50" [class.input-limit]="controls.email.value?.length === 50">
+          <small class="text-muted">{{ controls.email.value?.length || 0 }}/50 caracteres</small>
+          <div class="text-danger small mt-1" *ngIf="controls.email.value?.length === 50">Limite maximo alcanzado.</div>
+          <div class="text-danger small mt-1" *ngIf="controls.email.touched && controls.email.hasError('required')">El correo es obligatorio.</div>
+          <div class="text-danger small mt-1" *ngIf="controls.email.touched && controls.email.hasError('email')">Ingresa un correo valido.</div>
+          <div class="text-danger small mt-1" *ngIf="controls.email.touched && controls.email.hasError('maxlength')">El correo no debe superar los 50 caracteres.</div>
         </div>
 
         <div class="col-md-6">
-          <label class="form-label">
-            {{ editingId ? 'Nueva contraseña (opcional)' : 'Contraseña' }}
-          </label>
-          <input type="password" class="form-control" formControlName="password">
-          <div class="text-danger small mt-1" *ngIf="controls.password.touched && controls.password.hasError('required')">
-            La contraseña es obligatoria para crear un administrador.
-          </div>
-          <div class="text-danger small mt-1" *ngIf="controls.password.touched && controls.password.hasError('minlength')">
-            La contraseña debe tener al menos 6 caracteres.
-          </div>
+          <label class="form-label">{{ editingId ? 'Nueva contrasena (opcional)' : 'Contrasena' }}</label>
+          <input type="password" class="form-control" formControlName="password" maxlength="15" [class.input-limit]="controls.password.value?.length === 15">
+          <small class="text-muted">{{ controls.password.value?.length || 0 }}/15 caracteres</small>
+          <div class="text-danger small mt-1" *ngIf="controls.password.value?.length === 15">Limite maximo alcanzado.</div>
+          <div class="text-danger small mt-1" *ngIf="controls.password.touched && controls.password.hasError('required')">La contrasena es obligatoria para crear un administrador.</div>
+          <div class="text-danger small mt-1" *ngIf="controls.password.touched && controls.password.hasError('minlength')">La contrasena debe tener al menos 6 caracteres.</div>
+          <div class="text-danger small mt-1" *ngIf="controls.password.touched && controls.password.hasError('maxlength')">La contrasena no debe superar los 15 caracteres.</div>
         </div>
 
         <div class="col-12 d-flex gap-2">
-          <button class="btn btn-dark" type="submit">
-            {{ editingId ? 'Actualizar administrador' : 'Crear administrador' }}
-          </button>
-          <button *ngIf="editingId" class="btn btn-secondary" type="button" (click)="cancelEdit()">
-            Cancelar
-          </button>
+          <button class="btn btn-dark" type="submit">{{ editingId ? 'Actualizar administrador' : 'Crear administrador' }}</button>
+          <button *ngIf="editingId" class="btn btn-secondary" type="button" (click)="cancelEdit()">Cancelar</button>
         </div>
       </form>
     </div>
@@ -86,12 +72,7 @@
                 <td data-label="Rol">{{ admin.role }}</td>
                 <td data-label="Acciones" class="admins-table__actions">
                   <button class="btn btn-sm btn-outline-primary" (click)="editAdmin(admin)">Editar</button>
-                  <button
-                    class="btn btn-sm btn-outline-danger"
-                    [disabled]="!canDelete(admin)"
-                    (click)="deleteAdmin(admin)">
-                    Eliminar
-                  </button>
+                  <button class="btn btn-sm btn-outline-danger" [disabled]="!canDelete(admin)" (click)="deleteAdmin(admin)">Eliminar</button>
                 </td>
               </tr>
             </tbody>

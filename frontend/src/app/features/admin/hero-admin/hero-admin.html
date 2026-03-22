@@ -1,8 +1,8 @@
 <app-admin-shell>
   <div class="container py-4 px-0">
-    <h2 class="mb-2">Personalización</h2>
+    <h2 class="mb-2">Personalizacion</h2>
     <p class="text-muted mb-4">
-      Edita el banner principal del inicio. Si no subes una imagen, se mostrará un fondo negro con una flecha hacia los productos.
+      Edita el banner principal del inicio. Si no subes una imagen, se mostrara un fondo negro con una flecha hacia los productos.
     </p>
 
     <div *ngIf="loading" class="card shadow-sm p-4 text-center">
@@ -14,38 +14,28 @@
         <form [formGroup]="form" (ngSubmit)="submit()">
           <div class="mb-3">
             <label class="form-label">Titulo</label>
-            <input class="form-control" formControlName="title">
-            <div class="text-danger small mt-1" *ngIf="controls.title.touched && controls.title.hasError('required')">
-              El título es obligatorio.
-            </div>
-            <div class="text-danger small mt-1" *ngIf="controls.title.touched && controls.title.hasError('minlength')">
-              El título debe tener al menos 4 caracteres.
-            </div>
-            <div class="text-danger small mt-1" *ngIf="controls.title.touched && controls.title.hasError('maxlength')">
-              El tíulo no debe superar los 90 caracteres.
-            </div>
+            <input class="form-control" formControlName="title" maxlength="90" [class.input-limit]="controls.title.value?.length === 90">
+            <small class="text-muted">{{ controls.title.value?.length || 0 }}/90 caracteres</small>
+            <div class="text-danger small mt-1" *ngIf="controls.title.value?.length === 90">Limite maximo alcanzado.</div>
+            <div class="text-danger small mt-1" *ngIf="controls.title.touched && controls.title.hasError('required')">El titulo es obligatorio.</div>
+            <div class="text-danger small mt-1" *ngIf="controls.title.touched && controls.title.hasError('minlength')">El titulo debe tener al menos 4 caracteres.</div>
+            <div class="text-danger small mt-1" *ngIf="controls.title.touched && controls.title.hasError('maxlength')">El titulo no debe superar los 90 caracteres.</div>
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Subtítulo</label>
-            <textarea class="form-control" rows="4" formControlName="subtitle"></textarea>
-            <div class="text-danger small mt-1" *ngIf="controls.subtitle.touched && controls.subtitle.hasError('required')">
-              El subtítulo es obligatorio.
-            </div>
-            <div class="text-danger small mt-1" *ngIf="controls.subtitle.touched && controls.subtitle.hasError('minlength')">
-              El subtítulo debe tener al menos 10 caracteres.
-            </div>
-            <div class="text-danger small mt-1" *ngIf="controls.subtitle.touched && controls.subtitle.hasError('maxlength')">
-              El subtítulo no debe superar los 180 caracteres.
-            </div>
+            <label class="form-label">Subtitulo</label>
+            <textarea class="form-control" rows="4" formControlName="subtitle" maxlength="180" [class.input-limit]="controls.subtitle.value?.length === 180"></textarea>
+            <small class="text-muted">{{ controls.subtitle.value?.length || 0 }}/180 caracteres</small>
+            <div class="text-danger small mt-1" *ngIf="controls.subtitle.value?.length === 180">Limite maximo alcanzado.</div>
+            <div class="text-danger small mt-1" *ngIf="controls.subtitle.touched && controls.subtitle.hasError('required')">El subtitulo es obligatorio.</div>
+            <div class="text-danger small mt-1" *ngIf="controls.subtitle.touched && controls.subtitle.hasError('minlength')">El subtitulo debe tener al menos 10 caracteres.</div>
+            <div class="text-danger small mt-1" *ngIf="controls.subtitle.touched && controls.subtitle.hasError('maxlength')">El subtitulo no debe superar los 180 caracteres.</div>
           </div>
 
           <div class="mb-3">
             <label class="form-label">Imagen de fondo</label>
             <input class="form-control" type="file" accept="image/*" (change)="onImageSelected($event)">
-            <small class="text-muted d-block mt-1">
-              Recomendado: imagen horizontal de al menos 1600 x 600 px.
-            </small>
+            <small class="text-muted d-block mt-1">Recomendado: imagen horizontal de al menos 1600 x 600 px.</small>
           </div>
 
           <div class="hero-admin-preview-image mb-3" *ngIf="imagePreview">

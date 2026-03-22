@@ -30,8 +30,8 @@ export class AdminsAdminComponent implements OnInit {
 
   form = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(80),Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$')]],
-    email: ['', [Validators.required, Validators.email]],
-    password: ['']
+    email: ['', [Validators.required, Validators.email, Validators.maxLength(50)]],
+    password: ['', [Validators.maxLength(15)]]
   });
 
   ngOnInit(): void {
@@ -145,9 +145,9 @@ export class AdminsAdminComponent implements OnInit {
     const passwordControl = this.form.controls.password;
 
     if (this.editingId) {
-      passwordControl.setValidators([Validators.minLength(6)]);
+      passwordControl.setValidators([Validators.minLength(6), Validators.maxLength(15)]);
     } else {
-      passwordControl.setValidators([Validators.required, Validators.minLength(6)]);
+      passwordControl.setValidators([Validators.required, Validators.minLength(6), Validators.maxLength(15)]);
     }
 
     passwordControl.updateValueAndValidity({ emitEvent: false });

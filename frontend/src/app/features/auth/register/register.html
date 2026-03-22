@@ -7,81 +7,63 @@
         <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
           <div class="mb-3">
             <label class="form-label">Nombre</label>
-            <input 
-            type="text" 
-            class="form-control"
-            [class.input-limit]="controls.name.value?.length === 20"
-            formControlName="name"
-            maxlength="20"
-            (keypress)="soloLetras($event)"
-            >
-            <div class="text-end small text-muted">
-            {{ controls.name.value?.length || 0 }}/20
-            </div>
-            <div class="text-danger small mt-1" *ngIf="registerForm.controls.name.touched && registerForm.controls.name.hasError('required')">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="name"
+              maxlength="20"
+              [class.input-limit]="nameLength === 20"
+              (keypress)="soloLetras($event)">
+            <div class="text-end small text-muted">{{ nameLength }}/20</div>
+            <div class="text-danger small mt-1" *ngIf="nameLength === 20">Limite maximo alcanzado.</div>
+            <div class="text-danger small mt-1" *ngIf="controls.name.touched && controls.name.hasError('required')">
               El nombre es obligatorio.
             </div>
-            <div class="text-danger small mt-1" *ngIf="registerForm.controls.name.touched && registerForm.controls.name.hasError('minlength')">
+            <div class="text-danger small mt-1" *ngIf="controls.name.touched && controls.name.hasError('minlength')">
               El nombre debe tener al menos 4 caracteres.
             </div>
-            <div 
-  class="text-danger small mt-1"
-  *ngIf="controls.name.value?.length === 20"
->
-  Límite máximo alcanzado
-</div>
+            <div class="text-danger small mt-1" *ngIf="controls.name.touched && controls.name.hasError('pattern')">
+              El nombre no debe contener numeros ni caracteres especiales.
+            </div>
           </div>
 
           <div class="mb-3">
             <label class="form-label">Correo</label>
-            <input 
-            type="email" 
-            class="form-control"
-            formControlName="email"
-            maxlength="50"
-            [class.input-limit]="controls.email.value?.length === 50"
-            >
-            <div class="text-end small text-muted">
-            {{ controls.email.value?.length || 0 }}/50
-            </div>
-            <div class="text-danger small mt-1" *ngIf="registerForm.controls.email.touched && registerForm.controls.email.hasError('required')">
+            <input
+              type="email"
+              class="form-control"
+              formControlName="email"
+              maxlength="50"
+              [class.input-limit]="emailLength === 50">
+            <div class="text-end small text-muted">{{ emailLength }}/50</div>
+            <div class="text-danger small mt-1" *ngIf="emailLength === 50">Limite maximo alcanzado.</div>
+            <div class="text-danger small mt-1" *ngIf="controls.email.touched && controls.email.hasError('required')">
               El correo es obligatorio.
             </div>
-            <div class="text-danger small mt-1" *ngIf="registerForm.controls.email.touched && registerForm.controls.email.hasError('email')">
-              Ingresa un correo válido.
+            <div class="text-danger small mt-1" *ngIf="controls.email.touched && controls.email.hasError('email')">
+              Ingresa un correo valido.
             </div>
-           <div 
-  class="text-danger small mt-1"
-  *ngIf="controls.email.value?.length === 50"
->
-  Límite máximo alcanzado
-</div>
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Contraseña</label>
-            <input 
-            type="password" 
-            class="form-control"
-            [class.input-limit]="controls.password.value?.length === 15"
-            formControlName="password"
-            maxlength="15"
-            >
-            <div class="text-end small text-muted">
-           {{ controls.password.value?.length || 0 }}/15
-          </div>
-            <div class="text-danger small mt-1" *ngIf="registerForm.controls.password.touched && registerForm.controls.password.hasError('required')">
-              La contraseña es obligatoria.
+            <label class="form-label">Contrasena</label>
+            <input
+              type="password"
+              class="form-control"
+              formControlName="password"
+              maxlength="15"
+              [class.input-limit]="passwordLength === 15">
+            <div class="text-end small text-muted">{{ passwordLength }}/15</div>
+            <div class="text-danger small mt-1" *ngIf="passwordLength === 15">Limite maximo alcanzado.</div>
+            <div class="text-danger small mt-1" *ngIf="controls.password.touched && controls.password.hasError('required')">
+              La contrasena es obligatoria.
             </div>
-            <div class="text-danger small mt-1" *ngIf="registerForm.controls.password.touched && registerForm.controls.password.hasError('minlength')">
-              La contraseña debe tener al menos 6 caracteres.
+            <div class="text-danger small mt-1" *ngIf="controls.password.touched && controls.password.hasError('minlength')">
+              La contrasena debe tener al menos 6 caracteres.
             </div>
-            <div 
-  class="text-danger small mt-1"
-  *ngIf="controls.password.value?.length === 15"
->
-  Límite máximo alcanzado
-</div>
+            <div class="text-danger small mt-1" *ngIf="controls.password.touched && controls.password.hasError('maxlength')">
+              La contrasena no debe superar los 15 caracteres.
+            </div>
           </div>
 
           <button type="submit" class="btn btn-dark w-100">Crear cuenta</button>
@@ -96,8 +78,8 @@
         </div>
 
         <p class="text-center mt-3 mb-0">
-          ¿Ya tienes cuenta?
-          <a routerLink="/login">Inicia sesión</a>
+          Ya tienes cuenta?
+          <a routerLink="/login">Inicia sesion</a>
         </p>
       </div>
     </div>

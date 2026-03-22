@@ -8,7 +8,7 @@
           <p class="profile-card__eyebrow">Cuenta</p>
           <h2 class="mb-2">Mi perfil</h2>
           <p class="profile-card__lead mb-0">
-            Revisa tu información personal y actualiza los datos editables de tu cuenta.
+            Revisa tu informacion personal y actualiza los datos editables de tu cuenta.
           </p>
         </div>
 
@@ -27,41 +27,38 @@
 
       <form *ngIf="!loading" class="profile-form" (ngSubmit)="updateProfile()">
         <div class="profile-form__grid">
-          <!-- 🔥 NOMBRE -->
           <div class="profile-field profile-field--wide">
             <label class="form-label">Nombre completo</label>
             <input
-  type="text"
-  class="form-control"
-  [(ngModel)]="user.name"
-  name="name"
-  (input)="onNameInput($event)"
-  (blur)="markFieldTouched('name')"
-  required>
-
-            <div class="text-danger small mt-1" *ngIf="nameError">
-              {{ nameError }}
-            </div>
-
+              type="text"
+              class="form-control"
+              [(ngModel)]="user.name"
+              name="name"
+              maxlength="80"
+              [class.input-limit]="nameLength === 80"
+              (input)="onNameInput($event)"
+              (blur)="markFieldTouched('name')"
+              required>
+            <div class="text-end small text-muted">{{ nameLength }}/80</div>
+            <div class="text-danger small mt-1" *ngIf="nameLength === 80">Limite maximo alcanzado.</div>
+            <div class="text-danger small mt-1" *ngIf="nameError">{{ nameError }}</div>
             <small class="text-muted">{{ nameHelpText }}</small>
           </div>
 
-          <!-- EMAIL -->
           <div class="profile-field profile-field--wide">
-            <label class="form-label">Correo electrónico</label>
+            <label class="form-label">Correo electronico</label>
             <input
               type="email"
               class="form-control"
               [(ngModel)]="user.email"
               name="email"
+              maxlength="50"
+              [class.input-limit]="emailLength === 50"
               (blur)="markFieldTouched('email')"
-              required
-            />
-
-            <div class="text-danger small mt-1" *ngIf="emailError">
-              {{ emailError }}
-            </div>
-
+              required>
+            <div class="text-end small text-muted">{{ emailLength }}/50</div>
+            <div class="text-danger small mt-1" *ngIf="emailLength === 50">Limite maximo alcanzado.</div>
+            <div class="text-danger small mt-1" *ngIf="emailError">{{ emailError }}</div>
             <small class="text-muted">{{ emailHelpText }}</small>
           </div>
 
@@ -84,12 +81,7 @@
         </div>
 
         <div class="profile-form__footer">
-          <button
-            class="btn btn-outline-dark"
-            type="button"
-            (click)="loadProfile()"
-            [disabled]="saving"
-          >
+          <button class="btn btn-outline-dark" type="button" (click)="loadProfile()" [disabled]="saving">
             Recargar datos
           </button>
 

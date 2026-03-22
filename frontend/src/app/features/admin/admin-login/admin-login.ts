@@ -20,9 +20,13 @@ export class AdminLoginComponent {
   loading = false;
 
   loginForm = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required]]
+    email: ['', [Validators.required, Validators.email, Validators.maxLength(50)]],
+    password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(15)]]
   });
+
+  get controls() {
+    return this.loginForm.controls;
+  }
 
   onSubmit(): void {
     if (this.loginForm.invalid) {

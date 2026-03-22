@@ -118,7 +118,14 @@
               class="form-control"
               name="guest_name"
               [(ngModel)]="guestRequestForm.guest_name"
+              maxlength="60"
+              [class.input-limit]="guestNameLength === 60"
+              (input)="onGuestNameInput($event)"
               placeholder="Escribe tu nombre">
+            <div class="text-end small text-muted mt-1">{{ guestNameLength }}/60</div>
+            <div class="text-danger small mt-1" *ngIf="guestNameLength === 60">
+              Limite maximo alcanzado.
+            </div>
           </div>
 
           <div class="text-danger small mt-2" *ngIf="guestRequestError">{{ guestRequestError }}</div>
@@ -187,7 +194,13 @@
             rows="4"
             name="comment"
             [(ngModel)]="reviewForm.comment"
+            maxlength="500"
+            [class.input-limit]="commentLength === 500"
             required></textarea>
+          <div class="text-end small text-muted mt-1">{{ commentLength }}/500</div>
+          <div class="text-danger small mt-1" *ngIf="commentLength === 500">
+            Limite maximo alcanzado.
+          </div>
           <div class="text-danger small mt-1" *ngIf="commentError">{{ commentError }}</div>
         </div>
 

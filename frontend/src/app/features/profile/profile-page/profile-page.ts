@@ -15,6 +15,7 @@ export class ProfilePage implements OnInit {
   private profileService = inject(ProfileService);
   private cdr = inject(ChangeDetectorRef);
   private readonly emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  private readonly namePattern = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
 
   user: User = {
     _id: '',
@@ -66,12 +67,12 @@ export class ProfilePage implements OnInit {
     });
   }
 
- onNameInput(event: any): void {
-  const inputElement = event.target as HTMLInputElement;
-  const filtered = inputElement.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
-  inputElement.value = filtered;
-  this.user.name = filtered;
-}
+  onNameInput(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    const filtered = inputElement.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+    inputElement.value = filtered;
+    this.user.name = filtered;
+  }
 
   updateProfile(): void {
     this.touchedFields.name = true;
@@ -110,6 +111,10 @@ export class ProfilePage implements OnInit {
     });
   }
 
+  get currentRole(): string {
+    return this.user.role;
+  }
+
   get roleLabel(): string {
     if (this.user.role === 'superadmin') {
       return 'Superadmin';
@@ -128,26 +133,26 @@ export class ProfilePage implements OnInit {
 
   get sectionTitle(): string {
     if (this.user.role === 'superadmin') {
-      return 'Gestión de perfil superadmin';
+      return 'Gestion de perfil superadmin';
     }
 
     if (this.user.role === 'admin') {
-      return 'Gestión de perfil administrativo';
+      return 'Gestion de perfil administrativo';
     }
 
-    return 'Gestión de perfil';
+    return 'Gestion de perfil';
   }
 
   get nameHelpText(): string {
     if (this.user.role === 'superadmin') {
-      return 'Este nombre identifica tu cuenta dentro de la gestión general del sistema.';
+      return 'Este nombre identifica tu cuenta dentro de la gestion general del sistema.';
     }
 
     if (this.user.role === 'admin') {
-      return 'Este nombre identifica tu cuenta dentro del panel y la gestión de solicitudes.';
+      return 'Este nombre identifica tu cuenta dentro del panel y la gestion de solicitudes.';
     }
 
-    return 'Este nombre se muestra en tus reseñas y solicitudes.';
+    return 'Este nombre se muestra en tus resenas y solicitudes.';
   }
 
   get emailHelpText(): string {
@@ -160,6 +165,14 @@ export class ProfilePage implements OnInit {
     }
 
     return 'Usamos este correo para identificar tu cuenta.';
+  }
+
+  get nameLength(): number {
+    return this.user.name.length;
+  }
+
+  get emailLength(): number {
+    return this.user.email.length;
   }
 
   get nameError(): string {
@@ -181,9 +194,8 @@ export class ProfilePage implements OnInit {
       return 'El nombre no debe superar los 80 caracteres.';
     }
 
-    // 🔥 VALIDACIÓN EXTRA
-    if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(value)) {
-      return 'El nombre no debe contener números ni caracteres especiales.';
+    if (!this.namePattern.test(value)) {
+      return 'El nombre no debe contener numeros ni caracteres especiales.';
     }
 
     return '';
@@ -198,6 +210,10 @@ export class ProfilePage implements OnInit {
 
     if (!value) {
       return 'El correo es obligatorio.';
+    }
+
+    if (value.length > 50) {
+      return 'El correo no debe superar los 50 caracteres.';
     }
 
     if (!this.emailPattern.test(value)) {

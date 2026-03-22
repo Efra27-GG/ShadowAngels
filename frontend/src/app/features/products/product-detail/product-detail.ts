@@ -57,6 +57,7 @@ export class ProductDetailComponent implements OnInit {
   };
   reviewSubmitted = false;
   guestRequestSubmitted = false;
+  private readonly guestNamePattern = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
 
   ngOnInit(): void {
     this.contactService.contact$.subscribe((contact) => {
@@ -395,6 +396,14 @@ export class ProductDetailComponent implements OnInit {
       return 'Tu nombre debe tener al menos 2 caracteres.';
     }
 
+    if (guestName.length > 60) {
+      return 'Tu nombre no debe superar los 60 caracteres.';
+    }
+
+    if (!this.guestNamePattern.test(guestName)) {
+      return 'Tu nombre no debe contener numeros ni caracteres especiales.';
+    }
+
     return '';
   }
 
@@ -410,6 +419,21 @@ export class ProductDetailComponent implements OnInit {
     this.selectedSize = size;
     this.requestMessage = '';
     this.cdr.detectChanges();
+  }
+
+  onGuestNameInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const filtered = input.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+    input.value = filtered;
+    this.guestRequestForm.guest_name = filtered;
+  }
+
+  get guestNameLength(): number {
+    return this.guestRequestForm.guest_name.length;
+  }
+
+  get commentLength(): number {
+    return this.reviewForm.comment.length;
   }
 
   onImageError(event: Event): void {

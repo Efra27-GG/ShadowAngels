@@ -92,6 +92,28 @@
 
 .notifications-card__actions {
   margin-top: 14px;
+  display: grid;
+  grid-template-columns: minmax(0, max-content) minmax(0, 1fr) minmax(0, max-content);
+  align-items: center;
+  gap: 12px;
+}
+
+.notifications-card__action-btn {
+  min-width: 72px;
+}
+
+.notifications-card__actions-slot {
+  display: flex;
+  align-items: center;
+}
+
+.notifications-card__actions-slot--center {
+  justify-content: center;
+  gap: 12px;
+}
+
+.notifications-card__actions-slot--right {
+  justify-content: flex-end;
 }
 
 .notifications-modal {
@@ -166,5 +188,19 @@
     width: 100%;
     height: auto;
     aspect-ratio: 16 / 10;
+  }
+
+  .notifications-card__actions {
+    grid-template-columns: 1fr;
+    justify-content: stretch;
+  }
+
+  .notifications-card__actions-slot--center,
+  .notifications-card__actions-slot--right {
+    justify-content: stretch;
+  }
+
+  .notifications-card__action-btn {
+    width: 100%;
   }
 }

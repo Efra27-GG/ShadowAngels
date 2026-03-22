@@ -62,25 +62,38 @@
           <p class="mb-0">{{ notification.notification.summary }}</p>
 
           <div class="notifications-card__actions">
-            <button class="btn btn-dark btn-sm" type="button" (click)="openNotification(notification)">Ver</button>
-            <button
-              *ngIf="hasRedirectTarget(notification)"
-              class="btn btn-outline-primary btn-sm"
-              type="button"
-              (click)="openNotificationTarget(notification)">
-              {{ getRedirectLabel(notification) }}
-            </button>
-            <button
-              *ngIf="selectedFilter !== 'read'"
-              class="btn btn-outline-dark btn-sm"
-              type="button"
-              (click)="markAsRead(notification)"
-              [disabled]="notification.is_read">
-              Marcar como leida
-            </button>
-            <button class="btn btn-outline-danger btn-sm" type="button" (click)="deleteNotification(notification)">
-              Eliminar
-            </button>
+            <div class="notifications-card__actions-slot notifications-card__actions-slot--left">
+              <button
+                class="btn btn-dark btn-sm notifications-card__action-btn"
+                type="button"
+                (click)="openNotification(notification)">
+                Ver
+              </button>
+            </div>
+
+            <div class="notifications-card__actions-slot notifications-card__actions-slot--center">
+              <button
+                *ngIf="hasRedirectTarget(notification)"
+                class="btn btn-outline-primary btn-sm notifications-card__action-btn"
+                type="button"
+                (click)="openNotificationTarget(notification)">
+                {{ getRedirectLabel(notification) }}
+              </button>
+              <button
+                *ngIf="selectedFilter !== 'read'"
+                class="btn btn-outline-dark btn-sm notifications-card__action-btn"
+                type="button"
+                (click)="markAsRead(notification)"
+                [disabled]="notification.is_read">
+                Marcar como leida
+              </button>
+            </div>
+
+            <div class="notifications-card__actions-slot notifications-card__actions-slot--right">
+              <button class="btn btn-outline-danger btn-sm notifications-card__action-btn" type="button" (click)="deleteNotification(notification)">
+                Eliminar
+              </button>
+            </div>
           </div>
         </div>
       </div>

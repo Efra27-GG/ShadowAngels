@@ -20,49 +20,60 @@ export class RegisterComponent {
   errorMessage = '';
 
   registerForm = this.fb.group({
-  name: [
-    '',
-    [
-      Validators.required,
-      Validators.minLength(4), 
-      Validators.maxLength(20), 
-      Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$') 
+    name: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(4),
+        Validators.maxLength(20),
+        Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$')
+      ]
+    ],
+    email: [
+      '',
+      [
+        Validators.required,
+        Validators.email,
+        Validators.maxLength(50)
+      ]
+    ],
+    password: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(6),
+        Validators.maxLength(15)
+      ]
     ]
-  ],
-  email: [
-    '',
-    [
-      Validators.required,
-      Validators.email,
-      Validators.maxLength(50), 
-    ]
-  ],
-  password: [
-    '',
-    [
-      Validators.required,
-      Validators.minLength(6), 
-      Validators.maxLength(15)
-    ]
-  ]
+  });
 
-});
-    get controls() {
-  return this.registerForm.controls;
-}
-
-soloLetras(event: KeyboardEvent): void {
-  const char = String.fromCharCode(event.keyCode);
-
-  const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
-
-  if (!regex.test(char)) {
-    event.preventDefault(); 
-    this.errorMessage = 'Solo se permiten letras en el nombre.';
-  } else {
-    this.errorMessage = '';
+  get controls() {
+    return this.registerForm.controls;
   }
-}
+
+  get nameLength(): number {
+    return this.controls.name.value?.length || 0;
+  }
+
+  get emailLength(): number {
+    return this.controls.email.value?.length || 0;
+  }
+
+  get passwordLength(): number {
+    return this.controls.password.value?.length || 0;
+  }
+
+  soloLetras(event: KeyboardEvent): void {
+    const char = event.key;
+    const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+
+    if (!regex.test(char)) {
+      event.preventDefault();
+      this.errorMessage = 'Solo se permiten letras en el nombre.';
+    } else {
+      this.errorMessage = '';
+    }
+  }
 
   onSubmit(): void {
     if (this.registerForm.invalid) {
