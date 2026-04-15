@@ -17,13 +17,13 @@
               placeholder="superadmin@shadowangels.com">
             <div class="text-end small text-muted">{{ controls.email.value?.length || 0 }}/50</div>
             <div class="text-danger small mt-1" *ngIf="controls.email.value?.length === 50">
-              Limite maximo alcanzado.
+              Limite máximo alcanzado.
             </div>
             <div class="text-danger small mt-1" *ngIf="controls.email.touched && controls.email.hasError('required')">
               El correo es obligatorio.
             </div>
             <div class="text-danger small mt-1" *ngIf="controls.email.touched && controls.email.hasError('email')">
-              Ingresa un correo valido.
+              Ingresa un correo válido.
             </div>
             <div class="text-danger small mt-1" *ngIf="controls.email.touched && controls.email.hasError('maxlength')">
               El correo no debe superar los 50 caracteres.
@@ -31,7 +31,7 @@
           </div>
 
           <div class="mb-3">
-            <label for="password" class="form-label">Contrasena</label>
+            <label for="password" class="form-label">Contraseña</label>
             <input
               id="password"
               type="password"
@@ -39,24 +39,24 @@
               formControlName="password"
               maxlength="15"
               [class.input-limit]="controls.password.value?.length === 15"
-              placeholder="Ingresa tu contrasena">
+              placeholder="Ingresa tu contraseña">
             <div class="text-end small text-muted">{{ controls.password.value?.length || 0 }}/15</div>
             <div class="text-danger small mt-1" *ngIf="controls.password.value?.length === 15">
-              Limite maximo alcanzado.
+              Limite máximo alcanzado.
             </div>
             <div class="text-danger small mt-1" *ngIf="controls.password.touched && controls.password.hasError('required')">
-              La contrasena es obligatoria.
+              La contraseña es obligatoria.
             </div>
             <div class="text-danger small mt-1" *ngIf="controls.password.touched && controls.password.hasError('minlength')">
-              La contrasena debe tener al menos 6 caracteres.
+              La contraseña debe tener al menos 6 caracteres.
             </div>
             <div class="text-danger small mt-1" *ngIf="controls.password.touched && controls.password.hasError('maxlength')">
-              La contrasena no debe superar los 15 caracteres.
+              La contraseña no debe superar los 15 caracteres.
             </div>
           </div>
 
           <button type="submit" class="btn btn-dark w-100" [disabled]="loading">
-            {{ loading ? 'Iniciando sesion...' : 'Iniciar sesion' }}
+            {{ loading ? 'Iniciando sesión...' : 'Iniciar sesión' }}
           </button>
         </form>
 
