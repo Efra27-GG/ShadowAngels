@@ -46,7 +46,7 @@
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Contrasena</label>
+            <label class="form-label">Contraseña</label>
             <input
               type="password"
               class="form-control"
@@ -54,15 +54,15 @@
               maxlength="15"
               [class.input-limit]="passwordLength === 15">
             <div class="text-end small text-muted">{{ passwordLength }}/15</div>
-            <div class="text-danger small mt-1" *ngIf="passwordLength === 15">Limite maximo alcanzado.</div>
+            <div class="text-danger small mt-1" *ngIf="passwordLength === 15">Limite máximo alcanzado.</div>
             <div class="text-danger small mt-1" *ngIf="controls.password.touched && controls.password.hasError('required')">
-              La contrasena es obligatoria.
+              La contraseña es obligatoria.
             </div>
             <div class="text-danger small mt-1" *ngIf="controls.password.touched && controls.password.hasError('minlength')">
-              La contrasena debe tener al menos 6 caracteres.
+              La contraseña debe tener al menos 6 caracteres.
             </div>
             <div class="text-danger small mt-1" *ngIf="controls.password.touched && controls.password.hasError('maxlength')">
-              La contrasena no debe superar los 15 caracteres.
+              La contraseña no debe superar los 15 caracteres.
             </div>
           </div>
 
@@ -79,7 +79,7 @@
 
         <p class="text-center mt-3 mb-0">
           Ya tienes cuenta?
-          <a routerLink="/login">Inicia sesion</a>
+          <a routerLink="/login">Inicia sesión</a>
         </p>
       </div>
     </div>
