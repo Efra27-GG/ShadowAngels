@@ -4,6 +4,7 @@ import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@
 import { NotificationService } from '../../../core/services/notification.service';
 import { AdminShellComponent } from '../../../shared/components/admin-shell/admin-shell';
 import { NotificationItem } from '../../../shared/interfaces/notification.interface';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-notifications-admin',
@@ -208,7 +209,7 @@ export class NotificationsAdminComponent implements OnInit {
       return image;
     }
 
-    return `http://127.0.0.1:5000/uploads/notifications/${image}`;
+    return `${environment.uploadsBaseUrl}/notifications/${image}`;
   }
 
   get controls() {

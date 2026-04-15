@@ -15,6 +15,7 @@ import { NotificationService } from '../../../core/services/notification.service
   styleUrls: ['./navbar.css']
 })
 export class NavbarComponent implements OnDestroy {
+  private readonly guestBannerStorageKey = 'shadowangels_guest_banner_dismissed';
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly cartService = inject(CartService);
@@ -23,9 +24,12 @@ export class NavbarComponent implements OnDestroy {
   public cartCount = 0;
   public unreadNotifications = 0;
   public isMobileMenuOpen = false;
+  public guestBannerDismissed = false;
   private readonly subscriptions = new Subscription();
 
   constructor() {
+    this.guestBannerDismissed = this.getStoredGuestBannerState();
+
     this.subscriptions.add(
       this.cartService.cart$.subscribe((cart) => {
         this.cartCount = cart.items.reduce((total, item) => total + item.quantity, 0);
@@ -72,6 +76,10 @@ export class NavbarComponent implements OnDestroy {
     return this.user?.role === 'admin' || this.user?.role === 'superadmin';
   }
 
+  public get showGuestBanner(): boolean {
+    return !this.isLoggedIn && !this.guestBannerDismissed;
+  }
+
   public toggleMobileMenu(): void {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
   }
@@ -84,6 +92,22 @@ export class NavbarComponent implements OnDestroy {
     this.closeMobileMenu();
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  public dismissGuestBanner(): void {
+    this.guestBannerDismissed = true;
+
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      localStorage.setItem(this.guestBannerStorageKey, 'true');
+    }
+  }
+
+  private getStoredGuestBannerState(): boolean {
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+      return false;
+    }
+
+    return localStorage.getItem(this.guestBannerStorageKey) === 'true';
   }
 
   public ngOnDestroy(): void {

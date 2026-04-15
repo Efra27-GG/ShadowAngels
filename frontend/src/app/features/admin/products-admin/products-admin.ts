@@ -5,6 +5,7 @@ import { of } from 'rxjs';
 import { ProductService } from '../../../core/services/product.service';
 import { Product } from '../../../shared/interfaces/product.interface';
 import { AdminShellComponent } from '../../../shared/components/admin-shell/admin-shell';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-products-admin',
@@ -228,7 +229,7 @@ export class ProductsAdminComponent implements OnInit, OnDestroy {
   }
 
   getExistingImageUrl(image: string): string {
-    return `http://127.0.0.1:5000/uploads/products/${image}`;
+    return `${environment.uploadsBaseUrl}/products/${image}`;
   }
 
   private rebuildNewImagePreviews(): void {

@@ -25,6 +25,9 @@
             <div class="text-danger small mt-1" *ngIf="controls.email.touched && controls.email.hasError('email')">
               Ingresa un correo valido.
             </div>
+            <div class="text-danger small mt-1" *ngIf="controls.email.touched && controls.email.hasError('maxlength')">
+              El correo no debe superar los 50 caracteres.
+            </div>
           </div>
 
           <div class="mb-3">

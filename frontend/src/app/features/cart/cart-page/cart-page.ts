@@ -6,6 +6,7 @@ import { Cart, CartItem } from '../../../shared/interfaces/cart.interface';
 import { ContactService } from '../../../core/services/contact.service';
 import { ContactInfo } from '../../../shared/interfaces/contact.interface';
 import { PurchaseRequest } from '../../../shared/interfaces/purchase-request.interface';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-cart-page',
@@ -203,7 +204,7 @@ export class CartPageComponent implements OnInit {
       return image;
     }
 
-    return `http://127.0.0.1:5000/uploads/products/${image}`;
+    return `${environment.uploadsBaseUrl}/products/${image}`;
   }
 
   private openExternalChannel(channel: 'whatsapp' | 'instagram', items: CartItem[]): void {

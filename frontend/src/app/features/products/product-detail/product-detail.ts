@@ -11,6 +11,7 @@ import { Review } from '../../../shared/interfaces/review.interface';
 import { ContactService } from '../../../core/services/contact.service';
 import { ContactInfo } from '../../../shared/interfaces/contact.interface';
 import { CartService } from '../../../core/services/cart.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-product-detail',
@@ -356,7 +357,7 @@ export class ProductDetailComponent implements OnInit {
       return image;
     }
 
-    return `http://127.0.0.1:5000/uploads/products/${image}`;
+    return `${environment.uploadsBaseUrl}/products/${image}`;
   }
 
   get commentError(): string {

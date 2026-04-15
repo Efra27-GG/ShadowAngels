@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { AdminShellComponent } from '../../../shared/components/admin-shell/admin-shell';
 import { AdminService } from '../../../core/services/admin.service';
 import { Review } from '../../../shared/interfaces/review.interface';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-reviews-admin',
@@ -99,6 +100,6 @@ export class ReviewsAdminComponent implements OnInit {
       return image;
     }
 
-    return `http://127.0.0.1:5000/uploads/products/${image}`;
+    return `${environment.uploadsBaseUrl}/products/${image}`;
   }
 }

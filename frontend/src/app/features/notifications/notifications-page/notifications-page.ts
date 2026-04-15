@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { NotificationService } from '../../../core/services/notification.service';
 import { NotificationRelatedItem, UserNotification } from '../../../shared/interfaces/notification.interface';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-notifications-page',
@@ -156,7 +157,7 @@ export class NotificationsPageComponent implements OnInit {
       return image;
     }
 
-    return `http://127.0.0.1:5000/uploads/notifications/${image}`;
+    return `${environment.uploadsBaseUrl}/notifications/${image}`;
   }
 
   private getNotificationTargetType(notification: UserNotification): 'product' | 'cart' | null {
