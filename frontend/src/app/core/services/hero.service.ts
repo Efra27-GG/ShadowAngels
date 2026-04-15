@@ -2,13 +2,14 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { HeroContent } from '../../shared/interfaces/hero.interface';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HeroService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://127.0.0.1:5000/api';
+  private apiUrl = environment.apiUrl;
 
   private readonly defaultHero: HeroContent = {
     title: 'Bienvenido a ShadowAngels',
@@ -50,6 +51,6 @@ export class HeroService {
       return image;
     }
 
-    return `http://127.0.0.1:5000/uploads/hero/${image}`;
+    return `${environment.uploadsBaseUrl}/hero/${image}`;
   }
 }

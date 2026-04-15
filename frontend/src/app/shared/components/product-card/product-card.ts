@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Product } from '../../interfaces/product.interface';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-product-card',
@@ -24,7 +25,7 @@ export class ProductCardComponent {
       return firstImage;
     }
 
-    return `http://127.0.0.1:5000/uploads/products/${firstImage}`;
+    return `${environment.uploadsBaseUrl}/products/${firstImage}`;
   }
 
   public onImageError(event: Event): void {
